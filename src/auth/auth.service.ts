@@ -12,17 +12,20 @@ export class AuthService {
     ) {}
 
     async signup(data: SignUpDto) {
+        const { email, password } = data;
         try {
-            const isUserExits = await this.userRepository.searchUser({ email: data.email });
+            const isUserExits = await this.userRepository.searchUser({ email: email });
             if(isUserExits) {
                 throw new HttpException("User allreay exits!!",HttpStatus.BAD_REQUEST)
             }
 
             // create new user
-            const createUser = await this.userRepository.create({ email: data.email, password: hashSync(data.password, 10 )});
+            const createUser = await this.userRepository.create({ email: email, password: hashSync(password, 10 )});
             const { accessToken, refreshToken } = await this.getTokens(createUser);
+            
             return {
-                message: "User signup",
+                statusCode: HttpStatus.CREATED,
+                message: "Signup successful",
                 data: createUser,
                 tokens: {
                   accessToken,
@@ -38,18 +41,19 @@ export class AuthService {
       try {
           const user = await this.userRepository.searchUser({ email: data.email });
           if(!user) {
-              throw new HttpException("User Not Found!!",HttpStatus.NOT_FOUND)
+              throw new HttpException("Invalid Credentials!!",HttpStatus.BAD_REQUEST)
           }
 
           // is password match
           const isPasswordMatch = compareSync(data.password, user.password);
           if(!isPasswordMatch) {
-            throw new HttpException("User Not Found!!",HttpStatus.NOT_FOUND)
+            throw new HttpException("Invalid Credentials!!",HttpStatus.BAD_REQUEST)
           }
 
           const { accessToken, refreshToken } = await this.getTokens(user);
           return {
-              message: "User Login",
+              statusCode: HttpStatus.CREATED,
+              message: "Login successful",
               data: user,
               tokens: {
                 accessToken,
