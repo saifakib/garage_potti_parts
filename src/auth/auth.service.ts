@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { hashSync } from 'bcryptjs';
-import { SignUpDto } from './dto/signup-dto';
+import { compareSync, hashSync } from 'bcryptjs';
 import { UserRepository } from 'src/users/users.repository';
 import { JwtService } from '@nestjs/jwt';
+import { SignUpDto, LoginDto } from './dto';
 
 @Injectable()
 export class AuthService {
@@ -10,6 +10,7 @@ export class AuthService {
         private readonly jwtService: JwtService, 
         private readonly userRepository: UserRepository
     ) {}
+
     async signup(data: SignUpDto) {
         try {
             const isUserExits = await this.userRepository.searchUser({ email: data.email });
@@ -18,7 +19,7 @@ export class AuthService {
             }
 
             // create new user
-            const createUser = await this.userRepository.create({ email: data.email, password: hashSync(data.password, process.env.PASSWORD_SALT )});
+            const createUser = await this.userRepository.create({ email: data.email, password: hashSync(data.password, 10 )});
             const { accessToken, refreshToken } = await this.getTokens(createUser);
             return {
                 message: "User signup",
@@ -32,6 +33,33 @@ export class AuthService {
           throw err;
         }
     }
+
+    async login(data: LoginDto) {
+      try {
+          const user = await this.userRepository.searchUser({ email: data.email });
+          if(!user) {
+              throw new HttpException("User Not Found!!",HttpStatus.NOT_FOUND)
+          }
+
+          // is password match
+          const isPasswordMatch = compareSync(data.password, user.password);
+          if(!isPasswordMatch) {
+            throw new HttpException("User Not Found!!",HttpStatus.NOT_FOUND)
+          }
+
+          const { accessToken, refreshToken } = await this.getTokens(user);
+          return {
+              message: "User Login",
+              data: user,
+              tokens: {
+                accessToken,
+                refreshToken,
+              }
+          }
+      } catch (err) {
+        throw err;
+      }
+  }
     
 
     async getTokens(payload: any) {
