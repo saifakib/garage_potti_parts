@@ -9,7 +9,10 @@ export class AuthController {
 
   @Post('signup')
   signup(@Body(new ZodPipe(SignUpSchema)) createUserDto: SignUpDto) {
-    // check this alreay exits
-    return this.authService.signup(createUserDto);
+    try {
+      return this.authService.signup(createUserDto);
+    } catch (err) {
+      throw err
+    }
   }
 }
