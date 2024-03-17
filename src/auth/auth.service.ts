@@ -1,4 +1,129 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { compareSync, hashSync } from 'bcryptjs';
+import { UserRepository } from 'src/users/users.repository';
+import { JwtService } from '@nestjs/jwt';
+import { SignUpDto, LoginDto } from './dto';
+import { RefreshTokenDto } from './dto/refreshToken-dto';
 
 @Injectable()
-export class AuthService {}
+export class AuthService {
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly userRepository: UserRepository,
+  ) {}
+
+  async signup(data: SignUpDto) {
+    const { email, password } = data;
+    try {
+      const isUserExits = await this.userRepository.searchUser({ email: email });
+      if (isUserExits) {
+        throw new HttpException('User allreay exits!!', HttpStatus.BAD_REQUEST);
+      }
+
+      // create new user
+      const createUser = await this.userRepository.create({
+        email: email,
+        password: hashSync(password, 10),
+      });
+      const { accessToken, refreshToken } = await this.getTokens(createUser);
+
+      return {
+        statusCode: HttpStatus.CREATED,
+        message: 'Signup successful',
+        data: createUser,
+        tokens: {
+          accessToken,
+          refreshToken,
+        },
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async login(data: LoginDto) {
+    try {
+      const user = await this.userRepository.searchUser({ email: data.email });
+      if (!user) {
+        throw new HttpException('Invalid Credentials!!', HttpStatus.BAD_REQUEST);
+      }
+
+      // is password match
+      const isPasswordMatch = compareSync(data.password, user.password);
+      if (!isPasswordMatch) {
+        throw new HttpException('Invalid Credentials!!', HttpStatus.BAD_REQUEST);
+      }
+
+      const { accessToken, refreshToken } = await this.getTokens(user);
+      return {
+        statusCode: HttpStatus.CREATED,
+        message: 'Login successful',
+        data: user,
+        tokens: {
+          accessToken,
+          refreshToken,
+        },
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async refreshToken(data: RefreshTokenDto) {
+    try {
+      /// Verifying the refresh token
+      const decodedRefreshToken = await this.jwtService.verifyAsync(data.refreshToken, {
+        secret: process.env.JWT_REFRESH_SECRET,
+      });
+      // Extract user information from the decoded refresh token
+      const { sub: uuid } = decodedRefreshToken;
+
+      const user = await this.userRepository.searchUser({ uuid: uuid });
+
+      if (!user) {
+        throw new HttpException('Invalid RefreshToken', HttpStatus.FORBIDDEN);
+      }
+      // Generate a new access token for the user
+      const { accessToken, refreshToken } = await this.getTokens(user);
+
+      return {
+        statusCode: HttpStatus.CREATED,
+        message: "New access and refresh generate",
+        tokens: {
+          accessToken, refreshToken
+        }
+      };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async getTokens(payload: any) {
+    const [accessToken, refreshToken] = await Promise.all([
+      this.jwtService.signAsync(
+        {
+          sub: payload.uuid,
+          ...payload,
+        },
+        {
+          secret: process.env.JWT_SECRET_KEY,
+          expiresIn: process.env.JWT_TOKEN_EXPIRE_AT,
+        },
+      ),
+      this.jwtService.signAsync(
+        {
+          sub: payload.uuid,
+        },
+        {
+          secret: process.env.JWT_REFRESH_SECRET,
+          expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRE_AT,
+        },
+      ),
+    ]);
+
+    return {
+      accessToken,
+      refreshToken,
+    };
+  }
+}
