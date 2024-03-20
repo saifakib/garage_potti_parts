@@ -4,6 +4,7 @@ import { UserRepository } from 'src/users/users.repository';
 import { JwtService } from '@nestjs/jwt';
 import { SignUpDto, LoginDto } from './dto';
 import { RefreshTokenDto } from './dto/refreshToken-dto';
+import { randomCode } from '@/utils/random-code.util';
 
 @Injectable()
 export class AuthService {
@@ -12,19 +13,45 @@ export class AuthService {
     private readonly userRepository: UserRepository,
   ) {}
 
-  async signup(data: SignUpDto) {
-    const { email, password } = data;
-    try {
-      const isUserExits = await this.userRepository.searchUser({ email: email });
-      if (isUserExits) {
-        throw new HttpException('User allreay exits!!', HttpStatus.BAD_REQUEST);
-      }
+  _generateUserUniqueId(): string {
+    return `${randomCode(10)}`;
+  }
 
-      // create new user
-      const createUser = await this.userRepository.create({
-        email: email,
-        password: hashSync(password, 10),
-      });
+  async signup(data: SignUpDto) {
+    const { email, mobile, password, userType, signUpMethod } = data;
+    try {
+      let createUser: any;
+      if(signUpMethod == 'GUEST') {
+        // go to guest method
+        const password = randomCode(6);
+        createUser = await this.userRepository.create({
+          user_id: this._generateUserUniqueId(),
+          password: hashSync(password, 10),
+          user_type: userType
+        });
+        createUser.password = password;
+      } else {
+        const searchCriteria = email ? { email } : { mobile };
+        const isUserExits = await this.userRepository.searchUser(searchCriteria);
+        if (isUserExits) {
+          throw new HttpException('User allreay exits!!', HttpStatus.BAD_REQUEST);
+        }
+        if(signUpMethod == 'EMAIL') {
+           createUser = await this.userRepository.create({
+            email: email,
+            password: hashSync(password, 10),
+            user_type: userType
+          });
+          delete createUser.password;
+        } else {
+          createUser = await this.userRepository.create({
+            mobile: mobile,
+            password: hashSync(password, 10),
+            user_type: userType
+          });
+          delete createUser.password;
+        }
+      }
       const { accessToken, refreshToken } = await this.getTokens(createUser);
 
       return {
