@@ -5,6 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import { SignUpDto, LoginDto } from './dto';
 import { RefreshTokenDto } from './dto/refreshToken-dto';
 import { randomCode } from '@/utils/random-code.util';
+import { Badge } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -27,7 +28,8 @@ export class AuthService {
         createUser = await this.userRepository.create({
           user_id: this._generateUserUniqueId(),
           password: hashSync(password, 10),
-          user_type: userType
+          user_type: userType,
+          badge: Badge.FLYING
         });
         createUser.password = password;
       } else {
@@ -69,16 +71,18 @@ export class AuthService {
   }
 
   async login(data: LoginDto) {
+    const { email, mobile, userId, password } = data;
     try {
-      const user = await this.userRepository.searchUser({ email: data.email });
+      const searchCriteria = email ? { email } : mobile ? { mobile } : { user_id: userId };
+      const user = await this.userRepository.searchUser(searchCriteria);
       if (!user) {
         throw new HttpException('Invalid Credentials!!', HttpStatus.BAD_REQUEST);
       }
 
       // is password match
-      const isPasswordMatch = compareSync(data.password, user.password);
+      const isPasswordMatch = compareSync(password, user.password);
       if (!isPasswordMatch) {
-        throw new HttpException('Invalid Credentials!!', HttpStatus.BAD_REQUEST);
+        throw new HttpException('Invalid Credentials password!!', HttpStatus.BAD_REQUEST);
       }
 
       const { accessToken, refreshToken } = await this.getTokens(user);

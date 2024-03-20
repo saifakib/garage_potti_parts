@@ -7,7 +7,7 @@ export const SignUpSchema = z.object({
     userType: z.enum(['END_USER', 'SERVICE_PROVIDER']),
     password: z.string(),
     signUpMethod: z.enum(['EMAIL', 'MOBILE', "GUEST"]),
-  }) .refine((data) => {
+  }).refine((data) => {
     const { userType, email, mobile } = data;
     if(email && mobile) {
       return !(email && mobile)
