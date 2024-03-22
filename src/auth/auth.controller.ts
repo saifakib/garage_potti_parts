@@ -13,7 +13,7 @@ export class AuthController {
   signup(@Body(new ZodPipe(SignUpSchema)) signupDto: SignUpDto) {
     try {
       return this.authService.signup(signupDto);
-    } catch (err) {
+    } catch (err: any) {
       throw err
     }
   }
