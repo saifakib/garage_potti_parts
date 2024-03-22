@@ -13,10 +13,51 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Users {
-  id    Int     @id @default(autoincrement())
-  uuid  String  @unique @default(uuid()) @db.Uuid
-  email String  @unique
-  name  String?
-  password String?
+enum UserType {
+  SUPER_ADMIN
+  END_USER
+  SERVICE_PROVIDER
 }
+
+enum Badge {
+  FLYING
+  REGISTERED
+  VERIFIED
+}
+
+model Users {
+  id              Int      @id @default(autoincrement())
+  uuid            String   @unique @default(uuid()) @db.Uuid
+  email           String?  @unique
+  mobile          String?  @unique
+  user_id         String?
+  password        String?
+  user_type       UserType
+  badge           Badge?
+  is_verified     Boolean  @default(false)
+  is_registered   Boolean  @default(false)
+  email_verified  Boolean  @default(false)
+  mobile_verified Boolean  @default(false)
+  profile         Profile?
+}
+
+enum GENDER {
+  MEN
+  WOMEN
+  OTHER
+}
+
+model Profile {
+  uuid       String    @unique @default(uuid()) @db.Uuid
+  first_name String?   @db.VarChar(100)
+  last_name  String?   @db.VarChar(100)
+  address    String?   @db.VarChar(255)
+  gender     GENDER?
+  dob        DateTime?
+  image      String?
+  user       Users     @relation(fields: [userUuid], references: [uuid])
+  userUuid   String    @unique @db.Uuid
+}
+
+// model GarageInfo {
+// }
