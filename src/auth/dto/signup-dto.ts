@@ -7,27 +7,49 @@ export const SignUpSchema = z.object({
     userType: z.enum(['END_USER', 'SERVICE_PROVIDER']),
     password: z.string(),
     signUpMethod: z.enum(['EMAIL', 'MOBILE', "GUEST"]),
-  }).refine((data) => {
+  }).superRefine((data, ctx) => {
     const { userType, email, mobile } = data;
     if(email && mobile) {
-      return !(email && mobile)
-      //throw new Error('You have to provide email or mobile any one of them');
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "You have to provide email or mobile any one of them",
+        fatal: true,
+      });
+      return z.NEVER;
     }
     if (userType === 'SERVICE_PROVIDER') {
       if (!email && !mobile) {
-        return !(!email && !mobile)
-        //throw new Error('Service providers must provide either email or mobile number');
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Service providers must provide either email or mobile number",
+          fatal: true,
+        });
+        return z.NEVER;
       }
     }
-
-    if(data.signUpMethod == 'EMAIL') {
-      return email != undefined;
+    if(data.signUpMethod == 'EMAIL' && email == undefined) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Email should be provided",
+        fatal: true,
+      });
+      return z.NEVER;
     }
-    if(data.signUpMethod == 'MOBILE') {
-      return mobile != undefined;
+    if(data.signUpMethod == 'MOBILE' && mobile == undefined) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Mobile number should be provided",
+        fatal: true,
+      });
+      return z.NEVER;
     }
-    if(data.signUpMethod == 'GUEST') {
-      return email == undefined && data.mobile == undefined;
+    if(data.signUpMethod == 'GUEST' && email == undefined && data.mobile == undefined) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "For guest no need to provide email or mobile number",
+        fatal: true,
+      });
+      return z.NEVER;
     }
    
     return true;

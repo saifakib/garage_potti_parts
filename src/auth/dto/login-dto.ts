@@ -6,10 +6,22 @@ export const LoginSchema = z.object({
     email: z.string().email({ message: 'Email should be a valid email'}).optional(),
     mobile: z.string().regex(bdPhoneRegex, 'Invalid phone number!').optional(),
     password: z.string()
-  }).refine((data) => {
+  }).superRefine((data, ctx) => {
+    if(!data.email && !data.mobile && !data.userId) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Provide one of idetification value from email | mobile | userId",
+        fatal: true,
+      });
+      return z.NEVER;
+    }
     if((data.email && data.mobile) || (data.email && data.userId) || (data.mobile && data.userId)) {
-      return !((data.email && data.mobile) || (data.email && data.userId) || (data.mobile && data.userId))
-      //throw new Error('');
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Provide one idetification value",
+        fatal: true,
+      });
+      return z.NEVER;
     }
     return true;
   });
