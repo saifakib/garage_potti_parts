@@ -1,16 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Body, Patch, Param, UsePipes } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto, CreateUserSchema } from './dto/create-user.dto';
-import { ZodPipe } from 'src/zod-validation/zod-validation.pipe';
+//import { CreateUserDto } from './dto/create-user.dto';
+import { ZodValidationPipe } from '@anatine/zod-nestjs';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { UserProileDto } from './dto/userProfile-dto';
+import { UUID } from 'crypto';
 
+@ApiTags('Users')
+@UsePipes(ZodValidationPipe)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
-  @Post()
-  create(@Body(new ZodPipe(CreateUserSchema)) createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
-  }
 
   @Get()
   findAll() {
@@ -22,13 +22,10 @@ export class UsersController {
     return this.usersService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() createUserDto: CreateUserDto) {
-    return this.usersService.update(+id, createUserDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  @ApiBearerAuth("JWT")
+  //@UseGuards(AuthGuard("jwt"))
+  @Patch(':uuid')
+  update(@Param('uuid') uuid: UUID, @Body() userProfile: UserProileDto) {
+    return this.usersService.update(uuid, userProfile);
   }
 }
