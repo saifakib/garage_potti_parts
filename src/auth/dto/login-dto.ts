@@ -1,7 +1,9 @@
+import { createZodDto } from '@anatine/zod-nestjs';
+import { extendApi } from '@anatine/zod-openapi';
 import { z } from 'zod'
 const bdPhoneRegex = new RegExp(/^[\+]?8801[3-9][0-9]{8}$/);
 
-export const LoginSchema = z.object({
+export const loginSchema = extendApi(z.object({
     userId: z.string().optional(),
     email: z.string().email({ message: 'Email should be a valid email'}).optional(),
     mobile: z.string().regex(bdPhoneRegex, 'Invalid phone number!').optional(),
@@ -24,6 +26,6 @@ export const LoginSchema = z.object({
       return z.NEVER;
     }
     return true;
-  });
+  }));
 
-export type LoginDto = z.infer<typeof LoginSchema>;
+export class LoginDto extends createZodDto(loginSchema) {}
