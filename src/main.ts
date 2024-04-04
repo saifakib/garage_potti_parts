@@ -16,8 +16,9 @@ async function bootstrap() {
   SwaggerModule.setup(`${globalPrefix}/docs`, app, swaggerDocument);
   
   app.useGlobalFilters(new ZodFilter());
-  await app.listen(3000, () => {
-    Logger.log('Listening at http://localhost:' + 3000 + '/' + globalPrefix);
+  const PORT = process.env.PORT || 8080;
+  await app.listen(PORT, () => {
+    Logger.log(`Listening at http://localhost:' + ${PORT} + '/' + globalPrefix`);
   });
 }
 bootstrap();
