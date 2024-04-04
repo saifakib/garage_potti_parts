@@ -29,7 +29,8 @@ export class AuthService {
           user_id: this._generateUserUniqueId(),
           password: hashSync(password, 10),
           user_type: userType,
-          badge: Badge.FLYING
+          badge: Badge.FLYING,
+          profile: { create: {} } 
         });
         createUser.password = password;
       } else {
@@ -42,14 +43,16 @@ export class AuthService {
            createUser = await this.userRepository.create({
             email: email,
             password: hashSync(password, 10),
-            user_type: userType
+            user_type: userType,
+            profile: { create: {} } 
           });
           delete createUser.password;
         } else {
           createUser = await this.userRepository.create({
             mobile: mobile,
             password: hashSync(password, 10),
-            user_type: userType
+            user_type: userType,
+            profile: { create: {} } 
           });
           delete createUser.password;
         }

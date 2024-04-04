@@ -38,7 +38,7 @@ model Users {
   is_registered   Boolean  @default(false)
   email_verified  Boolean  @default(false)
   mobile_verified Boolean  @default(false)
-  profile         Profile?
+  profile         Profile? 
 }
 
 enum GENDER {
@@ -55,7 +55,7 @@ model Profile {
   gender     GENDER?
   dob        DateTime?
   image      String?
-  user       Users     @relation(fields: [userUuid], references: [uuid])
+  user       Users     @relation(fields: [userUuid], references: [uuid], onDelete: Cascade)
   userUuid   String    @unique @db.Uuid
 }
 
