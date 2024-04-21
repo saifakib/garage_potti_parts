@@ -5,7 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import { SignUpDto, LoginDto } from './dto';
 import { RefreshTokenDto } from './dto/refreshToken-dto';
 import { randomCode } from '@/utils/random-code.util';
-import { Badge } from '@prisma/client';
+import { Badge, SIGNUP_METHOD } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -23,46 +23,43 @@ export class AuthService {
     try {
       let createUser: any;
       if(signUpMethod == 'GUEST') {
-        // go to guest method
-        const password = randomCode(6);
         createUser = await this.userRepository.create({
           user_id: this._generateUserUniqueId(),
-          password: hashSync(password, 10),
+          password: hashSync(randomCode(6), 10),
           user_type: userType,
           badge: Badge.FLYING,
           profile: { create: {} } 
         });
-        createUser.password = password;
-      } else {
-        const searchCriteria = email ? { email } : { mobile };
+      } 
+      else {
+        // Check for existing user based on signup method
+        const searchCriteria = signUpMethod === 'EMAIL' ?  { email } : { mobile };
         const isUserExits = await this.userRepository.searchUser(searchCriteria);
         if (isUserExits) {
           throw new HttpException('User allreay exits!!', HttpStatus.BAD_REQUEST);
         }
-        if(signUpMethod == 'EMAIL') {
-           createUser = await this.userRepository.create({
-            email: email,
-            password: hashSync(password, 10),
-            user_type: userType,
-            profile: { create: {} } 
-          });
-          delete createUser.password;
-        } else {
-          createUser = await this.userRepository.create({
-            mobile: mobile,
-            password: hashSync(password, 10),
-            user_type: userType,
-            profile: { create: {} } 
-          });
-          delete createUser.password;
-        }
+
+        // Create user with appropriate properties
+        createUser = await this.userRepository.create({
+          user_id: this._generateUserUniqueId(),
+          ...(email && { email }),
+          ...(mobile && { mobile }),
+          password: hashSync(password, 10),
+          user_type: userType,
+          badge: Badge.REGISTERED,
+          signup_method: signUpMethod === 'EMAIL' ? SIGNUP_METHOD.EMAIL : SIGNUP_METHOD.MOBILE,
+          profile: { create: {} },
+        });
       }
       const { accessToken, refreshToken } = await this.getTokens(createUser);
 
       return {
         statusCode: HttpStatus.CREATED,
         message: 'Signup successful',
-        data: createUser,
+        data: {
+          ...createUser,
+          password: undefined,
+        },
         tokens: {
           accessToken,
           refreshToken,
