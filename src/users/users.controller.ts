@@ -1,10 +1,13 @@
-import { Controller, Get, Body, Patch, Param, UsePipes } from '@nestjs/common';
+import { Controller, Get, Body, Patch, Param, UsePipes, UseGuards, Req } from '@nestjs/common';
 import { UsersService } from './users.service';
 //import { CreateUserDto } from './dto/create-user.dto';
 import { ZodValidationPipe } from '@anatine/zod-nestjs';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { UserProileDto } from './dto/userProfile-dto';
 import { UUID } from 'crypto';
+import { AuthGuard } from '@/guard/auth.guard';
+import { Request } from 'express';
+import RequestContextUser from '@/guard/RequestContext';
 
 @ApiTags('Users')
 @UsePipes(ZodValidationPipe)
@@ -17,13 +20,18 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  @ApiBearerAuth("JWT")
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  @UseGuards(AuthGuard)
+  findOne(@Param('id') id: string,
+  @Req() req: Request,
+  @Req() reqUser: RequestContextUser) {
+    console.log(req.res.req)
     return this.usersService.findOne(+id);
   }
 
   @ApiBearerAuth("JWT")
-  //@UseGuards(AuthGuard("jwt"))
+  @UseGuards(AuthGuard)
   @Patch(':uuid')
   update(@Param('uuid') uuid: UUID, @Body() userProfile: UserProileDto) {
     return this.usersService.update(uuid, userProfile);
