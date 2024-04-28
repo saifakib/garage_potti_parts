@@ -3,6 +3,7 @@ import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 import { JwtService } from '@nestjs/jwt'; // Import JwtService
 import RequestContextUser from './RequestContext';
+import { Config } from '@/config/env.config';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -24,7 +25,7 @@ export class AuthGuard implements CanActivate {
     const authHeader = request.headers.authorization;
     this.reqUser = context.switchToRpc().getContext<RequestContextUser>()
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    if (!authHeader || !authHeader.startsWith('Bearer')) {
       throw new UnauthorizedException('Unauthorized: Invalid or missing token');
     }
 
@@ -33,7 +34,7 @@ export class AuthGuard implements CanActivate {
     try {
       // Verify the JWT token using your JwtService
       const decoded = await this.jwtService.verifyAsync(token, {
-        secret: process.env.JWT_SECRET_KEY,
+        secret: Config.JWT_SECRET_KEY,
       });
       this.setUserContext(this.reqUser, decoded);
       //context.switchToHttp().getRequest().user = decoded;

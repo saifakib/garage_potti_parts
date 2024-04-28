@@ -1,5 +1,5 @@
 import { ExecutionContext } from '@nestjs/common';
 
-export default interface RequestContext extends ExecutionContext {
+export default interface RequestContextUser extends ExecutionContext {
   user?: any;
 }

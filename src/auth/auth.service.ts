@@ -6,6 +6,7 @@ import { SignUpDto, LoginDto } from './dto';
 import { RefreshTokenDto } from './dto/refreshToken-dto';
 import { randomCode } from '@/utils/random-code.util';
 import { Badge, SIGNUP_METHOD } from '@prisma/client';
+import { Config } from '@/config/env.config';
 
 @Injectable()
 export class AuthService {
@@ -53,13 +54,12 @@ export class AuthService {
       }
       const { accessToken, refreshToken } = await this.getTokens(createUser);
 
+      delete createUser.password;
+
       return {
         statusCode: HttpStatus.CREATED,
         message: 'Signup successful',
-        data: {
-          ...createUser,
-          password: undefined,
-        },
+        data: createUser,
         tokens: {
           accessToken,
           refreshToken,
@@ -84,7 +84,7 @@ export class AuthService {
       if (!isPasswordMatch) {
         throw new HttpException('Invalid Credentials password!!', HttpStatus.BAD_REQUEST);
       }
-
+      delete user.password
       const { accessToken, refreshToken } = await this.getTokens(user);
       return {
         statusCode: HttpStatus.CREATED,
@@ -104,7 +104,7 @@ export class AuthService {
     try {
       /// Verifying the refresh token
       const decodedRefreshToken = await this.jwtService.verifyAsync(data.refreshToken, {
-        secret: process.env.JWT_REFRESH_SECRET,
+        secret: Config.JWT_REFRESH_SECRET,
       });
       // Extract user information from the decoded refresh token
       const { sub: uuid } = decodedRefreshToken;
@@ -137,8 +137,8 @@ export class AuthService {
           ...payload,
         },
         {
-          secret: process.env.JWT_SECRET_KEY,
-          expiresIn: process.env.JWT_TOKEN_EXPIRE_AT,
+          secret: Config.JWT_SECRET_KEY,
+          expiresIn: Config.JWT_TOKEN_EXPIRE_AT,
         },
       ),
       this.jwtService.signAsync(
@@ -146,8 +146,8 @@ export class AuthService {
           sub: payload.uuid,
         },
         {
-          secret: process.env.JWT_REFRESH_SECRET,
-          expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRE_AT,
+          secret: Config.JWT_REFRESH_SECRET,
+          expiresIn: Config.JWT_REFRESH_TOKEN_EXPIRE_AT,
         },
       ),
     ]);

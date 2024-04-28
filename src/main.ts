@@ -4,6 +4,7 @@ import { ZodFilter } from './zod-validation/zod-validation.filter';
 import { SwaggerModule } from '@nestjs/swagger'
 import { swaggerConfig } from './config/swagger.config';
 import { Logger } from '@nestjs/common';
+import { Config } from './config/env.config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,9 +17,9 @@ async function bootstrap() {
   SwaggerModule.setup(`${globalPrefix}/docs`, app, swaggerDocument);
   
   app.useGlobalFilters(new ZodFilter());
-  const PORT = process.env.PORT || 8080;
+  const PORT = Config.PORT || 8080;
   await app.listen(PORT, () => {
-    Logger.log(`Listening at http://localhost:' + ${PORT} + '/' + globalPrefix`);
+    Logger.log(`Listening at http://localhost:${PORT}/${globalPrefix}`);
   });
 }
 bootstrap();
