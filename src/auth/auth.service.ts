@@ -23,18 +23,17 @@ export class AuthService {
     const { email, mobile, password, userType, signUpMethod } = data;
     try {
       let createUser: any;
-      if(signUpMethod == 'GUEST') {
+      if (signUpMethod == 'GUEST') {
         createUser = await this.userRepository.create({
           user_id: this._generateUserUniqueId(),
           password: hashSync(randomCode(6), 10),
           user_type: userType,
           badge: Badge.FLYING,
-          profile: { create: {} } 
+          profile: { create: {} },
         });
-      } 
-      else {
+      } else {
         // Check for existing user based on signup method
-        const searchCriteria = signUpMethod === 'EMAIL' ?  { email } : { mobile };
+        const searchCriteria = signUpMethod === 'EMAIL' ? { email } : { mobile };
         const isUserExits = await this.userRepository.searchUser(searchCriteria);
         if (isUserExits) {
           throw new HttpException('User allreay exits!!', HttpStatus.BAD_REQUEST);
@@ -83,7 +82,7 @@ export class AuthService {
       if (!isPasswordMatch) {
         throw new HttpException('Invalid Credentials password!!', HttpStatus.BAD_REQUEST);
       }
-      delete user.password
+      delete user.password;
       const { accessToken, refreshToken } = await this.getTokens(user);
       return {
         statusCode: HttpStatus.CREATED,
@@ -118,10 +117,11 @@ export class AuthService {
 
       return {
         statusCode: HttpStatus.CREATED,
-        message: "New access and refresh generate",
+        message: 'New access and refresh generate',
         tokens: {
-          accessToken, refreshToken
-        }
+          accessToken,
+          refreshToken,
+        },
       };
     } catch (err) {
       throw err;

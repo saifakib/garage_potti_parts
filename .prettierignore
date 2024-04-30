@@ -1,0 +1,14 @@
+build
+dist
+.vscode
+test
+
+nest-cli.json
+Dockerfile
+.eslitignore
+.eslitrc.js
+.gitignore
+tsconfig.json
+tsconfig.build.json
+package.json
+package-lock.json

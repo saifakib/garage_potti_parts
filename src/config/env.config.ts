@@ -22,5 +22,4 @@ export class Config {
   static get JWT_REFRESH_TOKEN_EXPIRE_AT() {
     return this.configService.get('JWT_REFRESH_TOKEN_EXPIRE_AT');
   }
-
 }

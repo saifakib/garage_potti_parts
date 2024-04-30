@@ -10,7 +10,7 @@ export class UserRepository {
   async searchUser(data: any) {
     try {
       const find = await this.database.users.findFirst({
-        where: { ...data }
+        where: { ...data },
       });
       return find;
     } catch (err) {
@@ -20,9 +20,9 @@ export class UserRepository {
 
   async create(data: any) {
     try {
-      console.log(data)
-      const create = await this.database.users.create({ data});
-      console.log(create)
+      console.log(data);
+      const create = await this.database.users.create({ data });
+      console.log(create);
       return create;
     } catch (err) {
       throw err;
@@ -30,19 +30,19 @@ export class UserRepository {
   }
 
   async update(uuid: UUID, data: any) {
-    console.log(uuid, data)
+    console.log(uuid, data);
     try {
       const update = await this.database.users.update({
-        where: { 
-          uuid: uuid
+        where: {
+          uuid: uuid,
         },
         data: {
           profile: {
             update: {
-              ...data
-            }
-          }
-        }
+              ...data,
+            },
+          },
+        },
       });
       return update;
     } catch (err) {

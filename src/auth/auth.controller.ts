@@ -2,7 +2,7 @@ import { Body, Controller, HttpCode, Post, UsePipes } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ZodPipe } from 'src/zod-validation/zod-validation.pipe';
 import { SignUpDto, signUpSchema, loginSchema, LoginDto, RefreshTokenDto, refreshTokenSchema } from './dto';
-import {  } from './dto/refreshToken-dto';
+import {} from './dto/refreshToken-dto';
 import { ApiTags } from '@nestjs/swagger';
 import { ZodValidationPipe } from '@anatine/zod-nestjs';
 
@@ -18,7 +18,7 @@ export class AuthController {
     try {
       return this.authService.signup(signupDto);
     } catch (err: any) {
-      throw err
+      throw err;
     }
   }
 
@@ -28,7 +28,7 @@ export class AuthController {
     try {
       return this.authService.login(loginDto);
     } catch (err) {
-      throw err
+      throw err;
     }
   }
 
@@ -38,7 +38,7 @@ export class AuthController {
     try {
       return this.authService.refreshToken(refreshToken);
     } catch (err) {
-      throw err
+      throw err;
     }
   }
 }

@@ -7,20 +7,20 @@ import ExtendedRequest from './ExtendedRequest';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private readonly reflector: Reflector, private readonly jwtService: JwtService) {}
-  
+  constructor(
+    private readonly reflector: Reflector,
+    private readonly jwtService: JwtService,
+  ) {}
+
   canActivate(context: ExecutionContext): Observable<boolean> | Promise<boolean> | boolean {
-    const isPublic = this.reflector.getAllAndOverride('isPublic', [
-        context.getHandler(),
-        context.getClass(),
-      ]);
-      if (isPublic) return true;
+    const isPublic = this.reflector.getAllAndOverride('isPublic', [context.getHandler(), context.getClass()]);
+    if (isPublic) return true;
 
     return this.validateToken(context);
   }
 
   private async validateToken(context: ExecutionContext): Promise<boolean> {
-    const request: ExtendedRequest  = context.switchToHttp().getRequest();
+    const request: ExtendedRequest = context.switchToHttp().getRequest();
     const authHeader = request.headers.authorization;
 
     // Try to retrieve the JWT from request's headers
@@ -40,5 +40,5 @@ export class AuthGuard implements CanActivate {
     } catch (err) {
       throw new UnauthorizedException('Unauthorized: Invalid token');
     }
-  } 
+  }
 }

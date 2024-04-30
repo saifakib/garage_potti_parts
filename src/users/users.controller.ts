@@ -19,15 +19,15 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @ApiBearerAuth("JWT")
+  @ApiBearerAuth('JWT')
   @Get(':id')
   @UseGuards(AuthGuard)
-  findOne(@Param('id') id: string,@Req() req: ExtendedRequest ) {
-    console.log(req.user)
+  findOne(@Param('id') id: string, @Req() req: ExtendedRequest) {
+    console.log(req.user);
     return this.usersService.findOne(+id);
   }
 
-  @ApiBearerAuth("JWT")
+  @ApiBearerAuth('JWT')
   @UseGuards(AuthGuard)
   @Patch(':uuid')
   update(@Param('uuid') uuid: UUID, @Body() userProfile: UserProileDto) {

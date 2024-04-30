@@ -5,9 +5,7 @@ import { UUID } from 'crypto';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    private readonly userRepository: UserRepository,
-  ) {}
+  constructor(private readonly userRepository: UserRepository) {}
 
   findAll() {
     return `This action returns all users`;
@@ -20,17 +18,17 @@ export class UsersService {
   async update(uuid: UUID, userProfile: UserProileDto) {
     try {
       const { firstName, lastName, address, gender, dob } = userProfile;
-      
-      let data: any = {}
-      if(firstName) data.first_name = firstName;
-      if(lastName) data.last_name = lastName;
-      if(address) data.address = address;
-      if(gender) data.gender = gender;
-      if(dob) data.dob = dob;
+
+      let data: any = {};
+      if (firstName) data.first_name = firstName;
+      if (lastName) data.last_name = lastName;
+      if (address) data.address = address;
+      if (gender) data.gender = gender;
+      if (dob) data.dob = dob;
 
       const profileUpdate = await this.userRepository.update(uuid, data);
       return profileUpdate;
-    } catch(err) {
+    } catch (err) {
       throw err;
     }
   }
