@@ -6,8 +6,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { UserProileDto } from './dto/userProfile-dto';
 import { UUID } from 'crypto';
 import { AuthGuard } from '@/guard/auth.guard';
-import { Request } from 'express';
-import RequestContextUser from '@/guard/RequestContext';
+import ExtendedRequest from '@/guard/ExtendedRequest';
 
 @ApiTags('Users')
 @UsePipes(ZodValidationPipe)
@@ -23,10 +22,8 @@ export class UsersController {
   @ApiBearerAuth("JWT")
   @Get(':id')
   @UseGuards(AuthGuard)
-  findOne(@Param('id') id: string,
-  @Req() req: Request,
-  @Req() reqUser: RequestContextUser) {
-    console.log(req.res.req)
+  findOne(@Param('id') id: string,@Req() req: ExtendedRequest ) {
+    console.log(req.user)
     return this.usersService.findOne(+id);
   }
 

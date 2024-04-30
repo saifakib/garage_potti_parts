@@ -5,9 +5,12 @@ import { SwaggerModule } from '@nestjs/swagger'
 import { swaggerConfig } from './config/swagger.config';
 import { Logger } from '@nestjs/common';
 import { Config } from './config/env.config';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.use(cookieParser());
 
   const globalPrefix = 'api/v1';
   app.setGlobalPrefix(globalPrefix);

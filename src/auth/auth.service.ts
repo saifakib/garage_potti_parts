@@ -55,7 +55,6 @@ export class AuthService {
       const { accessToken, refreshToken } = await this.getTokens(createUser);
 
       delete createUser.password;
-
       return {
         statusCode: HttpStatus.CREATED,
         message: 'Signup successful',
