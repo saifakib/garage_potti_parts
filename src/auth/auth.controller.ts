@@ -1,8 +1,14 @@
 import { Body, Controller, HttpCode, Post, UsePipes } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ZodPipe } from 'src/zod-validation/zod-validation.pipe';
-import { SignUpDto, signUpSchema, loginSchema, LoginDto, RefreshTokenDto, refreshTokenSchema } from './dto';
-import {} from './dto/refreshToken-dto';
+import {
+  SignUpDto,
+  signUpSchema,
+  loginSchema,
+  LoginDto,
+  RefreshTokenDto,
+  refreshTokenSchema,
+} from '../validationSchema/auth';
 import { ApiTags } from '@nestjs/swagger';
 import { ZodValidationPipe } from '@anatine/zod-nestjs';
 

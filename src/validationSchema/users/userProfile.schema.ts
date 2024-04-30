@@ -12,4 +12,4 @@ export const userProfileSchema = extendApi(
   }),
 );
 
-export class UserProileDto extends createZodDto(userProfileSchema) {}
+export class UserProfileDto extends createZodDto(userProfileSchema) {}

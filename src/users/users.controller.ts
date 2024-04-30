@@ -1,9 +1,8 @@
 import { Controller, Get, Body, Patch, Param, UsePipes, UseGuards, Req } from '@nestjs/common';
 import { UsersService } from './users.service';
-//import { CreateUserDto } from './dto/create-user.dto';
 import { ZodValidationPipe } from '@anatine/zod-nestjs';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { UserProileDto } from './dto/userProfile-dto';
+import { UserProfileDto } from '../validationSchema/users';
 import { UUID } from 'crypto';
 import { AuthGuard } from '@/guard/auth.guard';
 import ExtendedRequest from '@/guard/ExtendedRequest';
@@ -30,7 +29,7 @@ export class UsersController {
   @ApiBearerAuth('JWT')
   @UseGuards(AuthGuard)
   @Patch(':uuid')
-  update(@Param('uuid') uuid: UUID, @Body() userProfile: UserProileDto) {
+  update(@Param('uuid') uuid: UUID, @Body() userProfile: UserProfileDto) {
     return this.usersService.update(uuid, userProfile);
   }
 }
