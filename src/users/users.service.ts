@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { UserProileDto } from './dto/userProfile-dto';
+import { UserProfileDto } from '../validationSchema/users';
 import { UserRepository } from './users.repository';
 import { UUID } from 'crypto';
 
@@ -15,7 +15,7 @@ export class UsersService {
     return `This action returns a #${id} user`;
   }
 
-  async update(uuid: UUID, userProfile: UserProileDto) {
+  async update(uuid: UUID, userProfile: UserProfileDto) {
     try {
       const { firstName, lastName, address, gender, dob } = userProfile;
 
