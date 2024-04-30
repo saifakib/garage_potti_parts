@@ -1,4 +1,4 @@
-import { Controller, Get, Body, Patch, Param, UsePipes, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Body, Patch, Param, UsePipes, UseGuards, Req, HttpStatus } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { ZodValidationPipe } from '@anatine/zod-nestjs';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -19,11 +19,15 @@ export class UsersController {
   }
 
   @ApiBearerAuth('JWT')
-  @Get(':id')
   @UseGuards(AuthGuard)
-  findOne(@Param('id') id: string, @Req() req: ExtendedRequest) {
-    console.log(req.user);
-    return this.usersService.findOne(+id);
+  @Get('profile')
+  async findOne(@Req() req: ExtendedRequest) {
+    const response: any = await this.usersService.findOne(req.user);
+    return {
+      data: response,
+      message: 'User Profile found',
+      statusCode: HttpStatus.OK,
+    };
   }
 
   @ApiBearerAuth('JWT')

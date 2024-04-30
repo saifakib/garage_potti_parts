@@ -1,6 +1,6 @@
 import { DatabaseService } from '.././database/database.service';
 import { Injectable } from '@nestjs/common';
-import {} from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { UUID } from 'crypto';
 
 @Injectable()
@@ -11,6 +11,23 @@ export class UserRepository {
     try {
       const find = await this.database.users.findFirst({
         where: { ...data },
+        include: {
+          profile: true,
+        },
+      });
+      return find;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async searchUsers(where?: Prisma.UsersWhereInput) {
+    try {
+      const find = await this.database.users.findFirst({
+        where: where,
+        include: {
+          profile: true,
+        },
       });
       return find;
     } catch (err) {

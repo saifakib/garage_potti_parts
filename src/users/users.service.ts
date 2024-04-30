@@ -11,8 +11,10 @@ export class UsersService {
     return `This action returns all users`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(user: any) {
+    return await this.userRepository.searchUser({
+      uuid: user.uuid,
+    });
   }
 
   async update(uuid: UUID, userProfile: UserProfileDto) {
@@ -31,9 +33,5 @@ export class UsersService {
     } catch (err) {
       throw err;
     }
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
   }
 }

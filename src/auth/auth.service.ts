@@ -35,7 +35,7 @@ export class AuthService {
         const searchCriteria = signUpMethod === 'EMAIL' ? { email } : { mobile };
         const isUserExits = await this.userRepository.searchUser(searchCriteria);
         if (isUserExits) {
-          throw new HttpException('User allreay exits!!', HttpStatus.BAD_REQUEST);
+          throw new HttpException('User already exits!!', HttpStatus.BAD_REQUEST);
         }
 
         // Create user with appropriate properties
