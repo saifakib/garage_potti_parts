@@ -19,6 +19,12 @@ import { Config } from './config/env.config';
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    // {
+    //   provide: APP_INTERCEPTOR,
+    //   useClass: LoggerInterceptor,
+    // },
+  ],
 })
 export class AppModule {}
