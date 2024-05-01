@@ -15,7 +15,7 @@ export const loginSchema = extendApi(
       if (!data.email && !data.mobile && !data.userId) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: 'Provide one of idetification value from email | mobile | userId',
+          message: 'Provide one of identification value from email | mobile | userId',
           fatal: true,
         });
         return z.NEVER;
@@ -23,7 +23,7 @@ export const loginSchema = extendApi(
       if ((data.email && data.mobile) || (data.email && data.userId) || (data.mobile && data.userId)) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: 'Provide one idetification value',
+          message: 'Provide one identification value',
           fatal: true,
         });
         return z.NEVER;
