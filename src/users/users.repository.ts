@@ -7,21 +7,7 @@ import { UUID } from 'crypto';
 export class UserRepository {
   constructor(private readonly database: DatabaseService) {}
 
-  async searchUser(data: any) {
-    try {
-      const find = await this.database.users.findFirst({
-        where: { ...data },
-        include: {
-          profile: true,
-        },
-      });
-      return find;
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  async searchUsers(where?: Prisma.UsersWhereInput) {
+  async findOne(where?: Prisma.UsersWhereInput) {
     try {
       const find = await this.database.users.findFirst({
         where: where,
@@ -37,9 +23,15 @@ export class UserRepository {
 
   async create(data: any) {
     try {
-      console.log(data);
-      const create = await this.database.users.create({ data });
-      console.log(create);
+      const create = await this.database.users.create({
+        data,
+        select: {
+          uuid: true,
+          user_id: true,
+          user_type: true,
+          badge: true,
+        },
+      });
       return create;
     } catch (err) {
       throw err;
@@ -53,13 +45,7 @@ export class UserRepository {
         where: {
           uuid: uuid,
         },
-        data: {
-          profile: {
-            update: {
-              ...data,
-            },
-          },
-        },
+        data: data,
       });
       return update;
     } catch (err) {

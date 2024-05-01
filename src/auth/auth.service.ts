@@ -33,7 +33,7 @@ export class AuthService {
       } else {
         // Check for existing user based on signup method
         const searchCriteria = signUpMethod === 'EMAIL' ? { email } : { mobile };
-        const isUserExits = await this.userRepository.searchUser(searchCriteria);
+        const isUserExits = await this.userRepository.findOne(searchCriteria);
         if (isUserExits) {
           throw new HttpException('User already exits!!', HttpStatus.BAD_REQUEST);
         }
@@ -68,10 +68,11 @@ export class AuthService {
   }
 
   async login(data: LoginDto) {
+    console.log(data);
     const { email, mobile, userId, password } = data;
     try {
       const searchCriteria = email ? { email } : mobile ? { mobile } : { user_id: userId };
-      const user = await this.userRepository.searchUser(searchCriteria);
+      const user = await this.userRepository.findOne(searchCriteria);
       if (!user) {
         throw new HttpException('Invalid Credentials!!', HttpStatus.BAD_REQUEST);
       }
@@ -106,7 +107,7 @@ export class AuthService {
       // Extract user information from the decoded refresh token
       const { sub: uuid } = decodedRefreshToken;
 
-      const user = await this.userRepository.searchUser({ uuid: uuid });
+      const user = await this.userRepository.findOne({ uuid: uuid });
 
       if (!user) {
         throw new HttpException('Invalid RefreshToken', HttpStatus.FORBIDDEN);

@@ -11,9 +11,9 @@ export class UsersService {
     return `This action returns all users`;
   }
 
-  async findOne(user: any) {
-    return await this.userRepository.searchUser({
-      uuid: user.uuid,
+  async findOne(payload: any) {
+    return await this.userRepository.findOne({
+      uuid: payload.uuid,
     });
   }
 
@@ -28,7 +28,13 @@ export class UsersService {
       if (gender) data.gender = gender;
       if (dob) data.dob = dob;
 
-      const profileUpdate = await this.userRepository.update(uuid, data);
+      const profileUpdate = await this.userRepository.update(uuid, {
+        profile: {
+          update: {
+            ...data,
+          },
+        },
+      });
       return profileUpdate;
     } catch (err) {
       throw err;
