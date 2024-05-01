@@ -21,6 +21,20 @@ export class UserRepository {
     }
   }
 
+  async findAll(where?: Prisma.UsersWhereInput) {
+    try {
+      const find = await this.database.users.findMany({
+        where: where,
+        include: {
+          profile: true,
+        },
+      });
+      return find;
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async create(data: any) {
     try {
       const create = await this.database.users.create({
@@ -46,6 +60,9 @@ export class UserRepository {
           uuid: uuid,
         },
         data: data,
+        include: {
+          profile: true,
+        },
       });
       return update;
     } catch (err) {

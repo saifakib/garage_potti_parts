@@ -7,8 +7,12 @@ import { UUID } from 'crypto';
 export class UsersService {
   constructor(private readonly userRepository: UserRepository) {}
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll() {
+    try {
+      return await this.userRepository.findAll();
+    } catch (err) {
+      throw err;
+    }
   }
 
   async findOne(payload: any) {
@@ -35,6 +39,7 @@ export class UsersService {
           },
         },
       });
+      delete profileUpdate.password;
       return profileUpdate;
     } catch (err) {
       throw err;

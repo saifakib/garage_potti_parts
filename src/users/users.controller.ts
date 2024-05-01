@@ -3,7 +3,6 @@ import { UsersService } from './users.service';
 import { ZodValidationPipe } from '@anatine/zod-nestjs';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { UserProfileDto } from '../validationSchema/users';
-import { UUID } from 'crypto';
 import { AuthGuard } from '@/guard/auth.guard';
 import ExtendedRequest from '@/guard/ExtendedRequest';
 
@@ -13,9 +12,16 @@ import ExtendedRequest from '@/guard/ExtendedRequest';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @ApiBearerAuth('JWT')
+  @UseGuards(AuthGuard)
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  async findAll() {
+    const response: any = await this.usersService.findAll();
+    return {
+      data: response,
+      message: 'Users',
+      statusCode: HttpStatus.OK,
+    };
   }
 
   @ApiBearerAuth('JWT')
@@ -32,8 +38,8 @@ export class UsersController {
 
   @ApiBearerAuth('JWT')
   @UseGuards(AuthGuard)
-  @Patch(':uuid')
-  update(@Param('uuid') uuid: UUID, @Body() userProfile: UserProfileDto) {
-    return this.usersService.update(uuid, userProfile);
+  @Patch('profile')
+  update(@Req() req: ExtendedRequest, @Body() userProfile: UserProfileDto) {
+    return this.usersService.update(req.user.uuid, userProfile);
   }
 }

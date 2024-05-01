@@ -68,7 +68,6 @@ export class AuthService {
   }
 
   async login(data: LoginDto) {
-    console.log(data);
     const { email, mobile, userId, password } = data;
     try {
       const searchCriteria = email ? { email } : mobile ? { mobile } : { user_id: userId };
