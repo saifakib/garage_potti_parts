@@ -2,10 +2,10 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { compareSync, hashSync } from 'bcryptjs';
 import { UserRepository } from 'src/users/users.repository';
 import { JwtService } from '@nestjs/jwt';
-import { SignUpDto, LoginDto } from './dto';
-import { RefreshTokenDto } from './dto/refreshToken-dto';
+import { SignUpDto, LoginDto, RefreshTokenDto } from '../validationSchema/auth';
 import { randomCode } from '@/utils/random-code.util';
-import { Badge } from '@prisma/client';
+import { Badge, SIGNUP_METHOD } from '@prisma/client';
+import { Config } from '@/config/env.config';
 
 @Injectable()
 export class AuthService {
@@ -22,40 +22,37 @@ export class AuthService {
     const { email, mobile, password, userType, signUpMethod } = data;
     try {
       let createUser: any;
-      if(signUpMethod == 'GUEST') {
-        // go to guest method
-        const password = randomCode(6);
+      if (signUpMethod == 'GUEST') {
         createUser = await this.userRepository.create({
           user_id: this._generateUserUniqueId(),
+          password: hashSync(randomCode(6), 10),
+          user_type: userType,
+          badge: Badge.FLYING,
+          profile: { create: {} },
+        });
+      } else {
+        // Check for existing user based on signup method
+        const searchCriteria = signUpMethod === 'EMAIL' ? { email } : { mobile };
+        const isUserExits = await this.userRepository.findOne(searchCriteria);
+        if (isUserExits) {
+          throw new HttpException('User already exits!!', HttpStatus.BAD_REQUEST);
+        }
+
+        // Create user with appropriate properties
+        createUser = await this.userRepository.create({
+          user_id: this._generateUserUniqueId(),
+          ...(email && { email }),
+          ...(mobile && { mobile }),
           password: hashSync(password, 10),
           user_type: userType,
-          badge: Badge.FLYING
+          badge: Badge.REGISTERED,
+          signup_method: signUpMethod === 'EMAIL' ? SIGNUP_METHOD.EMAIL : SIGNUP_METHOD.MOBILE,
+          profile: { create: {} },
         });
-        createUser.password = password;
-      } else {
-        const searchCriteria = email ? { email } : { mobile };
-        const isUserExits = await this.userRepository.searchUser(searchCriteria);
-        if (isUserExits) {
-          throw new HttpException('User allreay exits!!', HttpStatus.BAD_REQUEST);
-        }
-        if(signUpMethod == 'EMAIL') {
-           createUser = await this.userRepository.create({
-            email: email,
-            password: hashSync(password, 10),
-            user_type: userType
-          });
-          delete createUser.password;
-        } else {
-          createUser = await this.userRepository.create({
-            mobile: mobile,
-            password: hashSync(password, 10),
-            user_type: userType
-          });
-          delete createUser.password;
-        }
       }
       const { accessToken, refreshToken } = await this.getTokens(createUser);
 
+      delete createUser.password;
       return {
         statusCode: HttpStatus.CREATED,
         message: 'Signup successful',
@@ -74,7 +71,7 @@ export class AuthService {
     const { email, mobile, userId, password } = data;
     try {
       const searchCriteria = email ? { email } : mobile ? { mobile } : { user_id: userId };
-      const user = await this.userRepository.searchUser(searchCriteria);
+      const user = await this.userRepository.findOne(searchCriteria);
       if (!user) {
         throw new HttpException('Invalid Credentials!!', HttpStatus.BAD_REQUEST);
       }
@@ -84,7 +81,7 @@ export class AuthService {
       if (!isPasswordMatch) {
         throw new HttpException('Invalid Credentials password!!', HttpStatus.BAD_REQUEST);
       }
-
+      delete user.password;
       const { accessToken, refreshToken } = await this.getTokens(user);
       return {
         statusCode: HttpStatus.CREATED,
@@ -104,12 +101,12 @@ export class AuthService {
     try {
       /// Verifying the refresh token
       const decodedRefreshToken = await this.jwtService.verifyAsync(data.refreshToken, {
-        secret: process.env.JWT_REFRESH_SECRET,
+        secret: Config.JWT_REFRESH_SECRET,
       });
       // Extract user information from the decoded refresh token
       const { sub: uuid } = decodedRefreshToken;
 
-      const user = await this.userRepository.searchUser({ uuid: uuid });
+      const user = await this.userRepository.findOne({ uuid: uuid });
 
       if (!user) {
         throw new HttpException('Invalid RefreshToken', HttpStatus.FORBIDDEN);
@@ -119,10 +116,11 @@ export class AuthService {
 
       return {
         statusCode: HttpStatus.CREATED,
-        message: "New access and refresh generate",
+        message: 'New access and refresh generate',
         tokens: {
-          accessToken, refreshToken
-        }
+          accessToken,
+          refreshToken,
+        },
       };
     } catch (err) {
       throw err;
@@ -137,8 +135,8 @@ export class AuthService {
           ...payload,
         },
         {
-          secret: process.env.JWT_SECRET_KEY,
-          expiresIn: process.env.JWT_TOKEN_EXPIRE_AT,
+          secret: Config.JWT_SECRET_KEY,
+          expiresIn: Config.JWT_TOKEN_EXPIRE_AT,
         },
       ),
       this.jwtService.signAsync(
@@ -146,8 +144,8 @@ export class AuthService {
           sub: payload.uuid,
         },
         {
-          secret: process.env.JWT_REFRESH_SECRET,
-          expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRE_AT,
+          secret: Config.JWT_REFRESH_SECRET,
+          expiresIn: Config.JWT_REFRESH_TOKEN_EXPIRE_AT,
         },
       ),
     ]);

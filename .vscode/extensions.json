@@ -1,0 +1,10 @@
+{
+    "recommendations": [
+        "esbenp.prettier-vscode",
+        "prisma.prisma",
+        "pkief.material-icon-theme",
+        "ms-vscode.sublime-keybindings",
+        "dbaeumer.vscode-eslint",
+        "streetsidesoftware.code-spell-checker"
+    ]
+}

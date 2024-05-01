@@ -1,34 +1,45 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Body, Patch, Param, UsePipes, UseGuards, Req, HttpStatus } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto, CreateUserSchema } from './dto/create-user.dto';
-import { ZodPipe } from 'src/zod-validation/zod-validation.pipe';
+import { ZodValidationPipe } from '@anatine/zod-nestjs';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { UserProfileDto } from '../validationSchema/users';
+import { AuthGuard } from '@/guard/auth.guard';
+import ExtendedRequest from '@/guard/ExtendedRequest';
 
+@ApiTags('Users')
+@UsePipes(ZodValidationPipe)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  create(@Body(new ZodPipe(CreateUserSchema)) createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
-  }
-
+  @ApiBearerAuth('JWT')
+  @UseGuards(AuthGuard)
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  async findAll() {
+    const response: any = await this.usersService.findAll();
+    return {
+      data: response,
+      message: 'Users',
+      statusCode: HttpStatus.OK,
+    };
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  @ApiBearerAuth('JWT')
+  @UseGuards(AuthGuard)
+  @Get('profile')
+  async findOne(@Req() req: ExtendedRequest) {
+    const response: any = await this.usersService.findOne(req.user);
+    return {
+      data: response,
+      message: 'User Profile found',
+      statusCode: HttpStatus.OK,
+    };
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() createUserDto: CreateUserDto) {
-    return this.usersService.update(+id, createUserDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  @ApiBearerAuth('JWT')
+  @UseGuards(AuthGuard)
+  @Patch('profile')
+  update(@Req() req: ExtendedRequest, @Body() userProfile: UserProfileDto) {
+    return this.usersService.update(req.user.uuid, userProfile);
   }
 }

@@ -1,31 +1,48 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
+import { UserProfileDto } from '../validationSchema/users';
+import { UserRepository } from './users.repository';
+import { UUID } from 'crypto';
 
 @Injectable()
 export class UsersService {
-  create(data: CreateUserDto) {
+  constructor(private readonly userRepository: UserRepository) {}
+
+  async findAll() {
     try {
-      console.log(data)
-      return 'This action adds a new user';
+      return await this.userRepository.findAll();
     } catch (err) {
       throw err;
     }
-
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findOne(payload: any) {
+    return await this.userRepository.findOne({
+      uuid: payload.uuid,
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
+  async update(uuid: UUID, userProfile: UserProfileDto) {
+    try {
+      const { firstName, lastName, address, gender, dob } = userProfile;
 
-  update(id: number, createUserDto: CreateUserDto) {
-    return `This action updates a #${id} user`;
-  }
+      let data: any = {};
+      if (firstName) data.first_name = firstName;
+      if (lastName) data.last_name = lastName;
+      if (address) data.address = address;
+      if (gender) data.gender = gender;
+      if (dob) data.dob = dob;
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+      const profileUpdate = await this.userRepository.update(uuid, {
+        profile: {
+          update: {
+            ...data,
+          },
+        },
+      });
+      delete profileUpdate.password;
+      return profileUpdate;
+    } catch (err) {
+      throw err;
+    }
   }
 }

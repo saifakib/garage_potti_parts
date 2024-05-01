@@ -1,40 +1,50 @@
-import { Body, Controller, HttpCode, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, Post, UsePipes } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ZodPipe } from 'src/zod-validation/zod-validation.pipe';
-import { SignUpDto, SignUpSchema, LoginSchema, LoginDto } from './dto';
-import { RefreshTokenDto, RefreshTokenSchema } from './dto/refreshToken-dto';
+import {
+  SignUpDto,
+  signUpSchema,
+  loginSchema,
+  LoginDto,
+  RefreshTokenDto,
+  refreshTokenSchema,
+} from '../validationSchema/auth';
+import { ApiTags } from '@nestjs/swagger';
+import { ZodValidationPipe } from '@anatine/zod-nestjs';
 
+@ApiTags('Auth')
+@UsePipes(ZodValidationPipe)
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('signup')
   @HttpCode(201)
-  signup(@Body(new ZodPipe(SignUpSchema)) signupDto: SignUpDto) {
+  signup(@Body(new ZodPipe(signUpSchema)) signupDto: SignUpDto) {
     try {
       return this.authService.signup(signupDto);
     } catch (err: any) {
-      throw err
+      throw err;
     }
   }
 
   @Post('login')
   @HttpCode(200)
-  login(@Body(new ZodPipe(LoginSchema)) loginDto: LoginDto) {
+  login(@Body(new ZodPipe(loginSchema)) loginDto: LoginDto) {
     try {
       return this.authService.login(loginDto);
     } catch (err) {
-      throw err
+      throw err;
     }
   }
 
   @Post('refreshToken')
   @HttpCode(201)
-  refreshToken(@Body(new ZodPipe(RefreshTokenSchema)) refreshToken: RefreshTokenDto) {
+  refreshToken(@Body(new ZodPipe(refreshTokenSchema)) refreshToken: RefreshTokenDto) {
     try {
       return this.authService.refreshToken(refreshToken);
     } catch (err) {
-      throw err
+      throw err;
     }
   }
 }
