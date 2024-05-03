@@ -1,4 +1,4 @@
-import { Controller, Get, Body, Patch, Param, UsePipes, UseGuards, Req, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Body, Patch, UsePipes, UseGuards, Req, HttpStatus } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { ZodValidationPipe } from '@anatine/zod-nestjs';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
