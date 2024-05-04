@@ -8,11 +8,29 @@ export class UserRepository {
   constructor(private readonly database: DatabaseService) {}
 
   async findOne(where?: Prisma.UsersWhereInput) {
+    console.log(where);
     try {
       const find = await this.database.users.findFirst({
         where: where,
-        include: {
+        select: {
+          uuid: true,
+          user_id: true,
+          user_type: true,
+          badge: true,
+          password: true,
           profile: true,
+          role: {
+            select: {
+              slug: true,
+              name: true,
+              permissions: {
+                select: {
+                  slug: true,
+                  name: true,
+                },
+              },
+            },
+          },
         },
       });
       return find;
@@ -44,6 +62,20 @@ export class UserRepository {
           user_id: true,
           user_type: true,
           badge: true,
+          password: true,
+          profile: true,
+          role: {
+            select: {
+              slug: true,
+              name: true,
+              permissions: {
+                select: {
+                  slug: true,
+                  name: true,
+                },
+              },
+            },
+          },
         },
       });
       return create;

@@ -5,6 +5,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { UserProfileDto } from '../validationSchema/users';
 import { AuthGuard } from '@/guard/auth.guard';
 import ExtendedRequest from '@/guard/ExtendedRequest';
+import { Permission } from '@/decorators/permission.decorator';
 
 @ApiTags('Users')
 @UsePipes(ZodValidationPipe)
@@ -13,6 +14,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @ApiBearerAuth('JWT')
+  @Permission('VIEW USERS')
   @UseGuards(AuthGuard)
   @Get()
   async findAll() {
@@ -25,6 +27,7 @@ export class UsersController {
   }
 
   @ApiBearerAuth('JWT')
+  @Permission('VIEW_PROFILE')
   @UseGuards(AuthGuard)
   @Get('profile')
   async findOne(@Req() req: ExtendedRequest) {
@@ -37,6 +40,7 @@ export class UsersController {
   }
 
   @ApiBearerAuth('JWT')
+  @Permission('UPDATE_PROFILE')
   @UseGuards(AuthGuard)
   @Patch('profile')
   update(@Req() req: ExtendedRequest, @Body() userProfile: UserProfileDto) {

@@ -12,9 +12,12 @@ export class AuthGuard implements CanActivate {
     private readonly jwtService: JwtService,
   ) {}
 
+  private permissions: string[];
   canActivate(context: ExecutionContext): Observable<boolean> | Promise<boolean> | boolean {
     const isPublic = this.reflector.getAllAndOverride('isPublic', [context.getHandler(), context.getClass()]);
     if (isPublic) return true;
+
+    this.permissions = this.reflector.get<string[]>('permissions', context.getHandler());
 
     return this.validateToken(context);
   }

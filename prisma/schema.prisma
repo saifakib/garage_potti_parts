@@ -5,64 +5,98 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider      = "prisma-client-js"
-  binaryTargets = ["native", "debian-openssl-1.0.x"]
+    provider      = "prisma-client-js"
+    binaryTargets = ["native", "debian-openssl-1.0.x"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
 enum UserType {
-  SUPER_ADMIN
-  END_USER
-  SERVICE_PROVIDER
+    ROOT_ADMIN
+    SUPER_ADMIN
+    ADMIN
+    END_USER
+    SERVICE_PROVIDER
 }
 
 enum Badge {
-  FLYING
-  REGISTERED
-  VERIFIED
-}
-
-model Users {
-  id              Int            @id @default(autoincrement())
-  uuid            String         @unique @default(uuid()) @db.Uuid
-  email           String?        @unique
-  mobile          String?        @unique
-  user_id         String?
-  password        String?
-  user_type       UserType
-  badge           Badge?
-  is_verified     Boolean        @default(false)
-  is_registered   Boolean        @default(false)
-  email_verified  Boolean        @default(false)
-  mobile_verified Boolean        @default(false)
-  signup_method   SIGNUP_METHOD?
-  profile         Profile?
+    FLYING
+    REGISTERED
+    VERIFIED
 }
 
 enum SIGNUP_METHOD {
-  MOBILE
-  EMAIL
-  OTHER
+    MOBILE
+    EMAIL
+    OTHER
 }
 
 enum GENDER {
-  MEN
-  WOMEN
-  OTHER
+    MEN
+    WOMEN
+    OTHER
+}
+
+model Users {
+    id              Int            @id @default(autoincrement())
+    uuid            String         @unique @default(uuid()) @db.Uuid
+    email           String?        @unique
+    mobile          String?        @unique
+    user_id         String?
+    password        String?
+    user_type       UserType
+    badge           Badge?
+    is_verified     Boolean        @default(false)
+    is_registered   Boolean        @default(false)
+    email_verified  Boolean        @default(false)
+    mobile_verified Boolean        @default(false)
+    signup_method   SIGNUP_METHOD?
+    profile         Profile?
+    role            Roles?         @relation(fields: [roleUuid], references: [uuid])
+    roleUuid        String?        @db.Uuid
 }
 
 model Profile {
-  uuid       String    @unique @default(uuid()) @db.Uuid
-  first_name String?   @db.VarChar(100)
-  last_name  String?   @db.VarChar(100)
-  address    String?   @db.VarChar(255)
-  gender     GENDER?
-  dob        DateTime?
-  image      String?
-  user       Users     @relation(fields: [userUuid], references: [uuid], onDelete: Cascade)
-  userUuid   String    @unique @db.Uuid
+    uuid       String    @unique @default(uuid()) @db.Uuid
+    first_name String?   @db.VarChar(100)
+    last_name  String?   @db.VarChar(100)
+    address    String?   @db.VarChar(255)
+    gender     GENDER?
+    dob        DateTime?
+    image      String?
+    user       Users     @relation(fields: [userUuid], references: [uuid], onDelete: Cascade)
+    userUuid   String    @unique @db.Uuid
+}
+
+model Roles {
+    id          Int           @id @unique @default(autoincrement())
+    uuid        String        @unique @default(uuid()) @db.Uuid
+    name        String        @unique @db.VarChar(100)
+    slug        String        @unique @db.VarChar(100)
+    description String?       @db.VarChar(100)
+    soft_delete Boolean       @default(false)
+    created_at  DateTime      @default(now()) @db.Timestamptz(6)
+    created_by  Int?          @db.Integer
+    updated_at  DateTime?     @db.Timestamptz(6)
+    updated_by  Int?          @db.Integer
+    users       Users[]
+    permissions Permissions[]
+}
+
+model Permissions {
+    id          Int       @id @unique @default(autoincrement())
+    uuid        String    @unique @default(uuid()) @db.Uuid
+    name        String    @unique @db.VarChar(100)
+    slug        String    @unique @db.VarChar(100)
+    description String?   @db.VarChar(250)
+    group       String?   @db.VarChar
+    soft_delete Boolean   @default(false)
+    created_at  DateTime  @default(now()) @db.Timestamptz(6)
+    created_by  Int?      @db.Integer
+    updated_at  DateTime? @db.Timestamptz(6)
+    updated_by  Int?      @db.Integer
+    roles       Roles[]
 }

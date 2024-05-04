@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { DatabaseModule } from './database/database.module';
 import { JwtModule } from '@nestjs/jwt';
 import { Config } from './config/env.config';
+import { RolesModule } from './roles/roles.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { Config } from './config/env.config';
     DatabaseModule,
     UsersModule,
     AuthModule,
+    RolesModule,
   ],
   controllers: [AppController],
   providers: [
