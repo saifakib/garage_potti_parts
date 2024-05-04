@@ -15,7 +15,9 @@ datasource db {
 }
 
 enum UserType {
+    ROOT_ADMIN
     SUPER_ADMIN
+    ADMIN
     END_USER
     SERVICE_PROVIDER
 }
@@ -54,7 +56,7 @@ model Users {
     signup_method   SIGNUP_METHOD?
     profile         Profile?
     role            Roles?         @relation(fields: [roleUuid], references: [uuid])
-    roleUuid        String         @db.Uuid
+    roleUuid        String?        @db.Uuid
 }
 
 model Profile {
