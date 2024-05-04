@@ -1,17 +1,19 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { compareSync, hashSync } from 'bcryptjs';
 import { UserRepository } from 'src/users/users.repository';
 import { JwtService } from '@nestjs/jwt';
 import { SignUpDto, LoginDto, RefreshTokenDto } from '../validationSchema/auth';
 import { randomCode } from '@/utils/random-code.util';
-import { Badge, SIGNUP_METHOD } from '@prisma/client';
+import { Badge, Roles, SIGNUP_METHOD, UserType } from '@prisma/client';
 import { Config } from '@/config/env.config';
+import { RolesRepository } from '@/roles/roles.repository';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly userRepository: UserRepository,
+    private readonly rolesRepository: RolesRepository,
   ) {}
 
   _generateUserUniqueId(): string {
@@ -21,6 +23,8 @@ export class AuthService {
   async signup(data: SignUpDto) {
     const { email, mobile, password, userType, signUpMethod } = data;
     try {
+      const role = await this.isRoleExist(userType);
+
       let createUser: any;
       if (signUpMethod == 'GUEST') {
         createUser = await this.userRepository.create({
@@ -29,6 +33,11 @@ export class AuthService {
           user_type: userType,
           badge: Badge.FLYING,
           profile: { create: {} },
+          role: {
+            connect: {
+              uuid: role.uuid,
+            },
+          },
         });
       } else {
         // Check for existing user based on signup method
@@ -48,6 +57,11 @@ export class AuthService {
           badge: Badge.REGISTERED,
           signup_method: signUpMethod === 'EMAIL' ? SIGNUP_METHOD.EMAIL : SIGNUP_METHOD.MOBILE,
           profile: { create: {} },
+          role: {
+            connect: {
+              uuid: role.uuid,
+            },
+          },
         });
       }
       const { accessToken, refreshToken } = await this.getTokens(createUser);
@@ -154,5 +168,21 @@ export class AuthService {
       accessToken,
       refreshToken,
     };
+  }
+
+  private async isRoleExist(userType: UserType) {
+    const typesToRole = {
+      END_USER: 'CONSUMER',
+      SERVICE_PROVIDER: 'PROVIDER',
+    };
+    try {
+      const roleArgs: Record<string, any> = {};
+      Object.assign(roleArgs, { name: typesToRole[userType] });
+      const role: Roles = await this.rolesRepository.find(roleArgs);
+      if (!role) throw new NotFoundException('Invalid role');
+      return role;
+    } catch (error) {
+      throw error;
+    }
   }
 }
