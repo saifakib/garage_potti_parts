@@ -66,6 +66,3 @@ model Profile {
   user       Users     @relation(fields: [userUuid], references: [uuid], onDelete: Cascade)
   userUuid   String    @unique @db.Uuid
 }
-
-// model GarageInfo {
-// }
