@@ -35,16 +35,16 @@ export async function rootUser(prisma: PrismaClient) {
     skipDuplicates: true,
   });
 
-  await assignRoleToUser(prisma, UserType.ROOT_ADMIN);
+  await assignRoleToUser(prisma, UserType.ROOT_ADMIN, 'ROOT_ADMIN');
   console.log('Root admin created', rootAdmin);
-  await assignRoleToUser(prisma, UserType.SUPER_ADMIN);
+  await assignRoleToUser(prisma, UserType.SUPER_ADMIN, 'SUPER_ADMIN');
   console.log('Super admin created', superAdmin);
 }
 
-const assignRoleToUser = async (prisma: PrismaClient, userType: UserType) => {
+const assignRoleToUser = async (prisma: PrismaClient, userType: UserType, roleSlug: String) => {
   const role = await prisma.roles.findUnique({
     where: {
-      slug: 'ROOT_ADMIN',
+      slug: `${roleSlug}`,
     },
     select: {
       id: true,
