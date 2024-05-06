@@ -18,6 +18,7 @@ export class AuthGuard implements CanActivate {
     if (isPublic) return true;
 
     this.permissions = this.reflector.get<string[]>('permissions', context.getHandler());
+    //console.log(this.permissions);
 
     return this.validateToken(context);
   }
@@ -31,17 +32,33 @@ export class AuthGuard implements CanActivate {
     if (!authHeader || !authHeader.startsWith('Bearer')) {
       throw new UnauthorizedException('Unauthorized: Invalid or missing token');
     }
-
     const token = authHeader.split(' ')[1];
 
     try {
       const decoded = await this.jwtService.verifyAsync(token, {
         secret: Config.JWT_SECRET_KEY,
       });
+
+      if (!['ROOT_ADMIN', 'SUPER_ADMIN'].includes(decoded.role.slug)) {
+        if (!this.hasWritePermission(decoded)) {
+          throw new UnauthorizedException('Unauthorized: Permission denied');
+        }
+      }
       request.user = decoded;
       return !!decoded;
-    } catch (err) {
-      throw new UnauthorizedException('Unauthorized: Invalid token');
+    } catch (err: any) {
+      if (err.message == 'invalid signature') err.message = 'Unauthorized: Invalid token';
+      throw new UnauthorizedException(err.message);
     }
+  }
+  private hasWritePermission(decoded: any): boolean {
+    const userPermissions = decoded.role.permissions.map((per: any) => {
+      return per.slug;
+    });
+    return (
+      this.permissions.filter((permission: any) => {
+        return userPermissions.includes(permission);
+      }).length > 0
+    );
   }
 }

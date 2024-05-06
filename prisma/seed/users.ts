@@ -41,7 +41,7 @@ export async function rootUser(prisma: PrismaClient) {
   console.log('Super admin created', superAdmin);
 }
 
-const assignRoleToUser = async (prisma: PrismaClient, userType: UserType, roleSlug: String) => {
+const assignRoleToUser = async (prisma: PrismaClient, userType: UserType, roleSlug: string) => {
   const role = await prisma.roles.findUnique({
     where: {
       slug: `${roleSlug}`,
