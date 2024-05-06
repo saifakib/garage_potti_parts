@@ -21,13 +21,14 @@
     "noFallthroughCasesInSwitch": false,
     "noUnusedLocals": true,
     "paths": {
-      "@/*":[ "./src/*"],
+      "@/*":[ "./src/*", "./prisma/*"],
       "loki-logger":["./src/packages/loki-logger"],
       "paginator":["./src/packages/paginator/src"],
     }
   },
   "include": [
-    "./src"
+    "./src",
+    "./prisma"
   ],
   "exclude": ["node_modules"],
 }
