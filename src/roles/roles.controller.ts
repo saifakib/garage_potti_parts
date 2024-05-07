@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards, HttpStatus, Param } from '@nestjs/common';
+import { Controller, Get, UseGuards, HttpStatus, Param, Delete } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@/guard/auth.guard';
 import { PermissionGuard } from '@/guard/permission.guard';
@@ -39,6 +39,27 @@ export class RolesController {
     uuid: UUID,
   ) {
     const response: any = await this.rolesService.findOne({ uuid });
+    return {
+      data: response,
+      message: 'Role',
+      statusCode: HttpStatus.OK,
+    };
+  }
+
+  @ApiBearerAuth('JWT')
+  @Permission('DELETE_ROLES')
+  @UseGuards(AuthGuard, PermissionGuard)
+  @Delete('/:uuid')
+  @ApiParam({
+    name: 'uuid',
+    description: 'uuid format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
+    type: 'string',
+  })
+  async delete(
+    @Param('uuid', new ZodPipe(uuidSchema))
+    uuid: UUID,
+  ) {
+    const response: any = await this.rolesService.delete({ uuid });
     return {
       data: response,
       message: 'Role',
