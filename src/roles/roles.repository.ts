@@ -27,4 +27,15 @@ export class RolesRepository {
       throw err;
     }
   }
+
+  async findAll(where?: Prisma.RolesWhereInput) {
+    try {
+      const find = await this.database.roles.findMany({
+        where: where,
+      });
+      return find;
+    } catch (err) {
+      throw err;
+    }
+  }
 }
