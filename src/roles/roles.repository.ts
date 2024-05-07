@@ -27,4 +27,31 @@ export class RolesRepository {
       throw err;
     }
   }
+
+  async findAll(where?: Prisma.RolesWhereInput) {
+    try {
+      const find = await this.database.roles.findMany({
+        where: where,
+      });
+      return find;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async delete(uuid: string) {
+    try {
+      const find = await this.database.roles.update({
+        where: {
+          uuid: uuid,
+        },
+        data: {
+          soft_delete: true,
+        },
+      });
+      return find;
+    } catch (err) {
+      throw err;
+    }
+  }
 }

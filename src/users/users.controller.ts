@@ -6,6 +6,7 @@ import { UserProfileDto } from '../validationSchema/users';
 import { AuthGuard } from '@/guard/auth.guard';
 import ExtendedRequest from '@/guard/ExtendedRequest';
 import { Permission } from '@/decorators/permission.decorator';
+import { PermissionGuard } from '@/guard/permission.guard';
 
 @ApiTags('Users')
 @UsePipes(ZodValidationPipe)
@@ -28,7 +29,7 @@ export class UsersController {
 
   @ApiBearerAuth('JWT')
   @Permission('VIEW_PROFILE')
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, PermissionGuard)
   @Get('profile')
   async findOne(@Req() req: ExtendedRequest) {
     const response: any = await this.usersService.findOne(req.user);
