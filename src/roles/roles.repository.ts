@@ -39,6 +39,17 @@ export class RolesRepository {
     }
   }
 
+  async create(args: any) {
+    try {
+      const create = await this.database.roles.create({
+        data: args,
+      });
+      return create;
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async delete(uuid: string) {
     try {
       const find = await this.database.roles.update({
@@ -52,6 +63,15 @@ export class RolesRepository {
       return find;
     } catch (err) {
       throw err;
+    }
+  }
+
+  async syncRoleToUser(data: any) {
+    try {
+      const permission = await this.database.users.update(data);
+      return permission;
+    } catch (error) {
+      throw error;
     }
   }
 }

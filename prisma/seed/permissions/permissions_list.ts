@@ -24,6 +24,36 @@ export const PERMISSIONS = [
     description: 'DELETE_ROLES',
   },
   {
+    group: 'PERMISSIONS',
+    name: 'ATTACH ROLE TO USER',
+    slug: 'ATTACH_ROLE_TO_USER',
+    description: 'ATTACH_ROLE_TO_USER',
+  },
+  {
+    group: 'PERMISSIONS',
+    name: 'DETACH ROLE TO USER',
+    slug: 'DETACH_ROLE_TO_USER',
+    description: 'DETACH_ROLE_TO_USER',
+  },
+  {
+    group: 'PERMISSIONS',
+    name: 'VIEW PERMISSIONS',
+    slug: 'VIEW_PERMISSIONS',
+    description: 'VIEW_PERMISSIONS',
+  },
+  {
+    group: 'PERMISSIONS',
+    name: 'ATTACH PERMISSION TO ROLE',
+    slug: 'ATTACH_PERMISSION_TO_ROLE',
+    description: 'ATTACH_PERMISSION_TO_ROLE',
+  },
+  {
+    group: 'PERMISSIONS',
+    name: 'DETACH PERMISSION TO ROLE',
+    slug: 'DETACH_PERMISSION_TO_ROLE',
+    description: 'DETACH_PERMISSION_TO_ROLE',
+  },
+  {
     group: 'USERS',
     name: 'VIEW USERS',
     slug: 'VIEW_USERS',

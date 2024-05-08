@@ -7,6 +7,7 @@ import { DatabaseModule } from './database/database.module';
 import { JwtModule } from '@nestjs/jwt';
 import { Config } from './config/env.config';
 import { RolesModule } from './roles/roles.module';
+import { PermissionsModule } from './permissions/permissions.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { RolesModule } from './roles/roles.module';
     UsersModule,
     AuthModule,
     RolesModule,
+    PermissionsModule,
   ],
   controllers: [AppController],
   providers: [
