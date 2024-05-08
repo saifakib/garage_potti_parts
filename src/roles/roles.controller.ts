@@ -43,7 +43,7 @@ export class RolesController {
     return {
       data: response,
       message: 'Role',
-      statusCode: HttpStatus.OK,
+      statusCode: HttpStatus.FOUND,
     };
   }
 

@@ -14,7 +14,7 @@ export class PermissionsController {
   constructor(private readonly permissionsService: PermissionsService) {}
 
   @ApiBearerAuth('JWT')
-  @Permission('VIEW_ROLES')
+  @Permission('VIEW_PERMISSIONS')
   @UseGuards(AuthGuard, PermissionGuard)
   @Get()
   async findAll() {
@@ -26,7 +26,7 @@ export class PermissionsController {
     };
   }
   @ApiBearerAuth('JWT')
-  @Permission('VIEW_ROLES')
+  @Permission('VIEW_PERMISSIONS')
   @UseGuards(AuthGuard, PermissionGuard)
   @Get('/:uuid')
   @ApiParam({

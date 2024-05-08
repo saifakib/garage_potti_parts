@@ -24,6 +24,12 @@ export const PERMISSIONS = [
     description: 'DELETE_ROLES',
   },
   {
+    group: 'PERMISSIONS',
+    name: 'VIEW PERMISSIONS',
+    slug: 'VIEW_PERMISSIONS',
+    description: 'VIEW_PERMISSIONS',
+  },
+  {
     group: 'USERS',
     name: 'VIEW USERS',
     slug: 'VIEW_USERS',
