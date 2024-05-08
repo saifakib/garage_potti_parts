@@ -27,4 +27,13 @@ export class PermissionsRepository {
       throw err;
     }
   }
+
+  async syncPermissionToRole(data: any) {
+    try {
+      const permission = await this.database.roles.update(data);
+      return permission;
+    } catch (error) {
+      throw error;
+    }
+  }
 }

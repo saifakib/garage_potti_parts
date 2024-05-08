@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PermissionsRepository } from './permissions.repository';
+import { SyncPermissionToRoleDto } from '@/validationSchema/permissions/syncPermissionToRole.schema';
 
 @Injectable()
 export class PermissionsService {
@@ -13,5 +14,43 @@ export class PermissionsService {
 
   async findAll(payload: any) {
     return await this.permissionsRepository.findAll(payload);
+  }
+
+  async attachPermission(payload: SyncPermissionToRoleDto) {
+    try {
+      return await this.permissionsRepository.syncPermissionsToRole({
+        where: {
+          uuid: payload.roleUuid,
+        },
+        data: {
+          permissions: {
+            connect: payload.permissionUuids.map((permissionUuid: string) => ({
+              uuid: permissionUuid,
+            })),
+          },
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async detachPermission(payload: SyncPermissionToRoleDto) {
+    try {
+      return await this.permissionsRepository.syncPermissionsToRole({
+        where: {
+          uuid: payload.roleUuid,
+        },
+        data: {
+          permissions: {
+            disconnect: payload.permissionUuids.map((permissionUuid: string) => ({
+              uuid: permissionUuid,
+            })),
+          },
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 }

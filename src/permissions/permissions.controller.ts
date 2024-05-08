@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards, HttpStatus, Param } from '@nestjs/common';
+import { Controller, Get, UseGuards, HttpStatus, Param, Post, Body } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@/guard/auth.guard';
 import { PermissionGuard } from '@/guard/permission.guard';
@@ -7,6 +7,10 @@ import { ZodPipe } from '@/zod-validation/zod-validation.pipe';
 import { uuidSchema } from '@/validationSchema/common/uuid.schema';
 import { UUID } from 'crypto';
 import { PermissionsService } from './permissions.service';
+import {
+  SyncPermissionToRoleDto,
+  syncPermissionToRoleSchema,
+} from '@/validationSchema/permissions/syncPermissionToRole.schema';
 
 @ApiTags('Permissions')
 @Controller('permissions')
@@ -44,5 +48,18 @@ export class PermissionsController {
       message: 'Permission',
       statusCode: HttpStatus.FOUND,
     };
+  }
+
+  @Permission('ATTACH_PERMISSION_TO_ROLE')
+  @Post('/attach')
+  async attachPermission(
+    @Body(new ZodPipe(syncPermissionToRoleSchema)) syncPermissionToRoleDto: SyncPermissionToRoleDto,
+  ) {
+    try {
+      const response = await this.permissionsService.attachPermission(syncPermissionToRoleDto);
+      return response;
+    } catch (error) {
+      throw error;
+    }
   }
 }
