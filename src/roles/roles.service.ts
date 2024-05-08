@@ -1,5 +1,6 @@
 import { Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
 import { RolesRepository } from './roles.repository';
+import { CreateRoleDto } from '@/validationSchema/roles/createRole.schema';
 
 @Injectable()
 export class RolesService {
@@ -13,6 +14,19 @@ export class RolesService {
 
   async findAll(payload: any) {
     return await this.rolesRepository.findAll(payload);
+  }
+
+  async create(payload: CreateRoleDto) {
+    try {
+      const createData = {
+        name: payload.name,
+        slug: payload.name.split(' ').join('_'),
+        description: payload.description,
+      };
+      return await this.rolesRepository.create(createData);
+    } catch (err) {
+      throw err;
+    }
   }
 
   async delete(payload: any) {
