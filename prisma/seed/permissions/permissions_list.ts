@@ -25,6 +25,18 @@ export const PERMISSIONS = [
   },
   {
     group: 'PERMISSIONS',
+    name: 'ATTACH ROLE TO USER',
+    slug: 'ATTACH_ROLE_TO_USER',
+    description: 'ATTACH_ROLE_TO_USER',
+  },
+  {
+    group: 'PERMISSIONS',
+    name: 'DETACH ROLE TO USER',
+    slug: 'DETACH_ROLE_TO_USER',
+    description: 'DETACH_ROLE_TO_USER',
+  },
+  {
+    group: 'PERMISSIONS',
     name: 'VIEW PERMISSIONS',
     slug: 'VIEW_PERMISSIONS',
     description: 'VIEW_PERMISSIONS',

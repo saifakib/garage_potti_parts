@@ -8,6 +8,7 @@ import { ZodPipe } from '@/zod-validation/zod-validation.pipe';
 import { uuidSchema } from '@/validationSchema/common/uuid.schema';
 import { UUID } from 'crypto';
 import { CreateRoleDto, createRoleSchema } from '@/validationSchema/roles/createRole.schema';
+import { SyncRoleToUserDto, syncRoleToUserSchema } from '@/validationSchema/roles/syncRoleToUser.schema';
 
 @ApiTags('Roles')
 @Controller('roles')
@@ -84,5 +85,31 @@ export class RolesController {
       message: 'Role',
       statusCode: HttpStatus.OK,
     };
+  }
+
+  @ApiBearerAuth('JWT')
+  @Permission('ATTACH_ROLE_TO_USER')
+  @UseGuards(AuthGuard, PermissionGuard)
+  @Post('/attach')
+  async attachRole(@Body(new ZodPipe(syncRoleToUserSchema)) syncRoleToUserDto: SyncRoleToUserDto) {
+    try {
+      const response = await this.rolesService.attachRole(syncRoleToUserDto);
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @ApiBearerAuth('JWT')
+  @Permission('DETACH_ROLE_TO_USER')
+  @UseGuards(AuthGuard, PermissionGuard)
+  @Post('/detach')
+  async detachRole(@Body(new ZodPipe(syncRoleToUserSchema)) syncRoleToUserDto: SyncRoleToUserDto) {
+    try {
+      const response = await this.rolesService.detachRole(syncRoleToUserDto);
+      return response;
+    } catch (error) {
+      throw error;
+    }
   }
 }

@@ -65,4 +65,13 @@ export class RolesRepository {
       throw err;
     }
   }
+
+  async syncRoleToUser(data: any) {
+    try {
+      const permission = await this.database.users.update(data);
+      return permission;
+    } catch (error) {
+      throw error;
+    }
+  }
 }

@@ -1,6 +1,7 @@
 import { Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
 import { RolesRepository } from './roles.repository';
 import { CreateRoleDto } from '@/validationSchema/roles/createRole.schema';
+import { SyncRoleToUserDto } from '@/validationSchema/roles/syncRoleToUser.schema';
 
 @Injectable()
 export class RolesService {
@@ -42,5 +43,39 @@ export class RolesService {
       throw err;
     }
     return await this.rolesRepository.findAll({});
+  }
+
+  async attachRole(payload: SyncRoleToUserDto) {
+    try {
+      return await this.rolesRepository.syncRoleToUser({
+        where: {
+          uuid: payload.userUuid,
+        },
+        data: {
+          role: {
+            connect: payload.roleUuid,
+          },
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async detachRole(payload: SyncRoleToUserDto) {
+    try {
+      return await this.rolesRepository.syncRoleToUser({
+        where: {
+          uuid: payload.userUuid,
+        },
+        data: {
+          role: {
+            disconnect: payload.roleUuid,
+          },
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 }
