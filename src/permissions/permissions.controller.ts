@@ -50,13 +50,30 @@ export class PermissionsController {
     };
   }
 
+  @ApiBearerAuth('JWT')
   @Permission('ATTACH_PERMISSION_TO_ROLE')
+  @UseGuards(AuthGuard, PermissionGuard)
   @Post('/attach')
   async attachPermission(
     @Body(new ZodPipe(syncPermissionToRoleSchema)) syncPermissionToRoleDto: SyncPermissionToRoleDto,
   ) {
     try {
       const response = await this.permissionsService.attachPermission(syncPermissionToRoleDto);
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @ApiBearerAuth('JWT')
+  @Permission('DETACH_PERMISSION_TO_ROLE')
+  @UseGuards(AuthGuard, PermissionGuard)
+  @Post('/detach')
+  async detachPermission(
+    @Body(new ZodPipe(syncPermissionToRoleSchema)) syncPermissionToRoleDto: SyncPermissionToRoleDto,
+  ) {
+    try {
+      const response = await this.permissionsService.detachPermission(syncPermissionToRoleDto);
       return response;
     } catch (error) {
       throw error;
