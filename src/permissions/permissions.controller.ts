@@ -11,10 +11,12 @@ import {
   SyncPermissionToRoleDto,
   syncPermissionToRoleSchema,
 } from '@/validationSchema/permissions/syncPermissionToRole.schema';
+import ResponseHelper from '@/utils/response.helper';
 
 @ApiTags('Permissions')
 @Controller('permissions')
 export class PermissionsController {
+  private readonly res = new ResponseHelper();
   constructor(private readonly permissionsService: PermissionsService) {}
 
   @ApiBearerAuth('JWT')
@@ -23,11 +25,11 @@ export class PermissionsController {
   @Get()
   async findAll() {
     const response: any = await this.permissionsService.findAll({});
-    return {
+    return this.res.successResponse({
       data: response,
+      status: HttpStatus.OK,
       message: 'All Permissions',
-      statusCode: HttpStatus.OK,
-    };
+    });
   }
   @ApiBearerAuth('JWT')
   @Permission('VIEW_PERMISSIONS')
@@ -43,11 +45,11 @@ export class PermissionsController {
     uuid: UUID,
   ) {
     const response: any = await this.permissionsService.findOne({ uuid });
-    return {
+    return this.res.successResponse({
       data: response,
-      message: 'Permission',
-      statusCode: HttpStatus.FOUND,
-    };
+      message: 'Permission found',
+      status: HttpStatus.FOUND,
+    });
   }
 
   @ApiBearerAuth('JWT')
@@ -59,7 +61,11 @@ export class PermissionsController {
   ) {
     try {
       const response = await this.permissionsService.attachPermission(syncPermissionToRoleDto);
-      return response;
+      return this.res.successResponse({
+        data: response,
+        message: 'Attach permission to role successfully',
+        status: HttpStatus.ACCEPTED,
+      });
     } catch (error) {
       throw error;
     }
@@ -74,7 +80,11 @@ export class PermissionsController {
   ) {
     try {
       const response = await this.permissionsService.detachPermission(syncPermissionToRoleDto);
-      return response;
+      return this.res.successResponse({
+        data: response,
+        message: 'Detach permission to role successfully',
+        status: HttpStatus.ACCEPTED,
+      });
     } catch (error) {
       throw error;
     }

@@ -68,9 +68,7 @@ export class AuthService {
 
       delete createUser.password;
       return {
-        statusCode: HttpStatus.CREATED,
-        message: 'Signup successful',
-        data: createUser,
+        user: createUser,
         tokens: {
           accessToken,
           refreshToken,
@@ -98,9 +96,7 @@ export class AuthService {
       delete user.password;
       const { accessToken, refreshToken } = await this.getTokens(user);
       return {
-        statusCode: HttpStatus.CREATED,
-        message: 'Login successful',
-        data: user,
+        user,
         tokens: {
           accessToken,
           refreshToken,
@@ -119,9 +115,7 @@ export class AuthService {
       });
       // Extract user information from the decoded refresh token
       const { sub: uuid } = decodedRefreshToken;
-
       const user = await this.userRepository.findOne({ uuid: uuid });
-
       if (!user) {
         throw new HttpException('Invalid RefreshToken', HttpStatus.FORBIDDEN);
       }
@@ -129,12 +123,8 @@ export class AuthService {
       const { accessToken, refreshToken } = await this.getTokens(user);
 
       return {
-        statusCode: HttpStatus.CREATED,
-        message: 'New access and refresh generate',
-        tokens: {
-          accessToken,
-          refreshToken,
-        },
+        accessToken,
+        refreshToken,
       };
     } catch (err) {
       throw err;
