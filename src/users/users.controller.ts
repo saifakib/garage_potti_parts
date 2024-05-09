@@ -7,11 +7,13 @@ import { AuthGuard } from '@/guard/auth.guard';
 import ExtendedRequest from '@/guard/ExtendedRequest';
 import { Permission } from '@/decorators/permission.decorator';
 import { PermissionGuard } from '@/guard/permission.guard';
+import ResponseHelper from '@/utils/response.helper';
 
 @ApiTags('Users')
 @UsePipes(ZodValidationPipe)
 @Controller('users')
 export class UsersController {
+  private readonly res = new ResponseHelper();
   constructor(private readonly usersService: UsersService) {}
 
   @ApiBearerAuth('JWT')
@@ -20,11 +22,11 @@ export class UsersController {
   @Get()
   async findAll() {
     const response: any = await this.usersService.findAll();
-    return {
+    return this.res.successResponse({
       data: response,
+      status: HttpStatus.OK,
       message: 'Users',
-      statusCode: HttpStatus.OK,
-    };
+    });
   }
 
   @ApiBearerAuth('JWT')
@@ -33,18 +35,23 @@ export class UsersController {
   @Get('profile')
   async findOne(@Req() req: ExtendedRequest) {
     const response: any = await this.usersService.findOne(req.user);
-    return {
+    return this.res.successResponse({
       data: response,
+      status: HttpStatus.FOUND,
       message: 'User Profile found',
-      statusCode: HttpStatus.OK,
-    };
+    });
   }
 
   @ApiBearerAuth('JWT')
   @Permission('UPDATE_PROFILE')
   @UseGuards(AuthGuard)
   @Patch('profile')
-  update(@Req() req: ExtendedRequest, @Body() userProfile: UserProfileDto) {
-    return this.usersService.update(req.user.uuid, userProfile);
+  async update(@Req() req: ExtendedRequest, @Body() userProfile: UserProfileDto) {
+    const response: any = await this.usersService.update(req.user.uuid, userProfile);
+    return this.res.successResponse({
+      data: response,
+      status: HttpStatus.OK,
+      message: 'Update Profile',
+    });
   }
 }
