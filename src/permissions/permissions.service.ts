@@ -18,7 +18,7 @@ export class PermissionsService {
 
   async attachPermission(payload: SyncPermissionToRoleDto) {
     try {
-      return await this.permissionsRepository.syncPermissionsToRole({
+      return await this.permissionsRepository.syncPermissionToRole({
         where: {
           uuid: payload.roleUuid,
         },
@@ -37,7 +37,7 @@ export class PermissionsService {
 
   async detachPermission(payload: SyncPermissionToRoleDto) {
     try {
-      return await this.permissionsRepository.syncPermissionsToRole({
+      return await this.permissionsRepository.syncPermissionToRole({
         where: {
           uuid: payload.roleUuid,
         },
