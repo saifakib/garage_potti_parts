@@ -9,10 +9,12 @@ import { uuidSchema } from '@/validationSchema/common/uuid.schema';
 import { UUID } from 'crypto';
 import { CreateRoleDto, createRoleSchema } from '@/validationSchema/roles/createRole.schema';
 import { SyncRoleToUserDto, syncRoleToUserSchema } from '@/validationSchema/roles/syncRoleToUser.schema';
+import ResponseHelper from '@/utils/response.helper';
 
 @ApiTags('Roles')
 @Controller('roles')
 export class RolesController {
+  private readonly res = new ResponseHelper();
   constructor(private readonly rolesService: RolesService) {}
 
   @ApiBearerAuth('JWT')
@@ -21,11 +23,11 @@ export class RolesController {
   @Get()
   async findAll() {
     const response: any = await this.rolesService.findAll({});
-    return {
+    return this.res.successResponse({
       data: response,
+      status: HttpStatus.OK,
       message: 'All Roles',
-      statusCode: HttpStatus.OK,
-    };
+    });
   }
   @ApiBearerAuth('JWT')
   @Permission('VIEW_ROLES')
@@ -41,11 +43,11 @@ export class RolesController {
     uuid: UUID,
   ) {
     const response: any = await this.rolesService.findOne({ uuid });
-    return {
+    return this.res.successResponse({
       data: response,
-      message: 'Role',
-      statusCode: HttpStatus.FOUND,
-    };
+      status: HttpStatus.FOUND,
+      message: 'Role found',
+    });
   }
 
   @ApiBearerAuth('JWT')
@@ -55,11 +57,11 @@ export class RolesController {
   async create(@Body(new ZodPipe(createRoleSchema)) createRoleDto: CreateRoleDto) {
     try {
       const response: any = await this.rolesService.create(createRoleDto);
-      return {
+      return this.res.successResponse({
         data: response,
+        status: HttpStatus.CREATED,
         message: 'Create new Role',
-        statusCode: HttpStatus.OK,
-      };
+      });
     } catch (error: any) {
       console.log('Error creating role', error);
       throw new Error(error.message);
@@ -80,11 +82,11 @@ export class RolesController {
     uuid: UUID,
   ) {
     const response: any = await this.rolesService.delete({ uuid });
-    return {
+    return this.res.successResponse({
       data: response,
-      message: 'Role',
-      statusCode: HttpStatus.OK,
-    };
+      status: HttpStatus.OK,
+      message: 'Delete Role',
+    });
   }
 
   @ApiBearerAuth('JWT')
@@ -94,7 +96,11 @@ export class RolesController {
   async attachRole(@Body(new ZodPipe(syncRoleToUserSchema)) syncRoleToUserDto: SyncRoleToUserDto) {
     try {
       const response = await this.rolesService.attachRole(syncRoleToUserDto);
-      return response;
+      return this.res.successResponse({
+        data: response,
+        status: HttpStatus.ACCEPTED,
+        message: 'Attach role to user successfully',
+      });
     } catch (error) {
       throw error;
     }
@@ -107,7 +113,11 @@ export class RolesController {
   async detachRole(@Body(new ZodPipe(syncRoleToUserSchema)) syncRoleToUserDto: SyncRoleToUserDto) {
     try {
       const response = await this.rolesService.detachRole(syncRoleToUserDto);
-      return response;
+      return this.res.successResponse({
+        data: response,
+        status: HttpStatus.ACCEPTED,
+        message: 'Detach role to user successfully',
+      });
     } catch (error) {
       throw error;
     }

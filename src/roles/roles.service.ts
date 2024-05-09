@@ -8,9 +8,13 @@ export class RolesService {
   constructor(private readonly rolesRepository: RolesRepository) {}
 
   async findOne(payload: any) {
-    return await this.rolesRepository.findOne({
+    const response = await this.rolesRepository.findOne({
       uuid: payload.uuid,
     });
+    if (!response) {
+      throw new NotFoundException('Role not found!!');
+    }
+    return response;
   }
 
   async findAll(payload: any) {
