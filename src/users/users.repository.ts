@@ -8,7 +8,6 @@ export class UserRepository {
   constructor(private readonly database: DatabaseService) {}
 
   async findOne(where?: Prisma.UsersWhereInput) {
-    console.log(where);
     try {
       const find = await this.database.users.findFirst({
         where: where,
@@ -85,7 +84,6 @@ export class UserRepository {
   }
 
   async update(uuid: UUID, data: any) {
-    console.log(uuid, data);
     try {
       const update = await this.database.users.update({
         where: {

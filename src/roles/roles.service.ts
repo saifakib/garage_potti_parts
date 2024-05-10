@@ -18,7 +18,11 @@ export class RolesService {
   }
 
   async findAll(payload: any) {
-    return await this.rolesRepository.findAll(payload);
+    try {
+      return await this.rolesRepository.findAll(payload);
+    } catch (err) {
+      throw err;
+    }
   }
 
   async create(payload: CreateRoleDto) {

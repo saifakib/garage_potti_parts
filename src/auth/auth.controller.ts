@@ -11,6 +11,7 @@ import {
 } from '../validationSchema/auth';
 import { ApiTags } from '@nestjs/swagger';
 import ResponseHelper from '@/utils/response.helper';
+import errorHandler from '@/utils/error.helper';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -28,8 +29,8 @@ export class AuthController {
         status: HttpStatus.CREATED,
         message: 'Signup successful',
       });
-    } catch (err: any) {
-      throw err;
+    } catch (error: any) {
+      throw errorHandler(error);
     }
   }
 
@@ -42,8 +43,8 @@ export class AuthController {
         status: HttpStatus.CREATED,
         message: 'Login successful',
       });
-    } catch (err) {
-      throw err;
+    } catch (error: any) {
+      throw errorHandler(error);
     }
   }
 
@@ -56,8 +57,8 @@ export class AuthController {
         status: HttpStatus.CREATED,
         message: 'New access and refresh token generate',
       });
-    } catch (err) {
-      throw err;
+    } catch (error: any) {
+      throw errorHandler(error);
     }
   }
 }

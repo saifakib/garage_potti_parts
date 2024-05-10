@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PermissionsRepository } from './permissions.repository';
 import { SyncPermissionToRoleDto } from '@/validationSchema/permissions/syncPermissionToRole.schema';
 
@@ -7,9 +7,13 @@ export class PermissionsService {
   constructor(private readonly permissionsRepository: PermissionsRepository) {}
 
   async findOne(payload: any) {
-    return await this.permissionsRepository.findOne({
+    const response = await this.permissionsRepository.findOne({
       uuid: payload.uuid,
     });
+    if (!response) {
+      throw new NotFoundException('Permission not found!!');
+    }
+    return response;
   }
 
   async findAll(payload: any) {

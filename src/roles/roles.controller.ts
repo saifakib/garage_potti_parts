@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards, HttpStatus, Param, Delete, Body, Post } from '@nestjs/common';
+import { Controller, Get, UseGuards, HttpStatus, Param, Delete, Body, Post, Patch } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@/guard/auth.guard';
 import { PermissionGuard } from '@/guard/permission.guard';
@@ -10,6 +10,7 @@ import { UUID } from 'crypto';
 import { CreateRoleDto, createRoleSchema } from '@/validationSchema/roles/createRole.schema';
 import { SyncRoleToUserDto, syncRoleToUserSchema } from '@/validationSchema/roles/syncRoleToUser.schema';
 import ResponseHelper from '@/utils/response.helper';
+import errorHandler from '@/utils/error.helper';
 
 @ApiTags('Roles')
 @Controller('roles')
@@ -22,12 +23,16 @@ export class RolesController {
   @UseGuards(AuthGuard, PermissionGuard)
   @Get()
   async findAll() {
-    const response: any = await this.rolesService.findAll({});
-    return this.res.successResponse({
-      data: response,
-      status: HttpStatus.OK,
-      message: 'All Roles',
-    });
+    try {
+      const response: any = await this.rolesService.findAll({});
+      return this.res.successResponse({
+        data: response,
+        status: HttpStatus.OK,
+        message: 'All Roles',
+      });
+    } catch (error: any) {
+      throw errorHandler(error);
+    }
   }
   @ApiBearerAuth('JWT')
   @Permission('VIEW_ROLES')
@@ -63,8 +68,7 @@ export class RolesController {
         message: 'Create new Role',
       });
     } catch (error: any) {
-      console.log('Error creating role', error);
-      throw new Error(error.message);
+      throw errorHandler(error);
     }
   }
 
@@ -81,18 +85,22 @@ export class RolesController {
     @Param('uuid', new ZodPipe(uuidSchema))
     uuid: UUID,
   ) {
-    const response: any = await this.rolesService.delete({ uuid });
-    return this.res.successResponse({
-      data: response,
-      status: HttpStatus.OK,
-      message: 'Delete Role',
-    });
+    try {
+      const response: any = await this.rolesService.delete({ uuid });
+      return this.res.successResponse({
+        data: response,
+        status: HttpStatus.OK,
+        message: 'Delete Role',
+      });
+    } catch (error: any) {
+      throw errorHandler(error);
+    }
   }
 
   @ApiBearerAuth('JWT')
   @Permission('ATTACH_ROLE_TO_USER')
   @UseGuards(AuthGuard, PermissionGuard)
-  @Post('/attach')
+  @Patch('/attach')
   async attachRole(@Body(new ZodPipe(syncRoleToUserSchema)) syncRoleToUserDto: SyncRoleToUserDto) {
     try {
       const response = await this.rolesService.attachRole(syncRoleToUserDto);
@@ -101,15 +109,15 @@ export class RolesController {
         status: HttpStatus.ACCEPTED,
         message: 'Attach role to user successfully',
       });
-    } catch (error) {
-      throw error;
+    } catch (error: any) {
+      throw errorHandler(error);
     }
   }
 
   @ApiBearerAuth('JWT')
   @Permission('DETACH_ROLE_TO_USER')
   @UseGuards(AuthGuard, PermissionGuard)
-  @Post('/detach')
+  @Patch('/detach')
   async detachRole(@Body(new ZodPipe(syncRoleToUserSchema)) syncRoleToUserDto: SyncRoleToUserDto) {
     try {
       const response = await this.rolesService.detachRole(syncRoleToUserDto);
@@ -118,8 +126,8 @@ export class RolesController {
         status: HttpStatus.ACCEPTED,
         message: 'Detach role to user successfully',
       });
-    } catch (error) {
-      throw error;
+    } catch (error: any) {
+      throw errorHandler(error);
     }
   }
 }
