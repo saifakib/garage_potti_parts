@@ -8,6 +8,7 @@ import ExtendedRequest from '@/guard/ExtendedRequest';
 import { Permission } from '@/decorators/permission.decorator';
 import { PermissionGuard } from '@/guard/permission.guard';
 import ResponseHelper from '@/utils/response.helper';
+import errorHandler from '@/utils/error.helper';
 
 @ApiTags('Users')
 @UsePipes(ZodValidationPipe)
@@ -21,12 +22,16 @@ export class UsersController {
   @UseGuards(AuthGuard)
   @Get()
   async findAll() {
-    const response: any = await this.usersService.findAll();
-    return this.res.successResponse({
-      data: response,
-      status: HttpStatus.OK,
-      message: 'Users',
-    });
+    try {
+      const response: any = await this.usersService.findAll();
+      return this.res.successResponse({
+        data: response,
+        status: HttpStatus.OK,
+        message: 'Users',
+      });
+    } catch (error: any) {
+      throw errorHandler(error);
+    }
   }
 
   @ApiBearerAuth('JWT')
@@ -34,12 +39,16 @@ export class UsersController {
   @UseGuards(AuthGuard, PermissionGuard)
   @Get('profile')
   async findOne(@Req() req: ExtendedRequest) {
-    const response: any = await this.usersService.findOne(req.user);
-    return this.res.successResponse({
-      data: response,
-      status: HttpStatus.FOUND,
-      message: 'User Profile found',
-    });
+    try {
+      const response: any = await this.usersService.findOne(req.user);
+      return this.res.successResponse({
+        data: response,
+        status: HttpStatus.FOUND,
+        message: 'User Profile found',
+      });
+    } catch (error: any) {
+      throw errorHandler(error);
+    }
   }
 
   @ApiBearerAuth('JWT')
@@ -47,11 +56,15 @@ export class UsersController {
   @UseGuards(AuthGuard)
   @Patch('profile')
   async update(@Req() req: ExtendedRequest, @Body() userProfile: UserProfileDto) {
-    const response: any = await this.usersService.update(req.user.uuid, userProfile);
-    return this.res.successResponse({
-      data: response,
-      status: HttpStatus.OK,
-      message: 'Update Profile',
-    });
+    try {
+      const response: any = await this.usersService.update(req.user.uuid, userProfile);
+      return this.res.successResponse({
+        data: response,
+        status: HttpStatus.OK,
+        message: 'Update Profile',
+      });
+    } catch (error: any) {
+      throw errorHandler(error);
+    }
   }
 }

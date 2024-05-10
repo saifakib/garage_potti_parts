@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards, HttpStatus, Param, Post, Body } from '@nestjs/common';
+import { Controller, Get, UseGuards, HttpStatus, Param, Body, Patch } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@/guard/auth.guard';
 import { PermissionGuard } from '@/guard/permission.guard';
@@ -12,6 +12,7 @@ import {
   syncPermissionToRoleSchema,
 } from '@/validationSchema/permissions/syncPermissionToRole.schema';
 import ResponseHelper from '@/utils/response.helper';
+import errorHandler from '@/utils/error.helper';
 
 @ApiTags('Permissions')
 @Controller('permissions')
@@ -55,7 +56,7 @@ export class PermissionsController {
   @ApiBearerAuth('JWT')
   @Permission('ATTACH_PERMISSION_TO_ROLE')
   @UseGuards(AuthGuard, PermissionGuard)
-  @Post('/attach')
+  @Patch('/attach')
   async attachPermission(
     @Body(new ZodPipe(syncPermissionToRoleSchema)) syncPermissionToRoleDto: SyncPermissionToRoleDto,
   ) {
@@ -66,15 +67,15 @@ export class PermissionsController {
         message: 'Attach permission to role successfully',
         status: HttpStatus.ACCEPTED,
       });
-    } catch (error) {
-      throw error;
+    } catch (error: any) {
+      throw errorHandler(error);
     }
   }
 
   @ApiBearerAuth('JWT')
   @Permission('DETACH_PERMISSION_TO_ROLE')
   @UseGuards(AuthGuard, PermissionGuard)
-  @Post('/detach')
+  @Patch('/detach')
   async detachPermission(
     @Body(new ZodPipe(syncPermissionToRoleSchema)) syncPermissionToRoleDto: SyncPermissionToRoleDto,
   ) {
@@ -85,8 +86,8 @@ export class PermissionsController {
         message: 'Detach permission to role successfully',
         status: HttpStatus.ACCEPTED,
       });
-    } catch (error) {
-      throw error;
+    } catch (error: any) {
+      throw errorHandler(error);
     }
   }
 }
