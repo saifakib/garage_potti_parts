@@ -1,6 +1,8 @@
 import { DatabaseService } from '.././database/database.service';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+import { PaginatorTypes, paginator } from 'paginator';
+const paginate: PaginatorTypes.PaginateFunction = paginator({ perPage: 10 });
 
 @Injectable()
 export class PermissionsRepository {
@@ -17,14 +19,32 @@ export class PermissionsRepository {
     }
   }
 
-  async findAll(where?: Prisma.PermissionsWhereInput) {
+  async findAll({
+    where,
+    orderBy,
+    page,
+    perPage,
+  }: {
+    where?: Prisma.PermissionsWhereInput;
+    orderBy?: Prisma.PermissionsOrderByWithRelationInput;
+    page?: number;
+    perPage?: number;
+    include?: Prisma.PermissionsInclude;
+  }): Promise<PaginatorTypes.PaginatedResult<Permissions>> {
     try {
-      const find = await this.database.permissions.findMany({
-        where: where,
-      });
-      return find;
-    } catch (err) {
-      throw err;
+      return paginate(
+        this.database.permissions,
+        {
+          where,
+          orderBy,
+        },
+        {
+          page,
+          perPage,
+        },
+      );
+    } catch (error) {
+      throw error;
     }
   }
 

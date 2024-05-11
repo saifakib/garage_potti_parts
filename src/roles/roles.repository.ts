@@ -8,7 +8,7 @@ const paginate: PaginatorTypes.PaginateFunction = paginator({ perPage: 10 });
 export class RolesRepository {
   constructor(private readonly database: DatabaseService) {}
 
-  async find(arg: any) {
+  async find(arg: Prisma.RolesWhereInput) {
     try {
       const role = await this.database.roles.findFirst({
         where: arg,
@@ -66,7 +66,7 @@ export class RolesRepository {
     }
   }
 
-  async create(args: any) {
+  async create(args: Prisma.RolesCreateInput) {
     try {
       const create = await this.database.roles.create({
         data: args,
@@ -95,7 +95,7 @@ export class RolesRepository {
 
   async syncRoleToUser(data: any) {
     try {
-      const permission = await this.database.roles.update(data);
+      const permission = await this.database.users.update(data);
       return permission;
     } catch (error) {
       throw error;
