@@ -80,9 +80,9 @@ model Roles {
     system_role Boolean       @default(false)
     soft_delete Boolean       @default(false)
     created_at  DateTime      @default(now()) @db.Timestamptz(6)
-    created_by  Int?          @db.Integer
+    created_by  String?       @db.Uuid
     updated_at  DateTime?     @db.Timestamptz(6)
-    updated_by  Int?          @db.Integer
+    updated_by  String?       @db.Uuid
     users       Users[]
     permissions Permissions[]
 }
@@ -96,8 +96,190 @@ model Permissions {
     group       String?   @db.VarChar
     soft_delete Boolean   @default(false)
     created_at  DateTime  @default(now()) @db.Timestamptz(6)
-    created_by  Int?      @db.Integer
+    created_by  String?   @db.Uuid
     updated_at  DateTime? @db.Timestamptz(6)
-    updated_by  Int?      @db.Integer
+    updated_by  String?   @db.Uuid
     roles       Roles[]
+}
+
+model PartsCategory {
+    id                   Int                    @id @unique @default(autoincrement())
+    uuid                 String                 @unique @default(uuid()) @db.Uuid
+    name                 String                 @unique @db.VarChar(100)
+    image                String?                @db.VarChar()
+    created_at           DateTime               @default(now()) @db.Timestamptz(6)
+    created_by           String?                @db.Uuid
+    updated_at           DateTime?              @db.Timestamptz(6)
+    updated_by           String?                @db.Uuid
+    parts                Parts[]
+    PartsCategoryOptions PartsCategoryOptions[]
+}
+
+model PartsCategoryOptions {
+    id                Int            @id @unique @default(autoincrement())
+    uuid              String         @unique @default(uuid()) @db.Uuid
+    name              String         @unique @db.VarChar(100)
+    created_at        DateTime       @default(now()) @db.Timestamptz(6)
+    created_by        String?        @db.Uuid
+    updated_at        DateTime?      @db.Timestamptz(6)
+    updated_by        String?        @db.Uuid
+    PartsCategory     PartsCategory? @relation(fields: [partsCategoryUuid], references: [uuid])
+    partsCategoryUuid String         @db.Uuid
+    parts             Parts[]
+}
+
+model Brands {
+    id          Int       @id @unique @default(autoincrement())
+    uuid        String    @unique @default(uuid()) @db.Uuid
+    name        String    @unique @db.VarChar(100)
+    image       String?   @db.VarChar()
+    description String?   @db.VarChar()
+    created_at  DateTime  @default(now()) @db.Timestamptz(6)
+    created_by  String?   @db.Uuid
+    updated_at  DateTime? @db.Timestamptz(6)
+    updated_by  String?   @db.Uuid
+    parts       Parts[]
+}
+
+model Models {
+    id          Int       @id @unique @default(autoincrement())
+    uuid        String    @unique @default(uuid()) @db.Uuid
+    name        String    @unique @db.VarChar(100)
+    description String?   @db.VarChar()
+    created_at  DateTime  @default(now()) @db.Timestamptz(6)
+    created_by  String?   @db.Uuid
+    updated_at  DateTime? @db.Timestamptz(6)
+    updated_by  String?   @db.Uuid
+    parts       Parts[]
+}
+
+model Years {
+    id    Int     @id @unique @default(autoincrement())
+    uuid  String  @unique @default(uuid()) @db.Uuid
+    year  String  @db.VarChar()
+    Parts Parts[]
+}
+
+model Engines {
+    id          Int       @id @unique @default(autoincrement())
+    uuid        String    @unique @default(uuid()) @db.Uuid
+    name        String    @db.VarChar()
+    image       String?   @db.VarChar()
+    description String?   @db.VarChar()
+    created_at  DateTime  @default(now()) @db.Timestamptz(6)
+    created_by  String?   @db.Uuid
+    updated_at  DateTime? @db.Timestamptz(6)
+    updated_by  String?   @db.Uuid
+    Parts       Parts[]
+}
+
+model VehicleTypes {
+    id          Int       @id @unique @default(autoincrement())
+    uuid        String    @unique @default(uuid()) @db.Uuid
+    name        String    @db.VarChar()
+    image       String?   @db.VarChar()
+    description String?   @db.VarChar()
+    created_at  DateTime  @default(now()) @db.Timestamptz(6)
+    created_by  String?   @db.Uuid
+    updated_at  DateTime? @db.Timestamptz(6)
+    updated_by  String?   @db.Uuid
+    Parts       Parts[]
+}
+
+model Parts {
+    id                   Int                    @id @unique @default(autoincrement())
+    uuid                 String                 @unique @default(uuid()) @db.Uuid
+    name                 String                 @db.VarChar()
+    price                Float                  @db.DoublePrecision
+    qty                  Int                    @db.Integer
+    status               String                 @db.VarChar() // Active inactive
+    alert_qty            Int                    @db.Integer
+    description          String?                @db.VarChar()
+    created_at           DateTime               @default(now()) @db.Timestamptz(6)
+    created_by           String?                @db.Uuid
+    updated_at           DateTime?              @db.Timestamptz(6)
+    updated_by           String?                @db.Uuid
+    categoryUuid         String                 @db.Uuid
+    category             PartsCategory?         @relation(fields: [categoryUuid], references: [uuid])
+    brandUuid            String?                @db.Uuid
+    Brands               Brands?                @relation(fields: [brandUuid], references: [uuid])
+    models               Models[]
+    engines              Engines[]
+    years                Years[]
+    partsCategoryOptions PartsCategoryOptions[]
+    PartsEntryLists      PartsEntryLists[]
+    PartsInvoiceProducts PartsInvoiceProducts[]
+    vehicleTypes         VehicleTypes[]
+}
+
+model Vendors {
+    id           Int            @id @unique @default(autoincrement())
+    uuid         String         @unique @default(uuid()) @db.Uuid
+    name         String         @db.VarChar()
+    address      String         @db.VarChar()
+    mobile       String         @db.VarChar()
+    email        String?        @db.VarChar()
+    documents    String?        @db.VarChar()
+    description  String?        @db.VarChar()
+    created_at   DateTime       @default(now()) @db.Timestamptz(6)
+    created_by   String?        @db.Uuid
+    updated_at   DateTime?      @db.Timestamptz(6)
+    updated_by   String?        @db.Uuid
+    partsEntries PartsEntries[]
+}
+
+// Vendot Product entries information
+model PartsEntries {
+    id              Int               @id @unique @default(autoincrement())
+    uuid            String            @unique @default(uuid()) @db.Uuid
+    cash_momo_no    String?           @db.VarChar()
+    amount          Float?            @db.DoublePrecision
+    supply_date     DateTime?         @db.Timestamptz(6)
+    documents       String?           @db.VarChar()
+    description     String?           @db.VarChar()
+    created_at      DateTime          @default(now()) @db.Timestamptz(6)
+    created_by      String?           @db.Uuid
+    updated_at      DateTime?         @db.Timestamptz(6)
+    updated_by      String?           @db.Uuid
+    Vendors         Vendors?          @relation(fields: [vendorUuid], references: [uuid])
+    vendorUuid      String?           @db.Uuid
+    partsEntryLists PartsEntryLists[]
+}
+
+model PartsEntryLists {
+    id               Int           @id @unique @default(autoincrement())
+    uuid             String        @unique @default(uuid()) @db.Uuid
+    qty              Int           @db.Integer
+    amount           Float?        @db.DoublePrecision
+    Parts            Parts?        @relation(fields: [partsUuid], references: [uuid])
+    partsUuid        String?       @db.Uuid
+    partsEntries     PartsEntries? @relation(fields: [partsEntriesUuid], references: [uuid])
+    partsEntriesUuid String?       @db.Uuid
+}
+
+model PartsInvoices {
+    id                   Int                    @id @unique @default(autoincrement())
+    uuid                 String                 @unique @default(uuid()) @db.Uuid
+    invoice_no           String                 @unique @default(uuid()) @db.Uuid // #IVSL5498534
+    user_name            String                 @db.VarChar()
+    user_mobile          String                 @db.VarChar()
+    user_email           String?                @db.VarChar()
+    address              String?                @db.VarChar()
+    amount               Float                  @db.DoublePrecision
+    created_at           DateTime               @default(now()) @db.Timestamptz(6)
+    created_by           String?                @db.Uuid
+    partsInvoiceProducts PartsInvoiceProducts[]
+}
+
+model PartsInvoiceProducts {
+    id               Int            @id @unique @default(autoincrement())
+    uuid             String         @unique @default(uuid()) @db.Uuid
+    qty              Int            @db.Integer
+    price            Float          @db.DoublePrecision
+    partsUuid        String         @db.Uuid
+    parts            Parts?         @relation(fields: [partsUuid], references: [uuid])
+    PartsInvoices    PartsInvoices? @relation(fields: [partsInvoiceUuid], references: [uuid])
+    partsInvoiceUuid String         @db.Uuid
+    created_at       DateTime       @default(now()) @db.Timestamptz(6)
+    created_by       String?        @db.Uuid
 }
