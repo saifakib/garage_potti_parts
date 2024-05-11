@@ -116,16 +116,29 @@ model PartsCategory {
 }
 
 model PartsCategoryOptions {
-    id                Int            @id @unique @default(autoincrement())
-    uuid              String         @unique @default(uuid()) @db.Uuid
-    name              String         @unique @db.VarChar(100)
-    created_at        DateTime       @default(now()) @db.Timestamptz(6)
-    created_by        String?        @db.Uuid
-    updated_at        DateTime?      @db.Timestamptz(6)
-    updated_by        String?        @db.Uuid
-    PartsCategory     PartsCategory? @relation(fields: [partsCategoryUuid], references: [uuid])
-    partsCategoryUuid String         @db.Uuid
-    parts             Parts[]
+    id                         Int                          @id @unique @default(autoincrement())
+    uuid                       String                       @unique @default(uuid()) @db.Uuid
+    name                       String                       @unique @db.VarChar(100)
+    created_at                 DateTime                     @default(now()) @db.Timestamptz(6)
+    created_by                 String?                      @db.Uuid
+    updated_at                 DateTime?                    @db.Timestamptz(6)
+    updated_by                 String?                      @db.Uuid
+    PartsCategory              PartsCategory?               @relation(fields: [partsCategoryUuid], references: [uuid])
+    partsCategoryUuid          String                       @db.Uuid
+    PartsCategoryOptionsEntity PartsCategoryOptionsEntity[]
+}
+
+model PartsCategoryOptionsEntity {
+    id                       Int                   @id @unique @default(autoincrement())
+    uuid                     String                @unique @default(uuid()) @db.Uuid
+    name                     String                @unique @db.VarChar(100)
+    created_at               DateTime              @default(now()) @db.Timestamptz(6)
+    created_by               String?               @db.Uuid
+    updated_at               DateTime?             @db.Timestamptz(6)
+    updated_by               String?               @db.Uuid
+    parts                    Parts[]
+    PartsCategoryOptions     PartsCategoryOptions? @relation(fields: [partsCategoryOptionsUuid], references: [uuid])
+    partsCategoryOptionsUuid String?               @db.Uuid
 }
 
 model Brands {
@@ -187,29 +200,30 @@ model VehicleTypes {
 }
 
 model Parts {
-    id                   Int                    @id @unique @default(autoincrement())
-    uuid                 String                 @unique @default(uuid()) @db.Uuid
-    name                 String                 @db.VarChar()
-    price                Float                  @db.DoublePrecision
-    qty                  Int                    @db.Integer
-    status               String                 @db.VarChar() // Active inactive
-    alert_qty            Int                    @db.Integer
-    description          String?                @db.VarChar()
-    created_at           DateTime               @default(now()) @db.Timestamptz(6)
-    created_by           String?                @db.Uuid
-    updated_at           DateTime?              @db.Timestamptz(6)
-    updated_by           String?                @db.Uuid
-    categoryUuid         String                 @db.Uuid
-    category             PartsCategory?         @relation(fields: [categoryUuid], references: [uuid])
-    brandUuid            String?                @db.Uuid
-    Brands               Brands?                @relation(fields: [brandUuid], references: [uuid])
-    models               Models[]
-    engines              Engines[]
-    years                Years[]
-    partsCategoryOptions PartsCategoryOptions[]
-    PartsEntryLists      PartsEntryLists[]
-    PartsInvoiceProducts PartsInvoiceProducts[]
-    vehicleTypes         VehicleTypes[]
+    id                             Int                         @id @unique @default(autoincrement())
+    uuid                           String                      @unique @default(uuid()) @db.Uuid
+    name                           String                      @db.VarChar()
+    price                          Float                       @db.DoublePrecision
+    qty                            Int                         @db.Integer
+    status                         String                      @db.VarChar() // Active inactive
+    alert_qty                      Int                         @db.Integer
+    description                    String?                     @db.VarChar()
+    created_at                     DateTime                    @default(now()) @db.Timestamptz(6)
+    created_by                     String?                     @db.Uuid
+    updated_at                     DateTime?                   @db.Timestamptz(6)
+    updated_by                     String?                     @db.Uuid
+    categoryUuid                   String                      @db.Uuid
+    category                       PartsCategory?              @relation(fields: [categoryUuid], references: [uuid])
+    brandUuid                      String?                     @db.Uuid
+    Brands                         Brands?                     @relation(fields: [brandUuid], references: [uuid])
+    models                         Models[]
+    engines                        Engines[]
+    years                          Years[]
+    PartsEntryLists                PartsEntryLists[]
+    PartsInvoiceProducts           PartsInvoiceProducts[]
+    vehicleTypes                   VehicleTypes[]
+    PartsCategoryOptionsEntity     PartsCategoryOptionsEntity? @relation(fields: [partsCategoryOptionsEntityUuid], references: [uuid])
+    partsCategoryOptionsEntityUuid String?                     @db.Uuid
 }
 
 model Vendors {
