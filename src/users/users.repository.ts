@@ -1,7 +1,9 @@
 import { DatabaseService } from '.././database/database.service';
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Prisma, Users } from '@prisma/client';
 import { UUID } from 'crypto';
+import { PaginatorTypes, paginator } from 'paginator';
+const paginate: PaginatorTypes.PaginateFunction = paginator({ perPage: 10 });
 
 @Injectable()
 export class UserRepository {
@@ -38,17 +40,36 @@ export class UserRepository {
     }
   }
 
-  async findAll(where?: Prisma.UsersWhereInput) {
+  async findAll({
+    where,
+    orderBy,
+    page,
+    perPage,
+    include,
+  }: {
+    where?: Prisma.UsersWhereInput;
+    orderBy?: Prisma.UsersOrderByWithRelationInput;
+    page?: number;
+    perPage?: number;
+    include?: Prisma.UsersInclude;
+  }): Promise<PaginatorTypes.PaginatedResult<Users>> {
     try {
-      const find = await this.database.users.findMany({
-        where: where,
-        include: {
-          profile: true,
+      const args = {};
+      Object.assign(args, { include });
+      return paginate(
+        this.database.users,
+        {
+          where,
+          orderBy,
+          ...args,
         },
-      });
-      return find;
-    } catch (err) {
-      throw err;
+        {
+          page,
+          perPage,
+        },
+      );
+    } catch (error) {
+      throw error;
     }
   }
 

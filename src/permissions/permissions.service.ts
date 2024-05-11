@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PermissionsRepository } from './permissions.repository';
 import { SyncPermissionToRoleDto } from '@/validationSchema/permissions/syncPermissionToRole.schema';
+import { FindAllDto } from '@/validationSchema/common/findAll.schema';
 
 @Injectable()
 export class PermissionsService {
@@ -16,8 +17,15 @@ export class PermissionsService {
     return response;
   }
 
-  async findAll(payload: any) {
-    return await this.permissionsRepository.findAll(payload);
+  async findAll(payload: FindAllDto) {
+    return await this.permissionsRepository.findAll({
+      where: {},
+      orderBy: {
+        id: payload.sort,
+      },
+      page: Number(payload.page),
+      perPage: Number(payload.limit),
+    });
   }
 
   async attachPermission(payload: SyncPermissionToRoleDto) {

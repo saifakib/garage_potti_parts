@@ -1,12 +1,14 @@
 import { DatabaseService } from '.././database/database.service';
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Prisma, Roles } from '@prisma/client';
+import { PaginatorTypes, paginator } from 'paginator';
+const paginate: PaginatorTypes.PaginateFunction = paginator({ perPage: 10 });
 
 @Injectable()
 export class RolesRepository {
   constructor(private readonly database: DatabaseService) {}
 
-  async find(arg: any) {
+  async find(arg: Prisma.RolesWhereInput) {
     try {
       const role = await this.database.roles.findFirst({
         where: arg,
@@ -21,6 +23,9 @@ export class RolesRepository {
     try {
       const find = await this.database.roles.findFirst({
         where: where,
+        include: {
+          permissions: true,
+        },
       });
       return find;
     } catch (err) {
@@ -28,18 +33,40 @@ export class RolesRepository {
     }
   }
 
-  async findAll(where?: Prisma.RolesWhereInput) {
+  async findAll({
+    where,
+    orderBy,
+    page,
+    perPage,
+    include,
+  }: {
+    where?: Prisma.RolesWhereInput;
+    orderBy?: Prisma.RolesOrderByWithRelationInput;
+    page?: number;
+    perPage?: number;
+    include?: Prisma.RolesInclude;
+  }): Promise<PaginatorTypes.PaginatedResult<Roles>> {
     try {
-      const find = await this.database.roles.findMany({
-        where: where,
-      });
-      return find;
-    } catch (err) {
-      throw err;
+      const args = {};
+      Object.assign(args, { include });
+      return paginate(
+        this.database.roles,
+        {
+          where,
+          orderBy,
+          ...args,
+        },
+        {
+          page,
+          perPage,
+        },
+      );
+    } catch (error) {
+      throw error;
     }
   }
 
-  async create(args: any) {
+  async create(args: Prisma.RolesCreateInput) {
     try {
       const create = await this.database.roles.create({
         data: args,

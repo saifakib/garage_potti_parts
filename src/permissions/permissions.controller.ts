@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards, HttpStatus, Param, Body, Patch } from '@nestjs/common';
+import { Controller, Get, UseGuards, HttpStatus, Param, Body, Patch, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@/guard/auth.guard';
 import { PermissionGuard } from '@/guard/permission.guard';
@@ -13,6 +13,7 @@ import {
 } from '@/validationSchema/permissions/syncPermissionToRole.schema';
 import ResponseHelper from '@/utils/response.helper';
 import errorHandler from '@/utils/error.helper';
+import { FindAllDto, findAllSchema } from '@/validationSchema/common/findAll.schema';
 
 @ApiTags('Permissions')
 @Controller('permissions')
@@ -24,10 +25,11 @@ export class PermissionsController {
   @Permission('VIEW_PERMISSIONS')
   @UseGuards(AuthGuard, PermissionGuard)
   @Get()
-  async findAll() {
-    const response: any = await this.permissionsService.findAll({});
+  async findAll(@Query(new ZodPipe(findAllSchema)) payload: FindAllDto) {
+    const response: any = await this.permissionsService.findAll(payload);
     return this.res.successResponse({
-      data: response,
+      data: response.data,
+      meta: response.meta,
       status: HttpStatus.OK,
       message: 'All Permissions',
     });

@@ -2,6 +2,7 @@ import { Injectable, NotAcceptableException, NotFoundException } from '@nestjs/c
 import { RolesRepository } from './roles.repository';
 import { CreateRoleDto } from '@/validationSchema/roles/createRole.schema';
 import { SyncRoleToUserDto } from '@/validationSchema/roles/syncRoleToUser.schema';
+import { FindAllDto } from '@/validationSchema/common/findAll.schema';
 
 @Injectable()
 export class RolesService {
@@ -17,9 +18,19 @@ export class RolesService {
     return response;
   }
 
-  async findAll(payload: any) {
+  async findAll(payload: FindAllDto) {
     try {
-      return await this.rolesRepository.findAll(payload);
+      return await this.rolesRepository.findAll({
+        where: {},
+        orderBy: {
+          id: payload.sort,
+        },
+        page: Number(payload.page),
+        perPage: Number(payload.limit),
+        include: {
+          permissions: true,
+        },
+      });
     } catch (err) {
       throw err;
     }

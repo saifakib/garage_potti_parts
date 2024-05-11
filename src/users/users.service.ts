@@ -2,14 +2,25 @@ import { Injectable } from '@nestjs/common';
 import { UserProfileDto } from '../validationSchema/users';
 import { UserRepository } from './users.repository';
 import { UUID } from 'crypto';
+import { FindAllDto } from '@/validationSchema/common/findAll.schema';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly userRepository: UserRepository) {}
 
-  async findAll() {
+  async findAll(payload: FindAllDto) {
     try {
-      return await this.userRepository.findAll();
+      return await this.userRepository.findAll({
+        where: {},
+        orderBy: {
+          id: payload.sort,
+        },
+        page: Number(payload.page),
+        perPage: Number(payload.limit),
+        include: {
+          profile: true,
+        },
+      });
     } catch (err) {
       throw err;
     }
