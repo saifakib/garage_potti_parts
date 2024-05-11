@@ -1,4 +1,4 @@
-import { Controller, Get, Body, Patch, UsePipes, UseGuards, Req, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Body, Patch, UsePipes, UseGuards, Req, HttpStatus, Query } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { ZodValidationPipe } from '@anatine/zod-nestjs';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -9,6 +9,8 @@ import { Permission } from '@/decorators/permission.decorator';
 import { PermissionGuard } from '@/guard/permission.guard';
 import ResponseHelper from '@/utils/response.helper';
 import errorHandler from '@/utils/error.helper';
+import { FindAllDto, findAllSchema } from '@/validationSchema/common/findAll.schema';
+import { ZodPipe } from '@/zod-validation/zod-validation.pipe';
 
 @ApiTags('Users')
 @UsePipes(ZodValidationPipe)
@@ -21,11 +23,12 @@ export class UsersController {
   @Permission('VIEW USERS')
   @UseGuards(AuthGuard)
   @Get()
-  async findAll() {
+  async findAll(@Query(new ZodPipe(findAllSchema)) payload: FindAllDto) {
     try {
-      const response: any = await this.usersService.findAll();
+      const response: any = await this.usersService.findAll(payload);
       return this.res.successResponse({
-        data: response,
+        data: response.data,
+        meta: response.meta,
         status: HttpStatus.OK,
         message: 'Users',
       });
