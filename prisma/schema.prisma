@@ -275,6 +275,7 @@ model PartsInvoiceProducts {
     id               Int            @id @unique @default(autoincrement())
     uuid             String         @unique @default(uuid()) @db.Uuid
     qty              Int            @db.Integer
+    unit_price       Float          @db.DoublePrecision
     price            Float          @db.DoublePrecision
     partsUuid        String         @db.Uuid
     parts            Parts?         @relation(fields: [partsUuid], references: [uuid])
