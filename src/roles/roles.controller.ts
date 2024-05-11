@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards, HttpStatus, Param, Delete, Body, Post, Patch } from '@nestjs/common';
+import { Controller, Get, UseGuards, HttpStatus, Param, Delete, Body, Post, Patch, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@/guard/auth.guard';
 import { PermissionGuard } from '@/guard/permission.guard';
@@ -11,6 +11,7 @@ import { CreateRoleDto, createRoleSchema } from '@/validationSchema/roles/create
 import { SyncRoleToUserDto, syncRoleToUserSchema } from '@/validationSchema/roles/syncRoleToUser.schema';
 import ResponseHelper from '@/utils/response.helper';
 import errorHandler from '@/utils/error.helper';
+import { FindAllDto, findAllSchema } from '@/validationSchema/common/findAll.schema';
 
 @ApiTags('Roles')
 @Controller('roles')
@@ -22,11 +23,12 @@ export class RolesController {
   @Permission('VIEW_ROLES')
   @UseGuards(AuthGuard, PermissionGuard)
   @Get()
-  async findAll() {
+  async findAll(@Query(new ZodPipe(findAllSchema)) payload: FindAllDto) {
     try {
-      const response: any = await this.rolesService.findAll({});
+      const response: any = await this.rolesService.findAll(payload);
       return this.res.successResponse({
-        data: response,
+        data: response.data,
+        meta: response.meta,
         status: HttpStatus.OK,
         message: 'All Roles',
       });
