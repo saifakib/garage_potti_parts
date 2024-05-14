@@ -107,37 +107,40 @@ model PartsCategory {
     uuid                 String                 @unique @default(uuid()) @db.Uuid
     name                 String                 @unique @db.VarChar(100)
     image                String?                @db.VarChar()
+    soft_delete          Boolean                @default(false)
     created_at           DateTime               @default(now()) @db.Timestamptz(6)
     created_by           String?                @db.Uuid
     updated_at           DateTime?              @db.Timestamptz(6)
     updated_by           String?                @db.Uuid
     parts                Parts[]
-    PartsCategoryOptions PartsCategoryOptions[]
+    partsCategoryOptions PartsCategoryOptions[]
 }
 
 model PartsCategoryOptions {
     id                         Int                          @id @unique @default(autoincrement())
     uuid                       String                       @unique @default(uuid()) @db.Uuid
     name                       String                       @unique @db.VarChar(100)
+    soft_delete                Boolean                      @default(false)
     created_at                 DateTime                     @default(now()) @db.Timestamptz(6)
     created_by                 String?                      @db.Uuid
     updated_at                 DateTime?                    @db.Timestamptz(6)
     updated_by                 String?                      @db.Uuid
-    PartsCategory              PartsCategory?               @relation(fields: [partsCategoryUuid], references: [uuid])
+    partsCategory              PartsCategory?               @relation(fields: [partsCategoryUuid], references: [uuid])
     partsCategoryUuid          String                       @db.Uuid
-    PartsCategoryOptionsEntity PartsCategoryOptionsEntity[]
+    partsCategoryOptionsEntity PartsCategoryOptionsEntity[]
 }
 
 model PartsCategoryOptionsEntity {
     id                       Int                   @id @unique @default(autoincrement())
     uuid                     String                @unique @default(uuid()) @db.Uuid
     name                     String                @unique @db.VarChar(100)
+    soft_delete              Boolean               @default(false)
     created_at               DateTime              @default(now()) @db.Timestamptz(6)
     created_by               String?               @db.Uuid
     updated_at               DateTime?             @db.Timestamptz(6)
     updated_by               String?               @db.Uuid
     parts                    Parts[]
-    PartsCategoryOptions     PartsCategoryOptions? @relation(fields: [partsCategoryOptionsUuid], references: [uuid])
+    partsCategoryOptions     PartsCategoryOptions? @relation(fields: [partsCategoryOptionsUuid], references: [uuid])
     partsCategoryOptionsUuid String?               @db.Uuid
 }
 
@@ -146,6 +149,7 @@ model Brands {
     uuid        String    @unique @default(uuid()) @db.Uuid
     name        String    @unique @db.VarChar(100)
     image       String?   @db.VarChar()
+    soft_delete Boolean   @default(false)
     description String?   @db.VarChar()
     created_at  DateTime  @default(now()) @db.Timestamptz(6)
     created_by  String?   @db.Uuid
@@ -158,6 +162,7 @@ model Models {
     id          Int       @id @unique @default(autoincrement())
     uuid        String    @unique @default(uuid()) @db.Uuid
     name        String    @unique @db.VarChar(100)
+    soft_delete Boolean   @default(false)
     description String?   @db.VarChar()
     created_at  DateTime  @default(now()) @db.Timestamptz(6)
     created_by  String?   @db.Uuid
@@ -170,7 +175,7 @@ model Years {
     id    Int     @id @unique @default(autoincrement())
     uuid  String  @unique @default(uuid()) @db.Uuid
     year  String  @db.VarChar()
-    Parts Parts[]
+    parts Parts[]
 }
 
 model Engines {
@@ -178,12 +183,13 @@ model Engines {
     uuid        String    @unique @default(uuid()) @db.Uuid
     name        String    @db.VarChar()
     image       String?   @db.VarChar()
+    soft_delete Boolean   @default(false)
     description String?   @db.VarChar()
     created_at  DateTime  @default(now()) @db.Timestamptz(6)
     created_by  String?   @db.Uuid
     updated_at  DateTime? @db.Timestamptz(6)
     updated_by  String?   @db.Uuid
-    Parts       Parts[]
+    parts       Parts[]
 }
 
 model VehicleTypes {
@@ -191,12 +197,13 @@ model VehicleTypes {
     uuid        String    @unique @default(uuid()) @db.Uuid
     name        String    @db.VarChar()
     image       String?   @db.VarChar()
+    soft_delete Boolean   @default(false)
     description String?   @db.VarChar()
     created_at  DateTime  @default(now()) @db.Timestamptz(6)
     created_by  String?   @db.Uuid
     updated_at  DateTime? @db.Timestamptz(6)
     updated_by  String?   @db.Uuid
-    Parts       Parts[]
+    parts       Parts[]
 }
 
 model Parts {
@@ -207,6 +214,7 @@ model Parts {
     qty                            Int                         @db.Integer
     status                         String                      @db.VarChar() // Active inactive
     alert_qty                      Int                         @db.Integer
+    soft_delete                    Boolean                     @default(false)
     description                    String?                     @db.VarChar()
     created_at                     DateTime                    @default(now()) @db.Timestamptz(6)
     created_by                     String?                     @db.Uuid
@@ -215,14 +223,14 @@ model Parts {
     categoryUuid                   String                      @db.Uuid
     category                       PartsCategory?              @relation(fields: [categoryUuid], references: [uuid])
     brandUuid                      String?                     @db.Uuid
-    Brands                         Brands?                     @relation(fields: [brandUuid], references: [uuid])
+    brands                         Brands?                     @relation(fields: [brandUuid], references: [uuid])
     models                         Models[]
     engines                        Engines[]
     years                          Years[]
-    PartsEntryLists                PartsEntryLists[]
-    PartsInvoiceProducts           PartsInvoiceProducts[]
+    partsEntryLists                PartsEntryLists[]
+    partsInvoiceProducts           PartsInvoiceProducts[]
     vehicleTypes                   VehicleTypes[]
-    PartsCategoryOptionsEntity     PartsCategoryOptionsEntity? @relation(fields: [partsCategoryOptionsEntityUuid], references: [uuid])
+    partsCategoryOptionsEntity     PartsCategoryOptionsEntity? @relation(fields: [partsCategoryOptionsEntityUuid], references: [uuid])
     partsCategoryOptionsEntityUuid String?                     @db.Uuid
 }
 
@@ -234,6 +242,7 @@ model Vendors {
     mobile       String         @db.VarChar()
     email        String?        @db.VarChar()
     documents    String?        @db.VarChar()
+    soft_delete  Boolean        @default(false)
     description  String?        @db.VarChar()
     created_at   DateTime       @default(now()) @db.Timestamptz(6)
     created_by   String?        @db.Uuid
@@ -251,6 +260,7 @@ model PartsEntries {
     supply_date     DateTime?         @db.Timestamptz(6)
     documents       String?           @db.VarChar()
     description     String?           @db.VarChar()
+    soft_delete     Boolean           @default(false)
     created_at      DateTime          @default(now()) @db.Timestamptz(6)
     created_by      String?           @db.Uuid
     updated_at      DateTime?         @db.Timestamptz(6)
@@ -266,7 +276,7 @@ model PartsEntryLists {
     qty              Int           @db.Integer
     indPrice         Float         @db.DoublePrecision
     amount           Float         @db.DoublePrecision
-    Parts            Parts?        @relation(fields: [partsUuid], references: [uuid])
+    parts            Parts?        @relation(fields: [partsUuid], references: [uuid])
     partsUuid        String?       @db.Uuid
     partsEntries     PartsEntries? @relation(fields: [partsEntriesUuid], references: [uuid])
     partsEntriesUuid String?       @db.Uuid
@@ -281,6 +291,7 @@ model PartsInvoices {
     user_email           String?                @db.VarChar()
     address              String?                @db.VarChar()
     amount               Float                  @db.DoublePrecision
+    soft_delete          Boolean                @default(false)
     created_at           DateTime               @default(now()) @db.Timestamptz(6)
     created_by           String?                @db.Uuid
     partsInvoiceProducts PartsInvoiceProducts[]
@@ -294,8 +305,9 @@ model PartsInvoiceProducts {
     price            Float          @db.DoublePrecision
     partsUuid        String         @db.Uuid
     parts            Parts?         @relation(fields: [partsUuid], references: [uuid])
-    PartsInvoices    PartsInvoices? @relation(fields: [partsInvoiceUuid], references: [uuid])
+    partsInvoices    PartsInvoices? @relation(fields: [partsInvoiceUuid], references: [uuid])
     partsInvoiceUuid String         @db.Uuid
+    soft_delete      Boolean        @default(false)
     created_at       DateTime       @default(now()) @db.Timestamptz(6)
     created_by       String?        @db.Uuid
 }

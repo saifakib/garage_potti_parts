@@ -19,17 +19,11 @@ export class CategoryRepository {
     }
   }
 
-  async findOne(where?: Prisma.PartsCategoryWhereInput) {
+  async findOne({ where, include }: { where?: Prisma.PartsCategoryWhereInput; include?: Prisma.PartsCategoryInclude }) {
     try {
       const find = await this.database.partsCategory.findFirst({
         where: where,
-        include: {
-          PartsCategoryOptions: {
-            include: {
-              PartsCategoryOptionsEntity: true,
-            },
-          },
-        },
+        include: include,
       });
       return find;
     } catch (err) {

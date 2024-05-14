@@ -13,7 +13,16 @@ export class CategoryService {
 
   async findOne(payload: any) {
     const response = await this.categoryRepository.findOne({
-      uuid: payload.uuid,
+      where: {
+        uuid: payload.uuid,
+      },
+      include: {
+        partsCategoryOptions: {
+          include: {
+            partsCategoryOptionsEntity: true,
+          },
+        },
+      },
     });
     if (!response) {
       throw new NotFoundException('Category not found!!');
@@ -31,9 +40,9 @@ export class CategoryService {
         page: Number(payload.page),
         perPage: Number(payload.limit),
         include: {
-          PartsCategoryOptions: {
+          partsCategoryOptions: {
             include: {
-              PartsCategoryOptionsEntity: true,
+              partsCategoryOptionsEntity: true,
             },
           },
         },
