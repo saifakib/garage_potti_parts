@@ -264,7 +264,8 @@ model PartsEntryLists {
     id               Int           @id @unique @default(autoincrement())
     uuid             String        @unique @default(uuid()) @db.Uuid
     qty              Int           @db.Integer
-    amount           Float?        @db.DoublePrecision
+    indPrice         Float         @db.DoublePrecision
+    amount           Float         @db.DoublePrecision
     Parts            Parts?        @relation(fields: [partsUuid], references: [uuid])
     partsUuid        String?       @db.Uuid
     partsEntries     PartsEntries? @relation(fields: [partsEntriesUuid], references: [uuid])

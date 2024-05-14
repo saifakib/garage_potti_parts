@@ -80,4 +80,26 @@ export class CategoryRepository {
       throw err;
     }
   }
+
+  async createOption(args: Prisma.PartsCategoryOptionsCreateInput) {
+    try {
+      const create = await this.database.partsCategoryOptions.create({
+        data: args,
+      });
+      return create;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async createOptionEntity(args: Prisma.PartsCategoryOptionsEntityCreateInput) {
+    try {
+      const create = await this.database.partsCategoryOptionsEntity.create({
+        data: args,
+      });
+      return create;
+    } catch (err) {
+      throw err;
+    }
+  }
 }

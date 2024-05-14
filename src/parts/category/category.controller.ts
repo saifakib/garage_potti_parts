@@ -9,11 +9,18 @@ import { UUID } from 'crypto';
 import ResponseHelper from '@/utils/response.helper';
 import errorHandler from '@/utils/error.helper';
 import { FindAllDto, findAllSchema } from '@/validationSchema/common/findAll.schema';
-import { CreateCategoryDto, createCategorySchema } from '@/validationSchema/parts/category';
+import {
+  CreateCategoryDto,
+  CreateCategoryOptionDto,
+  CreateCategoryOptionEntityDto,
+  createCategoryOptionEntitySchema,
+  createCategoryOptionSchema,
+  createCategorySchema,
+} from '@/validationSchema/parts/category';
 import { CategoryService } from './category.service';
 
 @ApiTags('Parts Category')
-@Controller('parts-categories')
+@Controller('parts/categories')
 export class CategoryController {
   private readonly res = new ResponseHelper();
   constructor(private readonly categoryService: CategoryService) {}
@@ -64,6 +71,40 @@ export class CategoryController {
         data: response,
         status: HttpStatus.CREATED,
         message: 'Create a new parts category',
+      });
+    } catch (error: any) {
+      throw errorHandler(error);
+    }
+  }
+
+  @ApiBearerAuth('JWT')
+  @UseGuards(AuthGuard)
+  @Post('/options')
+  async createOption(@Body(new ZodPipe(createCategoryOptionSchema)) payload: CreateCategoryOptionDto) {
+    try {
+      const response: any = await this.categoryService.createOption(payload);
+      return this.res.successResponse({
+        data: response,
+        status: HttpStatus.CREATED,
+        message: 'Create a new parts category options',
+      });
+    } catch (error: any) {
+      throw errorHandler(error);
+    }
+  }
+
+  @ApiBearerAuth('JWT')
+  @UseGuards(AuthGuard)
+  @Post('/options/entities')
+  async createOptionEntity(
+    @Body(new ZodPipe(createCategoryOptionEntitySchema)) payload: CreateCategoryOptionEntityDto,
+  ) {
+    try {
+      const response: any = await this.categoryService.createOptionEntity(payload);
+      return this.res.successResponse({
+        data: response,
+        status: HttpStatus.CREATED,
+        message: 'Create a new parts category options entity',
       });
     } catch (error: any) {
       throw errorHandler(error);
