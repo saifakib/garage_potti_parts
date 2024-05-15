@@ -7,26 +7,26 @@ import { UUID } from 'crypto';
 import ResponseHelper from '@/utils/response.helper';
 import errorHandler from '@/utils/error.helper';
 import { FindAllDto, findAllSchema } from '@/validationSchema/common/findAll.schema';
-import { BrandsService } from './brands.service';
-import { CreateBrandDto, createBrandSchema } from '@/validationSchema/parts/brands';
+import { YearsService } from './years.service';
+import { YearDto, yearSchema } from '@/validationSchema/common/year.schema';
 
-@ApiTags('Brands')
-@Controller('brands')
-export class BrandsController {
+@ApiTags('Years')
+@Controller('years')
+export class YearsController {
   private readonly res = new ResponseHelper();
-  constructor(private readonly brandsService: BrandsService) {}
+  constructor(private readonly yearsService: YearsService) {}
 
   @ApiBearerAuth('JWT')
   @UseGuards(AuthGuard)
   @Get()
   async findAll(@Query(new ZodPipe(findAllSchema)) payload: FindAllDto) {
     try {
-      const response: any = await this.brandsService.findAll(payload);
+      const response: any = await this.yearsService.findAll(payload);
       return this.res.successResponse({
         data: response.data,
         meta: response.meta,
         status: HttpStatus.OK,
-        message: 'All Brands',
+        message: 'All Years',
       });
     } catch (error: any) {
       throw errorHandler(error);
@@ -44,24 +44,24 @@ export class BrandsController {
     @Param('uuid', new ZodPipe(uuidSchema))
     uuid: UUID,
   ) {
-    const response: any = await this.brandsService.findOne({ uuid });
+    const response: any = await this.yearsService.findOne({ uuid });
     return this.res.successResponse({
       data: response,
       status: HttpStatus.FOUND,
-      message: 'Brand found',
+      message: 'Year found',
     });
   }
 
   @ApiBearerAuth('JWT')
   @UseGuards(AuthGuard)
   @Post()
-  async create(@Body(new ZodPipe(createBrandSchema)) payload: CreateBrandDto) {
+  async create(@Body(new ZodPipe(yearSchema)) payload: YearDto) {
     try {
-      const response: any = await this.brandsService.create(payload);
+      const response: any = await this.yearsService.create(payload);
       return this.res.successResponse({
         data: response,
         status: HttpStatus.CREATED,
-        message: 'Create new Brand',
+        message: 'Create new Year',
       });
     } catch (error: any) {
       throw errorHandler(error);

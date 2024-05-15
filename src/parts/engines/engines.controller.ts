@@ -7,26 +7,26 @@ import { UUID } from 'crypto';
 import ResponseHelper from '@/utils/response.helper';
 import errorHandler from '@/utils/error.helper';
 import { FindAllDto, findAllSchema } from '@/validationSchema/common/findAll.schema';
-import { BrandsService } from './brands.service';
-import { CreateBrandDto, createBrandSchema } from '@/validationSchema/parts/brands';
+import { CreateEngineDto, createEngineSchema } from '@/validationSchema/parts/Engines';
+import { EnginesService } from './engines.service';
 
-@ApiTags('Brands')
-@Controller('brands')
-export class BrandsController {
+@ApiTags('Engines')
+@Controller('Engines')
+export class EnginesController {
   private readonly res = new ResponseHelper();
-  constructor(private readonly brandsService: BrandsService) {}
+  constructor(private readonly engineService: EnginesService) {}
 
   @ApiBearerAuth('JWT')
   @UseGuards(AuthGuard)
   @Get()
   async findAll(@Query(new ZodPipe(findAllSchema)) payload: FindAllDto) {
     try {
-      const response: any = await this.brandsService.findAll(payload);
+      const response: any = await this.engineService.findAll(payload);
       return this.res.successResponse({
         data: response.data,
         meta: response.meta,
         status: HttpStatus.OK,
-        message: 'All Brands',
+        message: 'All Engines',
       });
     } catch (error: any) {
       throw errorHandler(error);
@@ -44,24 +44,24 @@ export class BrandsController {
     @Param('uuid', new ZodPipe(uuidSchema))
     uuid: UUID,
   ) {
-    const response: any = await this.brandsService.findOne({ uuid });
+    const response: any = await this.engineService.findOne({ uuid });
     return this.res.successResponse({
       data: response,
       status: HttpStatus.FOUND,
-      message: 'Brand found',
+      message: 'Engine found',
     });
   }
 
   @ApiBearerAuth('JWT')
   @UseGuards(AuthGuard)
   @Post()
-  async create(@Body(new ZodPipe(createBrandSchema)) payload: CreateBrandDto) {
+  async create(@Body(new ZodPipe(createEngineSchema)) payload: CreateEngineDto) {
     try {
-      const response: any = await this.brandsService.create(payload);
+      const response: any = await this.engineService.create(payload);
       return this.res.successResponse({
         data: response,
         status: HttpStatus.CREATED,
-        message: 'Create new Brand',
+        message: 'Create new Engine successfully',
       });
     } catch (error: any) {
       throw errorHandler(error);
