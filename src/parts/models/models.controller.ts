@@ -7,26 +7,26 @@ import { UUID } from 'crypto';
 import ResponseHelper from '@/utils/response.helper';
 import errorHandler from '@/utils/error.helper';
 import { FindAllDto, findAllSchema } from '@/validationSchema/common/findAll.schema';
-import { BrandsService } from './brands.services';
 import { CreateBrandDto, createBrandSchema } from '@/validationSchema/brands';
+import { ModelsService } from './models.service';
 
-@ApiTags('Brands')
-@Controller('brands')
-export class BrandsController {
+@ApiTags('Models')
+@Controller('models')
+export class ModelsController {
   private readonly res = new ResponseHelper();
-  constructor(private readonly brandsService: BrandsService) {}
+  constructor(private readonly modelsService: ModelsService) {}
 
   @ApiBearerAuth('JWT')
   @UseGuards(AuthGuard)
   @Get()
   async findAll(@Query(new ZodPipe(findAllSchema)) payload: FindAllDto) {
     try {
-      const response: any = await this.brandsService.findAll(payload);
+      const response: any = await this.modelsService.findAll(payload);
       return this.res.successResponse({
         data: response.data,
         meta: response.meta,
         status: HttpStatus.OK,
-        message: 'All Brands',
+        message: 'All Models',
       });
     } catch (error: any) {
       throw errorHandler(error);
@@ -44,11 +44,11 @@ export class BrandsController {
     @Param('uuid', new ZodPipe(uuidSchema))
     uuid: UUID,
   ) {
-    const response: any = await this.brandsService.findOne({ uuid });
+    const response: any = await this.modelsService.findOne({ uuid });
     return this.res.successResponse({
       data: response,
       status: HttpStatus.FOUND,
-      message: 'Brand found',
+      message: 'Model found',
     });
   }
 
@@ -57,11 +57,11 @@ export class BrandsController {
   @Post()
   async create(@Body(new ZodPipe(createBrandSchema)) payload: CreateBrandDto) {
     try {
-      const response: any = await this.brandsService.create(payload);
+      const response: any = await this.modelsService.create(payload);
       return this.res.successResponse({
         data: response,
         status: HttpStatus.CREATED,
-        message: 'Create new Brand',
+        message: 'Create new Model',
       });
     } catch (error: any) {
       throw errorHandler(error);
