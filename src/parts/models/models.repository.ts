@@ -1,16 +1,16 @@
 import { DatabaseService } from '@/database/database.service';
 import { Injectable } from '@nestjs/common';
-import { Prisma, Brands } from '@prisma/client';
+import { Prisma, Models } from '@prisma/client';
 import { PaginatorTypes, paginator } from 'paginator';
 const paginate: PaginatorTypes.PaginateFunction = paginator({ perPage: 10 });
 
 @Injectable()
-export class BrandsRepository {
+export class ModelsRepository {
   constructor(private readonly database: DatabaseService) {}
 
-  async findOne({ where, include }: { where?: Prisma.BrandsWhereInput; include?: Prisma.BrandsInclude }) {
+  async findOne({ where, include }: { where?: Prisma.ModelsWhereInput; include?: Prisma.ModelsInclude }) {
     try {
-      const find = await this.database.brands.findFirst({
+      const find = await this.database.models.findFirst({
         where: where,
         include: include,
       });
@@ -27,17 +27,17 @@ export class BrandsRepository {
     perPage,
     include,
   }: {
-    where?: Prisma.BrandsWhereInput;
-    orderBy?: Prisma.BrandsOrderByWithRelationInput;
+    where?: Prisma.ModelsWhereInput;
+    orderBy?: Prisma.ModelsOrderByWithRelationInput;
     page?: number;
     perPage?: number;
-    include?: Prisma.BrandsInclude;
-  }): Promise<PaginatorTypes.PaginatedResult<Brands>> {
+    include?: Prisma.ModelsInclude;
+  }): Promise<PaginatorTypes.PaginatedResult<Models>> {
     try {
       const args = {};
       Object.assign(args, { include });
       return paginate(
-        this.database.brands,
+        this.database.models,
         {
           where,
           orderBy,
@@ -53,9 +53,9 @@ export class BrandsRepository {
     }
   }
 
-  async create(args: Prisma.BrandsCreateInput) {
+  async create(args: Prisma.ModelsCreateInput) {
     try {
-      const create = await this.database.brands.create({
+      const create = await this.database.models.create({
         data: args,
       });
       return create;
@@ -64,9 +64,9 @@ export class BrandsRepository {
     }
   }
 
-  async update(uuid?: string, args?: Prisma.BrandsUpdateInput) {
+  async update(uuid?: string, args?: Prisma.ModelsUpdateInput) {
     try {
-      const create = await this.database.brands.update({
+      const create = await this.database.models.update({
         where: {
           uuid: uuid,
         },
@@ -83,7 +83,7 @@ export class BrandsRepository {
 
   async delete(uuid?: string) {
     try {
-      const create = await this.database.brands.update({
+      const create = await this.database.models.update({
         where: {
           uuid: uuid,
         },
