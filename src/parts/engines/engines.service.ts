@@ -1,14 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { FindAllDto } from '@/validationSchema/common/findAll.schema';
-import { ModelsRepository } from './models.repository';
-import { CreateModelDto } from '@/validationSchema/parts/models';
+import { EnginesRepository } from './Engines.repository';
+import { CreateEngineDto } from '@/validationSchema/parts/Engines';
 
 @Injectable()
-export class ModelsService {
-  constructor(private readonly modelsRepository: ModelsRepository) {}
+export class EnginesService {
+  constructor(private readonly enginesRepository: EnginesRepository) {}
 
   async findOne(payload: any) {
-    const response = await this.modelsRepository.findOne({
+    const response = await this.enginesRepository.findOne({
       where: {
         uuid: payload.uuid,
       },
@@ -17,14 +17,14 @@ export class ModelsService {
       },
     });
     if (!response) {
-      throw new NotFoundException('Model not found!!');
+      throw new NotFoundException('Engine not found!!');
     }
     return response;
   }
 
   async findAll(payload: FindAllDto) {
     try {
-      return await this.modelsRepository.findAll({
+      return await this.enginesRepository.findAll({
         where: {},
         orderBy: {
           id: payload.sort,
@@ -40,13 +40,14 @@ export class ModelsService {
     }
   }
 
-  async create(payload: CreateModelDto) {
+  async create(payload: CreateEngineDto) {
     try {
       const createData = {
         name: payload.name,
+        image: payload.image,
         description: payload.description ?? payload.description,
       };
-      return await this.modelsRepository.create(createData);
+      return await this.enginesRepository.create(createData);
     } catch (err) {
       throw err;
     }
