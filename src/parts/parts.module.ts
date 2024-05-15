@@ -1,9 +1,14 @@
 import { Module } from '@nestjs/common';
-import { CategoryModule } from './category/category.module';
+import { CategoryController } from '@/parts/category/category.controller';
+import { CategoryService } from '@/parts/category/category.service';
+import { CategoryRepository } from '@/parts/category/category.repository';
+import { BrandsController } from '@/parts/brands/brands.controller';
+import { BrandsService } from '@/parts/brands/brands.services';
+import { BrandsRepository } from '@/parts/brands/brands.repository';
 
 @Module({
-  imports: [CategoryModule],
-  controllers: [],
-  providers: [],
+  imports: [],
+  controllers: [CategoryController, BrandsController],
+  providers: [CategoryService, CategoryRepository, BrandsService, BrandsRepository],
 })
 export class PartsModule {}

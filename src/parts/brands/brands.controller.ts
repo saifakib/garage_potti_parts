@@ -10,9 +10,9 @@ import { FindAllDto, findAllSchema } from '@/validationSchema/common/findAll.sch
 import { BrandsService } from './brands.services';
 import { CreateBrandDto, createBrandSchema } from '@/validationSchema/brands';
 
-@ApiTags('Roles')
-@Controller('roles')
-export class RolesController {
+@ApiTags('Brands')
+@Controller('brands')
+export class BrandsController {
   private readonly res = new ResponseHelper();
   constructor(private readonly brandsService: BrandsService) {}
 
