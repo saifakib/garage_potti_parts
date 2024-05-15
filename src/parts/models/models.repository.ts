@@ -1,31 +1,18 @@
 import { DatabaseService } from '@/database/database.service';
 import { Injectable } from '@nestjs/common';
-import { Prisma, Roles } from '@prisma/client';
+import { Prisma, Models } from '@prisma/client';
 import { PaginatorTypes, paginator } from 'paginator';
 const paginate: PaginatorTypes.PaginateFunction = paginator({ perPage: 10 });
 
 @Injectable()
-export class RolesRepository {
+export class ModelsRepository {
   constructor(private readonly database: DatabaseService) {}
 
-  async find(arg: Prisma.RolesWhereInput) {
+  async findOne({ where, include }: { where?: Prisma.ModelsWhereInput; include?: Prisma.ModelsInclude }) {
     try {
-      const role = await this.database.roles.findFirst({
-        where: arg,
-      });
-      return role;
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  async findOne(where?: Prisma.RolesWhereInput) {
-    try {
-      const find = await this.database.roles.findFirst({
+      const find = await this.database.models.findFirst({
         where: where,
-        include: {
-          permissions: true,
-        },
+        include: include,
       });
       return find;
     } catch (err) {
@@ -40,17 +27,17 @@ export class RolesRepository {
     perPage,
     include,
   }: {
-    where?: Prisma.RolesWhereInput;
-    orderBy?: Prisma.RolesOrderByWithRelationInput;
+    where?: Prisma.ModelsWhereInput;
+    orderBy?: Prisma.ModelsOrderByWithRelationInput;
     page?: number;
     perPage?: number;
-    include?: Prisma.RolesInclude;
-  }): Promise<PaginatorTypes.PaginatedResult<Roles>> {
+    include?: Prisma.ModelsInclude;
+  }): Promise<PaginatorTypes.PaginatedResult<Models>> {
     try {
       const args = {};
       Object.assign(args, { include });
       return paginate(
-        this.database.roles,
+        this.database.models,
         {
           where,
           orderBy,
@@ -66,9 +53,9 @@ export class RolesRepository {
     }
   }
 
-  async create(args: Prisma.RolesCreateInput) {
+  async create(args: Prisma.ModelsCreateInput) {
     try {
-      const create = await this.database.roles.create({
+      const create = await this.database.models.create({
         data: args,
       });
       return create;
@@ -77,9 +64,26 @@ export class RolesRepository {
     }
   }
 
-  async delete(uuid: string) {
+  async update(uuid?: string, args?: Prisma.ModelsUpdateInput) {
     try {
-      const find = await this.database.roles.update({
+      const create = await this.database.models.update({
+        where: {
+          uuid: uuid,
+        },
+        data: args,
+        include: {
+          parts: true,
+        },
+      });
+      return create;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async delete(uuid?: string) {
+    try {
+      const create = await this.database.models.update({
         where: {
           uuid: uuid,
         },
@@ -87,18 +91,9 @@ export class RolesRepository {
           soft_delete: true,
         },
       });
-      return find;
+      return create;
     } catch (err) {
       throw err;
-    }
-  }
-
-  async syncRoleToUser(data: any) {
-    try {
-      const permission = await this.database.users.update(data);
-      return permission;
-    } catch (error) {
-      throw error;
     }
   }
 }

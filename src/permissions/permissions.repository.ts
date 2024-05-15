@@ -1,4 +1,4 @@
-import { DatabaseService } from '.././database/database.service';
+import { DatabaseService } from '@/database/database.service';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PaginatorTypes, paginator } from 'paginator';
