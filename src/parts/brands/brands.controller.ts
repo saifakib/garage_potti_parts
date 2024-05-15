@@ -8,7 +8,7 @@ import ResponseHelper from '@/utils/response.helper';
 import errorHandler from '@/utils/error.helper';
 import { FindAllDto, findAllSchema } from '@/validationSchema/common/findAll.schema';
 import { BrandsService } from './brands.services';
-import { CreateBrandDto, createBrandSchema } from '@/validationSchema/brands';
+import { CreateBrandDto, createBrandSchema } from '@/validationSchema/parts/brands';
 
 @ApiTags('Brands')
 @Controller('brands')

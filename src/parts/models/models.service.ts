@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { FindAllDto } from '@/validationSchema/common/findAll.schema';
 import { ModelsRepository } from './models.repository';
-import { CreateModelDto } from '@/validationSchema/models';
+import { CreateModelDto } from '@/validationSchema/parts/models';
 
 @Injectable()
 export class ModelsService {
@@ -44,7 +44,7 @@ export class ModelsService {
     try {
       const createData = {
         name: payload.name,
-        image: payload.image,
+        description: payload.description ?? payload.description,
       };
       return await this.modelsRepository.create(createData);
     } catch (err) {
