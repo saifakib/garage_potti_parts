@@ -11,10 +11,13 @@ import { ModelsRepository } from '@/parts/models/models.repository';
 import { YearsController } from '@/parts/years/years.controller';
 import { YearsService } from '@/parts/years/years.service';
 import { YearsRepository } from '@/parts/years/years.repository';
+import { EnginesController } from '@/parts/engines/engines.controller';
+import { EnginesService } from '@/parts/engines/engines.service';
+import { EnginesRepository } from '@/parts/engines/Engines.repository';
 
 @Module({
   imports: [],
-  controllers: [CategoryController, BrandsController, ModelsController, YearsController],
+  controllers: [CategoryController, BrandsController, ModelsController, YearsController, EnginesController],
   providers: [
     CategoryService,
     CategoryRepository,
@@ -24,6 +27,8 @@ import { YearsRepository } from '@/parts/years/years.repository';
     ModelsRepository,
     YearsService,
     YearsRepository,
+    EnginesService,
+    EnginesRepository,
   ],
 })
 export class PartsModule {}
