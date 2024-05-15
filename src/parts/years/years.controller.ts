@@ -7,7 +7,7 @@ import { UUID } from 'crypto';
 import ResponseHelper from '@/utils/response.helper';
 import errorHandler from '@/utils/error.helper';
 import { FindAllDto, findAllSchema } from '@/validationSchema/common/findAll.schema';
-import { YearsService } from './Years.services';
+import { YearsService } from './years.service';
 import { YearDto, yearSchema } from '@/validationSchema/common/year.schema';
 
 @ApiTags('Years')

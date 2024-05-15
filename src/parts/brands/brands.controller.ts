@@ -7,7 +7,7 @@ import { UUID } from 'crypto';
 import ResponseHelper from '@/utils/response.helper';
 import errorHandler from '@/utils/error.helper';
 import { FindAllDto, findAllSchema } from '@/validationSchema/common/findAll.schema';
-import { BrandsService } from './brands.services';
+import { BrandsService } from './brands.service';
 import { CreateBrandDto, createBrandSchema } from '@/validationSchema/parts/brands';
 
 @ApiTags('Brands')
