@@ -4,7 +4,7 @@ import { VehicleTypesRepository } from './vehicle-types.repository';
 import { CreateVehicleTypedDto } from '@/validationSchema/parts/vehicleTypes';
 
 @Injectable()
-export class BrandsService {
+export class VehicleTypesService {
   constructor(private readonly vehicleTypesRepository: VehicleTypesRepository) {}
 
   async findOne(payload: any) {
