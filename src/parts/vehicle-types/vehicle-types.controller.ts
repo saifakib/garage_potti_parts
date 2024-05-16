@@ -10,9 +10,9 @@ import { FindAllDto, findAllSchema } from '@/validationSchema/common/findAll.sch
 import { VehicleTypesService } from './vehicle-types.service';
 import { CreateVehicleTypedDto, createVehicleTypeSchema } from '@/validationSchema/parts/vehicleTypes';
 
-@ApiTags('Engines')
-@Controller('Engines')
-export class EnginesController {
+@ApiTags('Vehicle Types')
+@Controller('vehicle-types')
+export class VehicleTypesController {
   private readonly res = new ResponseHelper();
   constructor(private readonly vehicleTypesService: VehicleTypesService) {}
 

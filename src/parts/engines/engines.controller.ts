@@ -11,7 +11,7 @@ import { CreateEngineDto, createEngineSchema } from '@/validationSchema/parts/En
 import { EnginesService } from './engines.service';
 
 @ApiTags('Engines')
-@Controller('Engines')
+@Controller('engines')
 export class EnginesController {
   private readonly res = new ResponseHelper();
   constructor(private readonly engineService: EnginesService) {}
