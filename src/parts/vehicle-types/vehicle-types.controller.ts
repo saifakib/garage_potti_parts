@@ -7,26 +7,26 @@ import { UUID } from 'crypto';
 import ResponseHelper from '@/utils/response.helper';
 import errorHandler from '@/utils/error.helper';
 import { FindAllDto, findAllSchema } from '@/validationSchema/common/findAll.schema';
-import { CreateEngineDto, createEngineSchema } from '@/validationSchema/parts/Engines';
-import { EnginesService } from './engines.service';
+import { VehicleTypesService } from './vehicle-types.service';
+import { CreateVehicleTypedDto, createVehicleTypeSchema } from '@/validationSchema/parts/vehicleTypes';
 
-@ApiTags('Engines')
-@Controller('engines')
-export class EnginesController {
+@ApiTags('Vehicle Types')
+@Controller('vehicle-types')
+export class VehicleTypesController {
   private readonly res = new ResponseHelper();
-  constructor(private readonly engineService: EnginesService) {}
+  constructor(private readonly vehicleTypesService: VehicleTypesService) {}
 
   @ApiBearerAuth('JWT')
   @UseGuards(AuthGuard)
   @Get()
   async findAll(@Query(new ZodPipe(findAllSchema)) payload: FindAllDto) {
     try {
-      const response: any = await this.engineService.findAll(payload);
+      const response: any = await this.vehicleTypesService.findAll(payload);
       return this.res.successResponse({
         data: response.data,
         meta: response.meta,
         status: HttpStatus.OK,
-        message: 'All Engines',
+        message: 'All vehicle types',
       });
     } catch (error: any) {
       throw errorHandler(error);
@@ -44,24 +44,24 @@ export class EnginesController {
     @Param('uuid', new ZodPipe(uuidSchema))
     uuid: UUID,
   ) {
-    const response: any = await this.engineService.findOne({ uuid });
+    const response: any = await this.vehicleTypesService.findOne({ uuid });
     return this.res.successResponse({
       data: response,
       status: HttpStatus.FOUND,
-      message: 'Engine found',
+      message: 'Vehicle type found',
     });
   }
 
   @ApiBearerAuth('JWT')
   @UseGuards(AuthGuard)
   @Post()
-  async create(@Body(new ZodPipe(createEngineSchema)) payload: CreateEngineDto) {
+  async create(@Body(new ZodPipe(createVehicleTypeSchema)) payload: CreateVehicleTypedDto) {
     try {
-      const response: any = await this.engineService.create(payload);
+      const response: any = await this.vehicleTypesService.create(payload);
       return this.res.successResponse({
         data: response,
         status: HttpStatus.CREATED,
-        message: 'Create new Engine successfully',
+        message: 'Create new vehicle type successfully!!',
       });
     } catch (error: any) {
       throw errorHandler(error);
