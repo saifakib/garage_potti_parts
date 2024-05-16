@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards, HttpStatus, Param, Body, Post, Query } from '@nestjs/common';
+import { Controller, Get, UseGuards, HttpStatus, Param, Body, Post, Query, Delete } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@/guard/auth.guard';
 import { ZodPipe } from '@/zod-validation/zod-validation.pipe';
@@ -32,6 +32,23 @@ export class BrandsController {
       throw errorHandler(error);
     }
   }
+
+  @ApiBearerAuth('JWT')
+  @UseGuards(AuthGuard)
+  @Post()
+  async create(@Body(new ZodPipe(createBrandSchema)) payload: CreateBrandDto) {
+    try {
+      const response: any = await this.brandsService.create(payload);
+      return this.res.successResponse({
+        data: response,
+        status: HttpStatus.CREATED,
+        message: 'Create new Brand',
+      });
+    } catch (error: any) {
+      throw errorHandler(error);
+    }
+  }
+
   @ApiBearerAuth('JWT')
   @UseGuards(AuthGuard)
   @Get('/:uuid')
@@ -54,14 +71,22 @@ export class BrandsController {
 
   @ApiBearerAuth('JWT')
   @UseGuards(AuthGuard)
-  @Post()
-  async create(@Body(new ZodPipe(createBrandSchema)) payload: CreateBrandDto) {
+  @Delete('/:uuid')
+  @ApiParam({
+    name: 'uuid',
+    description: 'uuid format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
+    type: 'string',
+  })
+  async delete(
+    @Param('uuid', new ZodPipe(uuidSchema))
+    uuid: UUID,
+  ) {
     try {
-      const response: any = await this.brandsService.create(payload);
+      const response: any = await this.brandsService.delete({ uuid });
       return this.res.successResponse({
         data: response,
-        status: HttpStatus.CREATED,
-        message: 'Create new Brand',
+        status: HttpStatus.ACCEPTED,
+        message: 'Delete brand successfully',
       });
     } catch (error: any) {
       throw errorHandler(error);

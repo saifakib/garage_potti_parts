@@ -83,7 +83,7 @@ export class VehicleTypesRepository {
 
   async delete(uuid?: string) {
     try {
-      const create = await this.database.vehicleTypes.update({
+      const response = await this.database.vehicleTypes.update({
         where: {
           uuid: uuid,
         },
@@ -91,7 +91,7 @@ export class VehicleTypesRepository {
           soft_delete: true,
         },
       });
-      return create;
+      return response;
     } catch (err) {
       throw err;
     }

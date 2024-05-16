@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards, HttpStatus, Param, Body, Post, Query } from '@nestjs/common';
+import { Controller, Get, UseGuards, HttpStatus, Param, Body, Post, Query, Delete } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@/guard/auth.guard';
 import { PermissionGuard } from '@/guard/permission.guard';
@@ -71,6 +71,30 @@ export class CategoryController {
         data: response,
         status: HttpStatus.CREATED,
         message: 'Create a new parts category',
+      });
+    } catch (error: any) {
+      throw errorHandler(error);
+    }
+  }
+
+  @ApiBearerAuth('JWT')
+  @UseGuards(AuthGuard)
+  @Delete('/:uuid')
+  @ApiParam({
+    name: 'uuid',
+    description: 'uuid format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
+    type: 'string',
+  })
+  async delete(
+    @Param('uuid', new ZodPipe(uuidSchema))
+    uuid: UUID,
+  ) {
+    try {
+      const response: any = await this.categoryService.delete({ uuid });
+      return this.res.successResponse({
+        data: response,
+        status: HttpStatus.ACCEPTED,
+        message: 'Delete category successfully',
       });
     } catch (error: any) {
       throw errorHandler(error);

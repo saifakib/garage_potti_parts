@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards, HttpStatus, Param, Body, Post, Query } from '@nestjs/common';
+import { Controller, Get, UseGuards, HttpStatus, Param, Body, Post, Query, Delete } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@/guard/auth.guard';
 import { ZodPipe } from '@/zod-validation/zod-validation.pipe';
@@ -11,7 +11,7 @@ import { YearsService } from './years.service';
 import { YearDto, yearSchema } from '@/validationSchema/common/year.schema';
 
 @ApiTags('Years')
-@Controller('years')
+@Controller('parts/years')
 export class YearsController {
   private readonly res = new ResponseHelper();
   constructor(private readonly yearsService: YearsService) {}
@@ -32,6 +32,23 @@ export class YearsController {
       throw errorHandler(error);
     }
   }
+
+  @ApiBearerAuth('JWT')
+  @UseGuards(AuthGuard)
+  @Post()
+  async create(@Body(new ZodPipe(yearSchema)) payload: YearDto) {
+    try {
+      const response: any = await this.yearsService.create(payload);
+      return this.res.successResponse({
+        data: response,
+        status: HttpStatus.CREATED,
+        message: 'Create new Year',
+      });
+    } catch (error: any) {
+      throw errorHandler(error);
+    }
+  }
+
   @ApiBearerAuth('JWT')
   @UseGuards(AuthGuard)
   @Get('/:uuid')
@@ -54,14 +71,22 @@ export class YearsController {
 
   @ApiBearerAuth('JWT')
   @UseGuards(AuthGuard)
-  @Post()
-  async create(@Body(new ZodPipe(yearSchema)) payload: YearDto) {
+  @Delete('/:uuid')
+  @ApiParam({
+    name: 'uuid',
+    description: 'uuid format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
+    type: 'string',
+  })
+  async delete(
+    @Param('uuid', new ZodPipe(uuidSchema))
+    uuid: UUID,
+  ) {
     try {
-      const response: any = await this.yearsService.create(payload);
+      const response: any = await this.yearsService.delete({ uuid });
       return this.res.successResponse({
         data: response,
-        status: HttpStatus.CREATED,
-        message: 'Create new Year',
+        status: HttpStatus.ACCEPTED,
+        message: 'Delete year successfully',
       });
     } catch (error: any) {
       throw errorHandler(error);

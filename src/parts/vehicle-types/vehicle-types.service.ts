@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
 import { FindAllDto } from '@/validationSchema/common/findAll.schema';
 import { VehicleTypesRepository } from './vehicle-types.repository';
 import { CreateVehicleTypedDto } from '@/validationSchema/parts/vehicleTypes';
@@ -48,6 +48,24 @@ export class VehicleTypesService {
         description: payload.description ?? payload.description,
       };
       return await this.vehicleTypesRepository.create(createData);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async delete(payload: any) {
+    try {
+      const vType = await this.vehicleTypesRepository.findOne({
+        where: {
+          uuid: payload.uuid,
+        },
+        include: {
+          parts: true,
+        },
+      });
+      if (!vType) throw new NotFoundException('Not found!!');
+      if (vType.parts.length > 0) throw new NotAcceptableException('Cannot delete this vehicle types!!');
+      await this.vehicleTypesRepository.delete(payload.uuid);
     } catch (err) {
       throw err;
     }

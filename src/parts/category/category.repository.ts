@@ -75,6 +75,22 @@ export class CategoryRepository {
     }
   }
 
+  async delete(uuid?: string) {
+    try {
+      const response = await this.database.partsCategory.update({
+        where: {
+          uuid: uuid,
+        },
+        data: {
+          soft_delete: true,
+        },
+      });
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async createOption(args: Prisma.PartsCategoryOptionsCreateInput) {
     try {
       const create = await this.database.partsCategoryOptions.create({

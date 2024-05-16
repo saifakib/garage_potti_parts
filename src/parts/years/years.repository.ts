@@ -83,7 +83,7 @@ export class YearsRepository {
 
   async delete(uuid?: string) {
     try {
-      const create = await this.database.years.update({
+      const response = await this.database.years.update({
         where: {
           uuid: uuid,
         },
@@ -91,7 +91,7 @@ export class YearsRepository {
           soft_delete: true,
         },
       });
-      return create;
+      return response;
     } catch (err) {
       throw err;
     }

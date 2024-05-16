@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
 import { FindAllDto } from '@/validationSchema/common/findAll.schema';
 import { EnginesRepository } from './Engines.repository';
 import { CreateEngineDto } from '@/validationSchema/parts/Engines';
@@ -48,6 +48,24 @@ export class EnginesService {
         description: payload.description ?? payload.description,
       };
       return await this.enginesRepository.create(createData);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async delete(payload: any) {
+    try {
+      const engine = await this.enginesRepository.findOne({
+        where: {
+          uuid: payload.uuid,
+        },
+        include: {
+          parts: true,
+        },
+      });
+      if (!engine) throw new NotFoundException('Not found!!');
+      if (engine.parts.length > 0) throw new NotAcceptableException('Cannot delete this engine!!');
+      await this.enginesRepository.delete(payload.uuid);
     } catch (err) {
       throw err;
     }
