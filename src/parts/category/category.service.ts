@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
 import { FindAllDto } from '@/validationSchema/common/findAll.schema';
 import { CategoryRepository } from './category.repository';
 import {
@@ -22,6 +22,7 @@ export class CategoryService {
             partsCategoryOptionsEntity: true,
           },
         },
+        parts: true,
       },
     });
     if (!response) {
@@ -45,6 +46,7 @@ export class CategoryService {
               partsCategoryOptionsEntity: true,
             },
           },
+          parts: true,
         },
       });
     } catch (err) {
@@ -59,6 +61,26 @@ export class CategoryService {
         image: payload.image,
       };
       return await this.categoryRepository.create(createData);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async delete(payload: any) {
+    try {
+      const category = await this.categoryRepository.findOne({
+        where: {
+          uuid: payload.uuid,
+        },
+        include: {
+          partsCategoryOptions: true,
+          parts: true,
+        },
+      });
+      if (!category) throw new NotFoundException('Not found!!');
+      if (category.partsCategoryOptions.length > 0 || category.parts.length > 0)
+        throw new NotAcceptableException('Cannot delete this category!!');
+      await this.categoryRepository.delete(payload.uuid);
     } catch (err) {
       throw err;
     }
