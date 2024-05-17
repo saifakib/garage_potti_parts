@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards, HttpStatus, Param, Body, Post, Query } from '@nestjs/common';
+import { Controller, Get, UseGuards, HttpStatus, Param, Body, Post, Query, Delete } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@/guard/auth.guard';
 import { ZodPipe } from '@/zod-validation/zod-validation.pipe';
@@ -11,7 +11,7 @@ import { CreateBrandDto, createBrandSchema } from '@/validationSchema/parts/bran
 import { ModelsService } from './models.service';
 
 @ApiTags('Models')
-@Controller('models')
+@Controller('parts/models')
 export class ModelsController {
   private readonly res = new ResponseHelper();
   constructor(private readonly modelsService: ModelsService) {}
@@ -32,6 +32,23 @@ export class ModelsController {
       throw errorHandler(error);
     }
   }
+
+  @ApiBearerAuth('JWT')
+  @UseGuards(AuthGuard)
+  @Post()
+  async create(@Body(new ZodPipe(createBrandSchema)) payload: CreateBrandDto) {
+    try {
+      const response: any = await this.modelsService.create(payload);
+      return this.res.successResponse({
+        data: response,
+        status: HttpStatus.CREATED,
+        message: 'Create new Model',
+      });
+    } catch (error: any) {
+      throw errorHandler(error);
+    }
+  }
+
   @ApiBearerAuth('JWT')
   @UseGuards(AuthGuard)
   @Get('/:uuid')
@@ -54,14 +71,22 @@ export class ModelsController {
 
   @ApiBearerAuth('JWT')
   @UseGuards(AuthGuard)
-  @Post()
-  async create(@Body(new ZodPipe(createBrandSchema)) payload: CreateBrandDto) {
+  @Delete('/:uuid')
+  @ApiParam({
+    name: 'uuid',
+    description: 'uuid format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
+    type: 'string',
+  })
+  async delete(
+    @Param('uuid', new ZodPipe(uuidSchema))
+    uuid: UUID,
+  ) {
     try {
-      const response: any = await this.modelsService.create(payload);
+      const response: any = await this.modelsService.delete({ uuid });
       return this.res.successResponse({
         data: response,
-        status: HttpStatus.CREATED,
-        message: 'Create new Model',
+        status: HttpStatus.ACCEPTED,
+        message: 'Delete model successfully',
       });
     } catch (error: any) {
       throw errorHandler(error);

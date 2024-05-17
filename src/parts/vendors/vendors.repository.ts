@@ -1,16 +1,16 @@
 import { DatabaseService } from '@/database/database.service';
 import { Injectable } from '@nestjs/common';
-import { Prisma, Years } from '@prisma/client';
+import { Prisma, Vendors } from '@prisma/client';
 import { PaginatorTypes, paginator } from 'paginator';
 const paginate: PaginatorTypes.PaginateFunction = paginator({ perPage: 10 });
 
 @Injectable()
-export class YearsRepository {
+export class VendorsRepository {
   constructor(private readonly database: DatabaseService) {}
 
-  async findOne({ where, include }: { where?: Prisma.YearsWhereInput; include?: Prisma.YearsInclude }) {
+  async findOne({ where, include }: { where?: Prisma.VendorsWhereInput; include?: Prisma.VendorsInclude }) {
     try {
-      const find = await this.database.years.findFirst({
+      const find = await this.database.vendors.findFirst({
         where: where,
         include: include,
       });
@@ -27,17 +27,17 @@ export class YearsRepository {
     perPage,
     include,
   }: {
-    where?: Prisma.YearsWhereInput;
-    orderBy?: Prisma.YearsOrderByWithRelationInput;
+    where?: Prisma.VendorsWhereInput;
+    orderBy?: Prisma.VendorsOrderByWithRelationInput;
     page?: number;
     perPage?: number;
-    include?: Prisma.YearsInclude;
-  }): Promise<PaginatorTypes.PaginatedResult<Years>> {
+    include?: Prisma.VendorsInclude;
+  }): Promise<PaginatorTypes.PaginatedResult<Vendors>> {
     try {
       const args = {};
       Object.assign(args, { include });
       return paginate(
-        this.database.years,
+        this.database.vendors,
         {
           where,
           orderBy,
@@ -53,9 +53,9 @@ export class YearsRepository {
     }
   }
 
-  async create(args: Prisma.YearsCreateInput) {
+  async create(args: Prisma.VendorsCreateInput) {
     try {
-      const create = await this.database.years.create({
+      const create = await this.database.vendors.create({
         data: args,
       });
       return create;
@@ -64,15 +64,15 @@ export class YearsRepository {
     }
   }
 
-  async update(uuid?: string, args?: Prisma.YearsUpdateInput) {
+  async update(uuid?: string, args?: Prisma.VendorsUpdateInput) {
     try {
-      const create = await this.database.years.update({
+      const create = await this.database.vendors.update({
         where: {
           uuid: uuid,
         },
         data: args,
         include: {
-          parts: true,
+          partsEntries: true,
         },
       });
       return create;
@@ -83,7 +83,7 @@ export class YearsRepository {
 
   async delete(uuid?: string) {
     try {
-      const response = await this.database.years.update({
+      const create = await this.database.vendors.update({
         where: {
           uuid: uuid,
         },
@@ -91,7 +91,7 @@ export class YearsRepository {
           soft_delete: true,
         },
       });
-      return response;
+      return create;
     } catch (err) {
       throw err;
     }

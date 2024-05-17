@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
 import { FindAllDto } from '@/validationSchema/common/findAll.schema';
 import { YearsRepository } from './years.repository';
 import { YearDto } from '@/validationSchema/common/year.schema';
@@ -46,6 +46,24 @@ export class YearsService {
         year: payload.year,
       };
       return await this.yearsRepository.create(createData);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async delete(payload: any) {
+    try {
+      const year = await this.yearsRepository.findOne({
+        where: {
+          uuid: payload.uuid,
+        },
+        include: {
+          parts: true,
+        },
+      });
+      if (!year) throw new NotFoundException('Not found!!');
+      if (year.parts.length > 0) throw new NotAcceptableException('Cannot delete this year!!');
+      await this.yearsRepository.delete(payload.uuid);
     } catch (err) {
       throw err;
     }

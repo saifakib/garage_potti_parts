@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
 import { FindAllDto } from '@/validationSchema/common/findAll.schema';
 import { BrandsRepository } from './brands.repository';
 import { CreateBrandDto } from '@/validationSchema/parts/brands';
@@ -29,7 +29,7 @@ export class BrandsService {
         orderBy: {
           id: payload.sort,
         },
-        page: Number(payload.page),
+        page: Number(payload.page) || 1,
         perPage: Number(payload.limit),
         include: {
           parts: true,
@@ -47,6 +47,24 @@ export class BrandsService {
         image: payload.image,
       };
       return await this.brandsRepository.create(createData);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async delete(payload: any) {
+    try {
+      const brand = await this.brandsRepository.findOne({
+        where: {
+          uuid: payload.uuid,
+        },
+        include: {
+          parts: true,
+        },
+      });
+      if (!brand) throw new NotFoundException('Not found!!');
+      if (brand.parts.length > 0) throw new NotAcceptableException('Cannot delete this brand!!');
+      await this.brandsRepository.delete(payload.uuid);
     } catch (err) {
       throw err;
     }

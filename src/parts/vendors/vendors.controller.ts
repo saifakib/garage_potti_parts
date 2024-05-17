@@ -7,26 +7,26 @@ import { UUID } from 'crypto';
 import ResponseHelper from '@/utils/response.helper';
 import errorHandler from '@/utils/error.helper';
 import { FindAllDto, findAllSchema } from '@/validationSchema/common/findAll.schema';
-import { BrandsService } from './brands.service';
-import { CreateBrandDto, createBrandSchema } from '@/validationSchema/parts/brands';
+import { CreateVendorDto, createVendorSchema } from '@/validationSchema/parts/Vendors';
+import { VendorsService } from './vendors.service';
 
-@ApiTags('Brands')
-@Controller('parts/brands')
-export class BrandsController {
+@ApiTags('Vendors')
+@Controller('parts/vendors')
+export class VendorsController {
   private readonly res = new ResponseHelper();
-  constructor(private readonly brandsService: BrandsService) {}
+  constructor(private readonly vendorsService: VendorsService) {}
 
   @ApiBearerAuth('JWT')
   @UseGuards(AuthGuard)
   @Get()
   async findAll(@Query(new ZodPipe(findAllSchema)) payload: FindAllDto) {
     try {
-      const response: any = await this.brandsService.findAll(payload);
+      const response: any = await this.vendorsService.findAll(payload);
       return this.res.successResponse({
         data: response.data,
         meta: response.meta,
         status: HttpStatus.OK,
-        message: 'All Brands',
+        message: 'All Vendors',
       });
     } catch (error: any) {
       throw errorHandler(error);
@@ -36,13 +36,13 @@ export class BrandsController {
   @ApiBearerAuth('JWT')
   @UseGuards(AuthGuard)
   @Post()
-  async create(@Body(new ZodPipe(createBrandSchema)) payload: CreateBrandDto) {
+  async create(@Body(new ZodPipe(createVendorSchema)) payload: CreateVendorDto) {
     try {
-      const response: any = await this.brandsService.create(payload);
+      const response: any = await this.vendorsService.create(payload);
       return this.res.successResponse({
         data: response,
         status: HttpStatus.CREATED,
-        message: 'Create new Brand',
+        message: 'Create new Vendor',
       });
     } catch (error: any) {
       throw errorHandler(error);
@@ -61,11 +61,11 @@ export class BrandsController {
     @Param('uuid', new ZodPipe(uuidSchema))
     uuid: UUID,
   ) {
-    const response: any = await this.brandsService.findOne({ uuid });
+    const response: any = await this.vendorsService.findOne({ uuid });
     return this.res.successResponse({
       data: response,
       status: HttpStatus.FOUND,
-      message: 'Brand found',
+      message: 'Vendor found',
     });
   }
 
@@ -82,11 +82,11 @@ export class BrandsController {
     uuid: UUID,
   ) {
     try {
-      const response: any = await this.brandsService.delete({ uuid });
+      const response: any = await this.vendorsService.delete({ uuid });
       return this.res.successResponse({
         data: response,
         status: HttpStatus.ACCEPTED,
-        message: 'Delete brand successfully',
+        message: 'Delete vendor successfully',
       });
     } catch (error: any) {
       throw errorHandler(error);
