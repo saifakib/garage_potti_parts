@@ -42,6 +42,7 @@ export class CategoryController {
       throw errorHandler(error);
     }
   }
+
   @ApiBearerAuth('JWT')
   @Permission('VIEW_CATEGORY')
   @UseGuards(AuthGuard, PermissionGuard)
