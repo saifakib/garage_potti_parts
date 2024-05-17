@@ -3,7 +3,7 @@ import { nameSchema } from '@/validationSchema/common/name.schema';
 import { z } from 'zod';
 
 export const createCategoryOptionEntitySchema = nameSchema.extend({
-  categoryOptionUuid: z.string().optional(),
+  categoryOptionUuid: z.string(),
 });
 
 export class CreateCategoryOptionEntityDto extends createZodDto(createCategoryOptionEntitySchema) {}
