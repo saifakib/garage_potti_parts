@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards, HttpStatus, Param, Body, Post, Query, Delete } from '@nestjs/common';
+import { Controller, Get, UseGuards, HttpStatus, Param, Body, Post, Query, Delete, Patch } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@/guard/auth.guard';
 import { ZodPipe } from '@/zod-validation/zod-validation.pipe';
@@ -64,6 +64,27 @@ export class YearsController {
       status: HttpStatus.FOUND,
       message: 'Year found',
     });
+  }
+
+  @ApiBearerAuth('JWT')
+  @UseGuards(AuthGuard)
+  @Patch('/:uuid')
+  @ApiParam({
+    name: 'uuid',
+    description: 'uuid format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
+    type: 'string',
+  })
+  async update(@Param('uuid', new ZodPipe(uuidSchema)) uuid: UUID, @Body(new ZodPipe(yearSchema)) payload: YearDto) {
+    try {
+      const response: any = await this.yearsService.update(uuid, payload);
+      return this.res.successResponse({
+        data: response,
+        status: HttpStatus.ACCEPTED,
+        message: 'Update year',
+      });
+    } catch (error: any) {
+      throw errorHandler(error);
+    }
   }
 
   @ApiBearerAuth('JWT')
