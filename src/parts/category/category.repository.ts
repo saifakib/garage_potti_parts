@@ -75,6 +75,24 @@ export class CategoryRepository {
     }
   }
 
+  async update({
+    where,
+    data,
+  }: {
+    where?: Prisma.PartsCategoryWhereUniqueInput;
+    data?: Prisma.PartsCategoryUpdateInput;
+  }) {
+    try {
+      const response = await this.database.partsCategory.update({
+        where: where,
+        data: data,
+      });
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async delete(uuid?: string) {
     try {
       const response = await this.database.partsCategory.update({

@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards, HttpStatus, Param, Body, Post, Query, Delete } from '@nestjs/common';
+import { Controller, Get, UseGuards, HttpStatus, Param, Body, Post, Query, Delete, Patch } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@/guard/auth.guard';
 import { PermissionGuard } from '@/guard/permission.guard';
@@ -16,6 +16,8 @@ import {
   createCategoryOptionEntitySchema,
   createCategoryOptionSchema,
   createCategorySchema,
+  UpdateCategoryDto,
+  updateCategorySchema,
 } from '@/validationSchema/parts/category';
 import { CategoryService } from './category.service';
 
@@ -80,16 +82,37 @@ export class CategoryController {
 
   @ApiBearerAuth('JWT')
   @UseGuards(AuthGuard)
+  @Patch('/:uuid')
+  @ApiParam({
+    name: 'uuid',
+    description: 'uuid format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
+    type: 'string',
+  })
+  async update(
+    @Param('uuid', new ZodPipe(uuidSchema)) uuid: UUID,
+    @Body(new ZodPipe(updateCategorySchema)) payload: UpdateCategoryDto,
+  ) {
+    try {
+      const response: any = await this.categoryService.update(uuid, payload);
+      return this.res.successResponse({
+        data: response,
+        status: HttpStatus.ACCEPTED,
+        message: 'Update category successfully',
+      });
+    } catch (error: any) {
+      throw errorHandler(error);
+    }
+  }
+
+  @ApiBearerAuth('JWT')
+  @UseGuards(AuthGuard)
   @Delete('/:uuid')
   @ApiParam({
     name: 'uuid',
     description: 'uuid format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
     type: 'string',
   })
-  async delete(
-    @Param('uuid', new ZodPipe(uuidSchema))
-    uuid: UUID,
-  ) {
+  async delete(@Param('uuid', new ZodPipe(uuidSchema)) uuid: UUID) {
     try {
       const response: any = await this.categoryService.delete({ uuid });
       return this.res.successResponse({
