@@ -57,10 +57,7 @@ export class VendorsController {
     description: 'uuid format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
     type: 'string',
   })
-  async findOne(
-    @Param('uuid', new ZodPipe(uuidSchema))
-    uuid: UUID,
-  ) {
+  async findOne(@Param('uuid', new ZodPipe(uuidSchema)) uuid: UUID) {
     const response: any = await this.vendorsService.findOne({ uuid });
     return this.res.successResponse({
       data: response,
@@ -77,10 +74,7 @@ export class VendorsController {
     description: 'uuid format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
     type: 'string',
   })
-  async delete(
-    @Param('uuid', new ZodPipe(uuidSchema))
-    uuid: UUID,
-  ) {
+  async delete(@Param('uuid', new ZodPipe(uuidSchema)) uuid: UUID) {
     try {
       const response: any = await this.vendorsService.delete({ uuid });
       return this.res.successResponse({

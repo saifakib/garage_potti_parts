@@ -36,18 +36,7 @@ export class ModelsRepository {
     try {
       const args = {};
       Object.assign(args, { include });
-      return paginate(
-        this.database.models,
-        {
-          where,
-          orderBy,
-          ...args,
-        },
-        {
-          page,
-          perPage,
-        },
-      );
+      return paginate(this.database.years, { where, orderBy, ...args }, { page, perPage });
     } catch (error) {
       throw error;
     }
@@ -64,16 +53,11 @@ export class ModelsRepository {
     }
   }
 
-  async update(uuid?: string, args?: Prisma.ModelsUpdateInput) {
+  async update({ where, args }: { where?: Prisma.ModelsWhereUniqueInput; args?: Prisma.ModelsUpdateInput }) {
     try {
       const create = await this.database.models.update({
-        where: {
-          uuid: uuid,
-        },
+        where,
         data: args,
-        include: {
-          parts: true,
-        },
       });
       return create;
     } catch (err) {

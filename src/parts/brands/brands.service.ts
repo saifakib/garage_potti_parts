@@ -1,7 +1,7 @@
 import { Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
 import { FindAllDto } from '@/validationSchema/common/findAll.schema';
 import { BrandsRepository } from './brands.repository';
-import { CreateBrandDto } from '@/validationSchema/parts/brands';
+import { CreateBrandDto, UpdateBrandDto } from '@/validationSchema/parts/brands';
 
 @Injectable()
 export class BrandsService {
@@ -47,6 +47,22 @@ export class BrandsService {
         image: payload.image,
       };
       return await this.brandsRepository.create(createData);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async update(uuid: string, payload: UpdateBrandDto) {
+    try {
+      return await this.brandsRepository.update({
+        where: {
+          uuid: uuid,
+        },
+        args: {
+          name: payload.name,
+          image: payload.image,
+        },
+      });
     } catch (err) {
       throw err;
     }
