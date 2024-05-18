@@ -36,18 +36,7 @@ export class VendorsRepository {
     try {
       const args = {};
       Object.assign(args, { include });
-      return paginate(
-        this.database.vendors,
-        {
-          where,
-          orderBy,
-          ...args,
-        },
-        {
-          page,
-          perPage,
-        },
-      );
+      return paginate(this.database.years, { where, orderBy, ...args }, { page, perPage });
     } catch (error) {
       throw error;
     }
@@ -64,18 +53,12 @@ export class VendorsRepository {
     }
   }
 
-  async update(uuid?: string, args?: Prisma.VendorsUpdateInput) {
+  async update({ where, args }: { where?: Prisma.VendorsWhereUniqueInput; args?: Prisma.VendorsUpdateInput }) {
     try {
-      const create = await this.database.vendors.update({
-        where: {
-          uuid: uuid,
-        },
+      return await this.database.vendors.update({
+        where,
         data: args,
-        include: {
-          partsEntries: true,
-        },
       });
-      return create;
     } catch (err) {
       throw err;
     }

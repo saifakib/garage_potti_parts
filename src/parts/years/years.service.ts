@@ -51,6 +51,21 @@ export class YearsService {
     }
   }
 
+  async update(uuid: string, payload: YearDto) {
+    try {
+      return await this.yearsRepository.update({
+        where: {
+          uuid: uuid,
+        },
+        args: {
+          year: payload.year ?? payload.year,
+        },
+      });
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async delete(payload: any) {
     try {
       const year = await this.yearsRepository.findOne({

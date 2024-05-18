@@ -5,6 +5,7 @@ import {
   CreateCategoryDto,
   CreateCategoryOptionDto,
   CreateCategoryOptionEntityDto,
+  UpdateCategoryDto,
 } from '@/validationSchema/parts/category';
 
 @Injectable()
@@ -61,6 +62,22 @@ export class CategoryService {
         image: payload.image,
       };
       return await this.categoryRepository.create(createData);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async update(uuid: string, payload: UpdateCategoryDto) {
+    try {
+      return await this.categoryRepository.update({
+        where: {
+          uuid: uuid,
+        },
+        data: {
+          name: payload.name,
+          image: payload.image,
+        },
+      });
     } catch (err) {
       throw err;
     }
