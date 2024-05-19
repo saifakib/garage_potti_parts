@@ -19,7 +19,10 @@ import { VehicleTypesService } from '@/parts/vehicle-types/vehicle-types.service
 import { VehicleTypesRepository } from '@/parts/vehicle-types/vehicle-types.repository';
 import { VendorsController } from '@/parts/vendors/vendors.controller';
 import { VendorsService } from '@/parts/vendors/vendors.service';
-import { VendorsRepository } from '@/parts/vendors/Vendors.repository';
+import { VendorsRepository } from '@/parts/vendors/vendors.repository';
+import { PartsController } from '@/parts/parts/parts.controller';
+import { PartsService } from '@/parts/parts/parts.service';
+import { PartsRepository } from '@/parts/parts/parts.repository';
 
 @Module({
   imports: [],
@@ -31,6 +34,7 @@ import { VendorsRepository } from '@/parts/vendors/Vendors.repository';
     EnginesController,
     VehicleTypesController,
     VendorsController,
+    PartsController,
   ],
   providers: [
     CategoryService,
@@ -47,6 +51,8 @@ import { VendorsRepository } from '@/parts/vendors/Vendors.repository';
     VehicleTypesRepository,
     VendorsService,
     VendorsRepository,
+    PartsService,
+    PartsRepository,
   ],
 })
 export class PartsModule {}

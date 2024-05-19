@@ -216,7 +216,7 @@ model Parts {
     uuid                           String                      @unique @default(uuid()) @db.Uuid
     name                           String                      @db.VarChar()
     price                          Float                       @db.DoublePrecision
-    qty                            Int                         @db.Integer
+    qty                            Int                         @default(0) @db.Integer
     status                         String                      @db.VarChar() // Active inactive
     alert_qty                      Int                         @db.Integer
     soft_delete                    Boolean                     @default(false)

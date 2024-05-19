@@ -1,6 +1,6 @@
 import { Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
 import { FindAllDto } from '@/validationSchema/common/findAll.schema';
-import { VendorsRepository } from './Vendors.repository';
+import { VendorsRepository } from './vendors.repository';
 import { CreateVendorDto, UpdateVendorDto } from '@/validationSchema/parts/vendors';
 
 @Injectable()
