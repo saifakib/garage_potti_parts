@@ -29,4 +29,15 @@ export class PartsRepository {
       throw error;
     }
   }
+
+  async create(args?: Prisma.PartsCreateInput) {
+    try {
+      const create = await this.database.parts.create({
+        data: args,
+      });
+      return create;
+    } catch (err) {
+      throw err;
+    }
+  }
 }
