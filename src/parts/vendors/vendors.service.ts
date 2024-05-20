@@ -1,7 +1,7 @@
 import { Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
 import { FindAllDto } from '@/validationSchema/common/findAll.schema';
-import { VendorsRepository } from './Vendors.repository';
-import { CreateVendorDto } from '@/validationSchema/parts/vendors';
+import { VendorsRepository } from './vendors.repository';
+import { CreateVendorDto, UpdateVendorDto } from '@/validationSchema/parts/vendors';
 
 @Injectable()
 export class VendorsService {
@@ -51,6 +51,26 @@ export class VendorsService {
         description: payload.description ?? payload.description,
       };
       return await this.vendorsRepository.create(createData);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async update(uuid: string, payload: UpdateVendorDto) {
+    try {
+      return await this.vendorsRepository.update({
+        where: {
+          uuid: uuid,
+        },
+        args: {
+          name: payload.name,
+          address: payload.address,
+          mobile: payload.mobile,
+          email: payload.email ?? payload.email,
+          documents: payload.documents ?? payload.documents,
+          description: payload.description ?? payload.description,
+        },
+      });
     } catch (err) {
       throw err;
     }

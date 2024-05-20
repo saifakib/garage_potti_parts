@@ -40,6 +40,11 @@ enum GENDER {
     OTHER
 }
 
+enum PARTS_STATUS {
+    ACTIVE
+    INACTIVE
+}
+
 model Users {
     id              Int            @id @default(autoincrement())
     uuid            String         @unique @default(uuid()) @db.Uuid
@@ -212,31 +217,30 @@ model VehicleTypes {
 }
 
 model Parts {
-    id                             Int                         @id @unique @default(autoincrement())
-    uuid                           String                      @unique @default(uuid()) @db.Uuid
-    name                           String                      @db.VarChar()
-    price                          Float                       @db.DoublePrecision
-    qty                            Int                         @db.Integer
-    status                         String                      @db.VarChar() // Active inactive
-    alert_qty                      Int                         @db.Integer
-    soft_delete                    Boolean                     @default(false)
-    description                    String?                     @db.VarChar()
-    created_at                     DateTime                    @default(now()) @db.Timestamptz(6)
-    created_by                     String?                     @db.Uuid
-    updated_at                     DateTime?                   @updatedAt @db.Timestamptz(6)
-    updated_by                     String?                     @db.Uuid
-    categoryUuid                   String                      @db.Uuid
-    category                       PartsCategory?              @relation(fields: [categoryUuid], references: [uuid])
-    brandUuid                      String?                     @db.Uuid
-    brands                         Brands?                     @relation(fields: [brandUuid], references: [uuid])
-    models                         Models[]
-    engines                        Engines[]
-    years                          Years[]
-    partsEntryLists                PartsEntryLists[]
-    partsInvoiceProducts           PartsInvoiceProducts[]
-    vehicleTypes                   VehicleTypes[]
-    partsCategoryOptionsEntity     PartsCategoryOptionsEntity? @relation(fields: [partsCategoryOptionsEntityUuid], references: [uuid])
-    partsCategoryOptionsEntityUuid String?                     @db.Uuid
+    id                           Int                          @id @unique @default(autoincrement())
+    uuid                         String                       @unique @default(uuid()) @db.Uuid
+    name                         String                       @db.VarChar()
+    price                        Float                        @db.DoublePrecision
+    qty                          Int?                         @default(0) @db.Integer
+    status                       PARTS_STATUS?
+    alert_qty                    Int                          @db.Integer
+    soft_delete                  Boolean                      @default(false)
+    description                  String?                      @db.VarChar()
+    created_at                   DateTime                     @default(now()) @db.Timestamptz(6)
+    created_by                   String?                      @db.Uuid
+    updated_at                   DateTime?                    @updatedAt @db.Timestamptz(6)
+    updated_by                   String?                      @db.Uuid
+    categoryUuid                 String                       @db.Uuid
+    category                     PartsCategory?               @relation(fields: [categoryUuid], references: [uuid])
+    brandUuid                    String?                      @db.Uuid
+    brands                       Brands?                      @relation(fields: [brandUuid], references: [uuid])
+    models                       Models[]
+    engines                      Engines[]
+    years                        Years[]
+    vehicleTypes                 VehicleTypes[]
+    partsEntryLists              PartsEntryLists[]
+    partsInvoiceProducts         PartsInvoiceProducts[]
+    partsCategoryOptionsEntities PartsCategoryOptionsEntity[]
 }
 
 model Vendors {

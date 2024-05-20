@@ -36,18 +36,7 @@ export class VehicleTypesRepository {
     try {
       const args = {};
       Object.assign(args, { include });
-      return paginate(
-        this.database.vehicleTypes,
-        {
-          where,
-          orderBy,
-          ...args,
-        },
-        {
-          page,
-          perPage,
-        },
-      );
+      return paginate(this.database.years, { where, orderBy, ...args }, { page, perPage });
     } catch (error) {
       throw error;
     }
@@ -64,16 +53,17 @@ export class VehicleTypesRepository {
     }
   }
 
-  async update(uuid?: string, args?: Prisma.VehicleTypesUpdateInput) {
+  async update({
+    where,
+    args,
+  }: {
+    where?: Prisma.VehicleTypesWhereUniqueInput;
+    args?: Prisma.VehicleTypesUpdateInput;
+  }) {
     try {
       const create = await this.database.vehicleTypes.update({
-        where: {
-          uuid: uuid,
-        },
+        where,
         data: args,
-        include: {
-          parts: true,
-        },
       });
       return create;
     } catch (err) {

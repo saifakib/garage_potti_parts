@@ -1,32 +1,30 @@
-import { Controller, Get, UseGuards, HttpStatus, Param, Body, Post, Query, Delete, Patch } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
-import { AuthGuard } from '@/guard/auth.guard';
 import { ZodPipe } from '@/zod-validation/zod-validation.pipe';
-import { uuidSchema } from '@/validationSchema/common/uuid.schema';
-import { UUID } from 'crypto';
 import ResponseHelper from '@/utils/response.helper';
 import errorHandler from '@/utils/error.helper';
 import { FindAllDto, findAllSchema } from '@/validationSchema/common/findAll.schema';
-import { BrandsService } from './brands.service';
-import { CreateBrandDto, createBrandSchema, UpdateBrandDto, updateBrandSchema } from '@/validationSchema/parts/brands';
+import { PartsService } from './parts.service';
+import { CreatePartsDto, createPartsSchema, UpdatePartsDto, updatePartsSchema } from '@/validationSchema/parts/parts';
+import { uuidSchema } from '@/validationSchema/common/uuid.schema';
+import { UUID } from 'crypto';
 
-@ApiTags('Brands')
-@Controller('parts/brands')
-export class BrandsController {
+@ApiTags('Parts & Accessories')
+@Controller('parts')
+export class PartsController {
   private readonly res = new ResponseHelper();
-  constructor(private readonly brandsService: BrandsService) {}
+  constructor(private readonly partsService: PartsService) {}
 
   @ApiBearerAuth('JWT')
-  @UseGuards(AuthGuard)
   @Get()
   async findAll(@Query(new ZodPipe(findAllSchema)) payload: FindAllDto) {
     try {
-      const response: any = await this.brandsService.findAll(payload);
+      const response: any = await this.partsService.findAll(payload);
       return this.res.successResponse({
         data: response.data,
         meta: response.meta,
         status: HttpStatus.OK,
-        message: 'All Brands',
+        message: 'All Parts & Accessories',
       });
     } catch (error: any) {
       throw errorHandler(error);
@@ -34,15 +32,14 @@ export class BrandsController {
   }
 
   @ApiBearerAuth('JWT')
-  @UseGuards(AuthGuard)
   @Post()
-  async create(@Body(new ZodPipe(createBrandSchema)) payload: CreateBrandDto) {
+  async create(@Body(new ZodPipe(createPartsSchema)) payload: CreatePartsDto) {
     try {
-      const response: any = await this.brandsService.create(payload);
+      const response: any = await this.partsService.create(payload);
       return this.res.successResponse({
         data: response,
         status: HttpStatus.CREATED,
-        message: 'Create new Brand',
+        message: 'Create new parts successfully!!',
       });
     } catch (error: any) {
       throw errorHandler(error);
@@ -50,7 +47,6 @@ export class BrandsController {
   }
 
   @ApiBearerAuth('JWT')
-  @UseGuards(AuthGuard)
   @Get('/:uuid')
   @ApiParam({
     name: 'uuid',
@@ -58,16 +54,15 @@ export class BrandsController {
     type: 'string',
   })
   async findOne(@Param('uuid', new ZodPipe(uuidSchema)) uuid: UUID) {
-    const response: any = await this.brandsService.findOne({ uuid });
+    const response: any = await this.partsService.findOne({ uuid });
     return this.res.successResponse({
       data: response,
       status: HttpStatus.FOUND,
-      message: 'Brand found',
+      message: 'Parts found',
     });
   }
 
   @ApiBearerAuth('JWT')
-  @UseGuards(AuthGuard)
   @Patch('/:uuid')
   @ApiParam({
     name: 'uuid',
@@ -76,14 +71,14 @@ export class BrandsController {
   })
   async update(
     @Param('uuid', new ZodPipe(uuidSchema)) uuid: UUID,
-    @Body(new ZodPipe(updateBrandSchema)) payload: UpdateBrandDto,
+    @Body(new ZodPipe(updatePartsSchema)) payload: UpdatePartsDto,
   ) {
     try {
-      const response: any = await this.brandsService.update(uuid, payload);
+      const response: any = await this.partsService.update(uuid, payload);
       return this.res.successResponse({
         data: response,
         status: HttpStatus.ACCEPTED,
-        message: 'Update brand successfully',
+        message: 'Update parts successfully',
       });
     } catch (error: any) {
       throw errorHandler(error);
@@ -91,7 +86,6 @@ export class BrandsController {
   }
 
   @ApiBearerAuth('JWT')
-  @UseGuards(AuthGuard)
   @Delete('/:uuid')
   @ApiParam({
     name: 'uuid',
@@ -100,11 +94,11 @@ export class BrandsController {
   })
   async delete(@Param('uuid', new ZodPipe(uuidSchema)) uuid: UUID) {
     try {
-      const response: any = await this.brandsService.delete({ uuid });
+      const response: any = await this.partsService.delete({ uuid });
       return this.res.successResponse({
         data: response,
         status: HttpStatus.ACCEPTED,
-        message: 'Delete brand successfully',
+        message: 'Delete parts successfully',
       });
     } catch (error: any) {
       throw errorHandler(error);

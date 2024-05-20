@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards, HttpStatus, Param, Body, Post, Query, Delete } from '@nestjs/common';
+import { Controller, Get, UseGuards, HttpStatus, Param, Body, Post, Query, Delete, Patch } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@/guard/auth.guard';
 import { ZodPipe } from '@/zod-validation/zod-validation.pipe';
@@ -9,6 +9,7 @@ import errorHandler from '@/utils/error.helper';
 import { FindAllDto, findAllSchema } from '@/validationSchema/common/findAll.schema';
 import { CreateBrandDto, createBrandSchema } from '@/validationSchema/parts/brands';
 import { ModelsService } from './models.service';
+import { UpdateModelDto, updateModelSchema } from '@/validationSchema/parts/models';
 
 @ApiTags('Models')
 @Controller('parts/models')
@@ -57,10 +58,7 @@ export class ModelsController {
     description: 'uuid format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
     type: 'string',
   })
-  async findOne(
-    @Param('uuid', new ZodPipe(uuidSchema))
-    uuid: UUID,
-  ) {
+  async findOne(@Param('uuid', new ZodPipe(uuidSchema)) uuid: UUID) {
     const response: any = await this.modelsService.findOne({ uuid });
     return this.res.successResponse({
       data: response,
@@ -71,16 +69,37 @@ export class ModelsController {
 
   @ApiBearerAuth('JWT')
   @UseGuards(AuthGuard)
+  @Patch('/:uuid')
+  @ApiParam({
+    name: 'uuid',
+    description: 'uuid format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
+    type: 'string',
+  })
+  async update(
+    @Param('uuid', new ZodPipe(uuidSchema)) uuid: UUID,
+    @Body(new ZodPipe(updateModelSchema)) payload: UpdateModelDto,
+  ) {
+    try {
+      const response: any = await this.modelsService.update(uuid, payload);
+      return this.res.successResponse({
+        data: response,
+        status: HttpStatus.ACCEPTED,
+        message: 'Update model successfully',
+      });
+    } catch (error: any) {
+      throw errorHandler(error);
+    }
+  }
+
+  @ApiBearerAuth('JWT')
+  @UseGuards(AuthGuard)
   @Delete('/:uuid')
   @ApiParam({
     name: 'uuid',
     description: 'uuid format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
     type: 'string',
   })
-  async delete(
-    @Param('uuid', new ZodPipe(uuidSchema))
-    uuid: UUID,
-  ) {
+  async delete(@Param('uuid', new ZodPipe(uuidSchema)) uuid: UUID) {
     try {
       const response: any = await this.modelsService.delete({ uuid });
       return this.res.successResponse({

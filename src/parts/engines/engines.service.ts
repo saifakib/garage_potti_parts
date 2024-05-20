@@ -1,7 +1,7 @@
 import { Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
 import { FindAllDto } from '@/validationSchema/common/findAll.schema';
 import { EnginesRepository } from './Engines.repository';
-import { CreateEngineDto } from '@/validationSchema/parts/Engines';
+import { CreateEngineDto, UpdateEngineDto } from '@/validationSchema/parts/engines';
 
 @Injectable()
 export class EnginesService {
@@ -48,6 +48,23 @@ export class EnginesService {
         description: payload.description ?? payload.description,
       };
       return await this.enginesRepository.create(createData);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async update(uuid: string, payload: UpdateEngineDto) {
+    try {
+      return await this.enginesRepository.update({
+        where: {
+          uuid: uuid,
+        },
+        args: {
+          name: payload.name,
+          image: payload.image,
+          description: payload.description ?? payload.description,
+        },
+      });
     } catch (err) {
       throw err;
     }
