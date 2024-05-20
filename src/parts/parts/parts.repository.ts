@@ -53,6 +53,18 @@ export class PartsRepository {
     }
   }
 
+  async update({ where, args }: { where?: Prisma.PartsWhereUniqueInput; args?: Prisma.PartsUpdateInput }) {
+    try {
+      const create = await this.database.parts.update({
+        where: where,
+        data: args,
+      });
+      return create;
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async delete(uuid: string) {
     return this.database.parts.update({
       where: { uuid },

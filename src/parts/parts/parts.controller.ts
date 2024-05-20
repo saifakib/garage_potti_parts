@@ -1,11 +1,11 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { ZodPipe } from '@/zod-validation/zod-validation.pipe';
 import ResponseHelper from '@/utils/response.helper';
 import errorHandler from '@/utils/error.helper';
 import { FindAllDto, findAllSchema } from '@/validationSchema/common/findAll.schema';
 import { PartsService } from './parts.service';
-import { CreatePartsDto, createPartsSchema } from '@/validationSchema/parts/parts';
+import { CreatePartsDto, createPartsSchema, UpdatePartsDto, updatePartsSchema } from '@/validationSchema/parts/parts';
 import { uuidSchema } from '@/validationSchema/common/uuid.schema';
 import { UUID } from 'crypto';
 
@@ -60,6 +60,29 @@ export class PartsController {
       status: HttpStatus.FOUND,
       message: 'Parts found',
     });
+  }
+
+  @ApiBearerAuth('JWT')
+  @Patch('/:uuid')
+  @ApiParam({
+    name: 'uuid',
+    description: 'uuid format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
+    type: 'string',
+  })
+  async update(
+    @Param('uuid', new ZodPipe(uuidSchema)) uuid: UUID,
+    @Body(new ZodPipe(updatePartsSchema)) payload: UpdatePartsDto,
+  ) {
+    try {
+      const response: any = await this.partsService.update(uuid, payload);
+      return this.res.successResponse({
+        data: response,
+        status: HttpStatus.ACCEPTED,
+        message: 'Update parts successfully',
+      });
+    } catch (error: any) {
+      throw errorHandler(error);
+    }
   }
 
   @ApiBearerAuth('JWT')
