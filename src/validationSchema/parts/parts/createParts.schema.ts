@@ -7,7 +7,7 @@ export const createPartsSchema = nameSchema.extend({
   alert_qty: z.number(),
   description: z.string().optional(),
   categoryUuid: z.string().uuid(),
-  partsCategoryOptionsEntityUuid: z.string().uuid().optional(),
+  partsCategoryOptionsEntities: z.array(z.string().uuid()).optional(),
   brandUuid: z.string().uuid().optional(),
   modelUuids: z.array(z.string().uuid()).optional(),
   engineUuids: z.array(z.string().uuid()).optional(),

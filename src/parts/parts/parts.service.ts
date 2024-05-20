@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { FindAllDto } from '@/validationSchema/common/findAll.schema';
 import { PartsRepository } from './parts.repository';
 import { CreatePartsDto } from '@/validationSchema/parts/parts';
-import { Prisma } from '@prisma/client';
+import { PARTS_STATUS, Prisma } from '@prisma/client';
 
 @Injectable()
 export class PartsService {
@@ -31,6 +31,10 @@ export class PartsService {
       status: PARTS_STATUS.INACTIVE,
       alert_qty: payload.alert_qty,
       category: payload.categoryUuid ? { connect: { uuid: payload.categoryUuid } } : undefined,
+      partsCategoryOptionsEntities:
+        payload.partsCategoryOptionsEntities.length > 0
+          ? { connect: payload.modelUuids.map((uuid) => ({ uuid })) }
+          : undefined,
       description: payload.description,
       brands: { connect: { uuid: payload.brandUuid } },
       models: payload.modelUuids?.length ? { connect: payload.modelUuids.map((uuid) => ({ uuid })) } : undefined,
@@ -43,6 +47,3 @@ export class PartsService {
     return this.partsRepository.create(createPartsInput);
   }
 }
-
-// partsCategoryOptionsEntityUuid:
-//   payload.partsCategoryOptionsEntityUuid ?? payload.partsCategoryOptionsEntityUuid,
