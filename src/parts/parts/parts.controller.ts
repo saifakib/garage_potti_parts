@@ -1,11 +1,13 @@
-import { Body, Controller, Get, HttpStatus, Post, Query } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Query } from '@nestjs/common';
+import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { ZodPipe } from '@/zod-validation/zod-validation.pipe';
 import ResponseHelper from '@/utils/response.helper';
 import errorHandler from '@/utils/error.helper';
 import { FindAllDto, findAllSchema } from '@/validationSchema/common/findAll.schema';
 import { PartsService } from './parts.service';
 import { CreatePartsDto, createPartsSchema } from '@/validationSchema/parts/parts';
+import { uuidSchema } from '@/validationSchema/common/uuid.schema';
+import { UUID } from 'crypto';
 
 @ApiTags('Parts & Accessories')
 @Controller('parts')
@@ -38,6 +40,42 @@ export class PartsController {
         data: response,
         status: HttpStatus.CREATED,
         message: 'Create new parts successfully!!',
+      });
+    } catch (error: any) {
+      throw errorHandler(error);
+    }
+  }
+
+  @ApiBearerAuth('JWT')
+  @Get('/:uuid')
+  @ApiParam({
+    name: 'uuid',
+    description: 'uuid format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
+    type: 'string',
+  })
+  async findOne(@Param('uuid', new ZodPipe(uuidSchema)) uuid: UUID) {
+    const response: any = await this.partsService.findOne({ uuid });
+    return this.res.successResponse({
+      data: response,
+      status: HttpStatus.FOUND,
+      message: 'Parts found',
+    });
+  }
+
+  @ApiBearerAuth('JWT')
+  @Delete('/:uuid')
+  @ApiParam({
+    name: 'uuid',
+    description: 'uuid format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
+    type: 'string',
+  })
+  async delete(@Param('uuid', new ZodPipe(uuidSchema)) uuid: UUID) {
+    try {
+      const response: any = await this.partsService.delete({ uuid });
+      return this.res.successResponse({
+        data: response,
+        status: HttpStatus.ACCEPTED,
+        message: 'Delete parts successfully',
       });
     } catch (error: any) {
       throw errorHandler(error);

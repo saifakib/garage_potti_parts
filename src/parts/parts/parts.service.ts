@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { FindAllDto } from '@/validationSchema/common/findAll.schema';
 import { PartsRepository } from './parts.repository';
 import { CreatePartsDto } from '@/validationSchema/parts/parts';
@@ -11,7 +11,9 @@ export class PartsService {
   async findAll(payload: FindAllDto) {
     try {
       return await this.partsRepository.findAll({
-        where: {},
+        where: {
+          soft_delete: false,
+        },
         orderBy: {
           id: payload.sort,
         },
@@ -45,5 +47,32 @@ export class PartsService {
         : undefined,
     };
     return this.partsRepository.create(createPartsInput);
+  }
+
+  async findOne(payload: { uuid: string }) {
+    const parts = await this.partsRepository.findOne({
+      where: { uuid: payload.uuid },
+      include: {
+        category: true,
+        partsCategoryOptionsEntities: true,
+        brands: true,
+        models: true,
+        engines: true,
+        years: true,
+        vehicleTypes: true,
+      },
+    });
+    if (!parts) {
+      throw new NotFoundException('Parts not found');
+    }
+    return parts;
+  }
+
+  async delete(payload: { uuid: string }) {
+    const parts = await this.partsRepository.findOne({ where: { uuid: payload.uuid } });
+    if (!parts) {
+      throw new NotFoundException('Parts not found');
+    }
+    await this.partsRepository.delete(payload.uuid);
   }
 }

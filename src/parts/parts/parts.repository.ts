@@ -30,6 +30,18 @@ export class PartsRepository {
     }
   }
 
+  async findOne({ where, include }: { where?: Prisma.PartsWhereInput; include?: Prisma.PartsInclude }) {
+    try {
+      const find = await this.database.parts.findFirst({
+        where: where,
+        include: include,
+      });
+      return find;
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async create(args?: Prisma.PartsCreateInput) {
     try {
       const create = await this.database.parts.create({
@@ -39,5 +51,12 @@ export class PartsRepository {
     } catch (err) {
       throw err;
     }
+  }
+
+  async delete(uuid: string) {
+    return this.database.parts.update({
+      where: { uuid },
+      data: { soft_delete: true },
+    });
   }
 }
