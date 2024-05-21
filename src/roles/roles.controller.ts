@@ -52,7 +52,7 @@ export class RolesController {
     const response: any = await this.rolesService.findOne({ uuid });
     return this.res.successResponse({
       data: response,
-      status: HttpStatus.FOUND,
+      status: HttpStatus.OK,
       message: 'Role found',
     });
   }

@@ -58,7 +58,7 @@ export class CategoryController {
     const response: any = await this.categoryService.findOne({ uuid });
     return this.res.successResponse({
       data: response,
-      status: HttpStatus.FOUND,
+      status: HttpStatus.OK,
       message: 'Parts Category found',
     });
   }
@@ -154,7 +154,7 @@ export class CategoryController {
     const response: any = await this.categoryService.findOneOption({ uuid });
     return this.res.successResponse({
       data: response,
-      status: HttpStatus.FOUND,
+      status: HttpStatus.OK,
       message: 'Parts option found',
     });
   }
@@ -189,7 +189,7 @@ export class CategoryController {
     const response: any = await this.categoryService.findOneOptionEntity({ uuid });
     return this.res.successResponse({
       data: response,
-      status: HttpStatus.FOUND,
+      status: HttpStatus.OK,
       message: 'Parts option entity found',
     });
   }

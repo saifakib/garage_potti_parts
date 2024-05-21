@@ -57,7 +57,7 @@ export class PartsController {
     const response: any = await this.partsService.findOne({ uuid });
     return this.res.successResponse({
       data: response,
-      status: HttpStatus.FOUND,
+      status: HttpStatus.OK,
       message: 'Parts found',
     });
   }

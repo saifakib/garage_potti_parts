@@ -52,7 +52,7 @@ export class EnginesController {
     const response: any = await this.engineService.findOne({ uuid });
     return this.res.successResponse({
       data: response,
-      status: HttpStatus.FOUND,
+      status: HttpStatus.OK,
       message: 'Engine found',
     });
   }

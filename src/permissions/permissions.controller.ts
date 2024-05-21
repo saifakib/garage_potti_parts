@@ -51,7 +51,7 @@ export class PermissionsController {
     return this.res.successResponse({
       data: response,
       message: 'Permission found',
-      status: HttpStatus.FOUND,
+      status: HttpStatus.OK,
     });
   }
 
