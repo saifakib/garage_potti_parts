@@ -148,4 +148,22 @@ export class CategoryRepository {
       throw err;
     }
   }
+
+  async findOneOptionEntity({
+    where,
+    include,
+  }: {
+    where?: Prisma.PartsCategoryOptionsEntityWhereInput;
+    include?: Prisma.PartsCategoryOptionsEntityInclude;
+  }) {
+    try {
+      const find = await this.database.partsCategoryOptionsEntity.findFirst({
+        where: where,
+        include: include,
+      });
+      return find;
+    } catch (err) {
+      throw err;
+    }
+  }
 }

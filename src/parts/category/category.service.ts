@@ -141,4 +141,19 @@ export class CategoryService {
       throw err;
     }
   }
+
+  async findOneOptionEntity(payload: any) {
+    const response = await this.categoryRepository.findOneOptionEntity({
+      where: {
+        uuid: payload.uuid,
+      },
+      include: {
+        parts: true,
+      },
+    });
+    if (!response) {
+      throw new NotFoundException('Category option entity not found!!');
+    }
+    return response;
+  }
 }
