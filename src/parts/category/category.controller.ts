@@ -21,7 +21,7 @@ import {
 } from '@/validationSchema/parts/category';
 import { CategoryService } from './category.service';
 
-@ApiTags('Parts Category')
+@ApiTags('Parts Category | options | entity')
 @Controller('parts/categories')
 export class CategoryController {
   private readonly res = new ResponseHelper();

@@ -96,12 +96,8 @@ export class CategoryRepository {
   async delete(uuid?: string) {
     try {
       const response = await this.database.partsCategory.update({
-        where: {
-          uuid: uuid,
-        },
-        data: {
-          soft_delete: true,
-        },
+        where: { uuid: uuid },
+        data: { soft_delete: true },
       });
       return response;
     } catch (err) {
@@ -138,6 +134,18 @@ export class CategoryRepository {
     }
   }
 
+  async deleteOption(uuid?: string) {
+    try {
+      const response = await this.database.partsCategoryOptions.update({
+        where: { uuid: uuid },
+        data: { soft_delete: true },
+      });
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async createOptionEntity(args: Prisma.PartsCategoryOptionsEntityCreateInput) {
     try {
       const create = await this.database.partsCategoryOptionsEntity.create({
@@ -162,6 +170,18 @@ export class CategoryRepository {
         include: include,
       });
       return find;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async deleteOptionEntity(uuid?: string) {
+    try {
+      const response = await this.database.partsCategoryOptionsEntity.update({
+        where: { uuid: uuid },
+        data: { soft_delete: true },
+      });
+      return response;
     } catch (err) {
       throw err;
     }
