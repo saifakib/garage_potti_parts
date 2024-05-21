@@ -115,6 +115,21 @@ export class CategoryService {
     }
   }
 
+  async findOneOption(payload: any) {
+    const response = await this.categoryRepository.findOneOption({
+      where: {
+        uuid: payload.uuid,
+      },
+      include: {
+        partsCategoryOptionsEntity: true,
+      },
+    });
+    if (!response) {
+      throw new NotFoundException('Category option not found!!');
+    }
+    return response;
+  }
+
   async createOptionEntity(payload: CreateCategoryOptionEntityDto) {
     try {
       const createData = {

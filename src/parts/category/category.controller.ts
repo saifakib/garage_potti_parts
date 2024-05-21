@@ -142,6 +142,24 @@ export class CategoryController {
   }
 
   @ApiBearerAuth('JWT')
+  @Permission('VIEW_CATEGORY')
+  @UseGuards(AuthGuard)
+  @Get('options/:uuid')
+  @ApiParam({
+    name: 'uuid',
+    description: 'uuid format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
+    type: 'string',
+  })
+  async findOneOption(@Param('uuid', new ZodPipe(uuidSchema)) uuid: UUID) {
+    const response: any = await this.categoryService.findOneOption({ uuid });
+    return this.res.successResponse({
+      data: response,
+      status: HttpStatus.FOUND,
+      message: 'Parts option found',
+    });
+  }
+
+  @ApiBearerAuth('JWT')
   @UseGuards(AuthGuard)
   @Post('/options/entities')
   async createOptionEntity(
