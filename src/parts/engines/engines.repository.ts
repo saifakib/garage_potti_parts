@@ -68,12 +68,8 @@ export class EnginesRepository {
   async delete(uuid?: string) {
     try {
       const response = await this.database.engines.update({
-        where: {
-          uuid: uuid,
-        },
-        data: {
-          soft_delete: true,
-        },
+        where: { uuid: uuid },
+        data: { soft_delete: true },
       });
       return response;
     } catch (err) {

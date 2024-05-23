@@ -9,9 +9,7 @@ export class YearsService {
 
   async findOne(payload: any) {
     const response = await this.yearsRepository.findOne({
-      where: {
-        uuid: payload.uuid,
-      },
+      where: { uuid: payload.uuid },
       include: {
         parts: true,
       },
@@ -54,9 +52,7 @@ export class YearsService {
   async update(uuid: string, payload: YearDto) {
     try {
       return await this.yearsRepository.update({
-        where: {
-          uuid: uuid,
-        },
+        where: { uuid },
         args: {
           year: payload.year ?? payload.year,
         },
@@ -69,9 +65,7 @@ export class YearsService {
   async delete(payload: any) {
     try {
       const year = await this.yearsRepository.findOne({
-        where: {
-          uuid: payload.uuid,
-        },
+        where: { uuid: payload.uuid },
         include: {
           parts: true,
         },

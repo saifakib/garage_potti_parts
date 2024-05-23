@@ -134,6 +134,24 @@ export class CategoryRepository {
     }
   }
 
+  async updateOption({
+    where,
+    data,
+  }: {
+    where?: Prisma.PartsCategoryOptionsWhereUniqueInput;
+    data?: Prisma.PartsCategoryOptionsUpdateInput;
+  }) {
+    try {
+      const response = await this.database.partsCategoryOptions.update({
+        where: where,
+        data: data,
+      });
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async deleteOption(uuid?: string) {
     try {
       const response = await this.database.partsCategoryOptions.delete({
@@ -169,6 +187,24 @@ export class CategoryRepository {
         include: include,
       });
       return find;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async updateOptionEntity({
+    where,
+    data,
+  }: {
+    where?: Prisma.PartsCategoryOptionsEntityWhereUniqueInput;
+    data?: Prisma.PartsCategoryOptionsEntityUpdateInput;
+  }) {
+    try {
+      const response = await this.database.partsCategoryOptionsEntity.update({
+        where: where,
+        data: data,
+      });
+      return response;
     } catch (err) {
       throw err;
     }
