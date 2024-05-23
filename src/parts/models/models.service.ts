@@ -9,9 +9,7 @@ export class ModelsService {
 
   async findOne(payload: any) {
     const response = await this.modelsRepository.findOne({
-      where: {
-        uuid: payload.uuid,
-      },
+      where: { uuid: payload.uuid },
       include: {
         parts: true,
       },
@@ -55,9 +53,7 @@ export class ModelsService {
   async update(uuid: string, payload: UpdateModelDto) {
     try {
       return await this.modelsRepository.update({
-        where: {
-          uuid: uuid,
-        },
+        where: { uuid },
         args: {
           name: payload.name ?? payload.name,
           description: payload.description ?? payload.description,
@@ -71,9 +67,7 @@ export class ModelsService {
   async delete(payload: any) {
     try {
       const model = await this.modelsRepository.findOne({
-        where: {
-          uuid: payload.uuid,
-        },
+        where: { uuid: payload.uuid },
         include: {
           parts: true,
         },

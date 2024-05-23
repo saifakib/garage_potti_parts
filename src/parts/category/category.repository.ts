@@ -96,12 +96,8 @@ export class CategoryRepository {
   async delete(uuid?: string) {
     try {
       const response = await this.database.partsCategory.update({
-        where: {
-          uuid: uuid,
-        },
-        data: {
-          soft_delete: true,
-        },
+        where: { uuid: uuid },
+        data: { soft_delete: true },
       });
       return response;
     } catch (err) {
@@ -120,12 +116,106 @@ export class CategoryRepository {
     }
   }
 
+  async findOneOption({
+    where,
+    include,
+  }: {
+    where?: Prisma.PartsCategoryOptionsWhereInput;
+    include?: Prisma.PartsCategoryOptionsInclude;
+  }) {
+    try {
+      const find = await this.database.partsCategoryOptions.findFirst({
+        where: where,
+        include: include,
+      });
+      return find;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async updateOption({
+    where,
+    data,
+  }: {
+    where?: Prisma.PartsCategoryOptionsWhereUniqueInput;
+    data?: Prisma.PartsCategoryOptionsUpdateInput;
+  }) {
+    try {
+      const response = await this.database.partsCategoryOptions.update({
+        where: where,
+        data: data,
+      });
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async deleteOption(uuid?: string) {
+    try {
+      const response = await this.database.partsCategoryOptions.delete({
+        where: { uuid: uuid },
+      });
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async createOptionEntity(args: Prisma.PartsCategoryOptionsEntityCreateInput) {
     try {
       const create = await this.database.partsCategoryOptionsEntity.create({
         data: args,
       });
       return create;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async findOneOptionEntity({
+    where,
+    include,
+  }: {
+    where?: Prisma.PartsCategoryOptionsEntityWhereInput;
+    include?: Prisma.PartsCategoryOptionsEntityInclude;
+  }) {
+    try {
+      const find = await this.database.partsCategoryOptionsEntity.findFirst({
+        where: where,
+        include: include,
+      });
+      return find;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async updateOptionEntity({
+    where,
+    data,
+  }: {
+    where?: Prisma.PartsCategoryOptionsEntityWhereUniqueInput;
+    data?: Prisma.PartsCategoryOptionsEntityUpdateInput;
+  }) {
+    try {
+      const response = await this.database.partsCategoryOptionsEntity.update({
+        where: where,
+        data: data,
+      });
+      return response;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async deleteOptionEntity(uuid?: string) {
+    try {
+      const response = await this.database.partsCategoryOptionsEntity.delete({
+        where: { uuid: uuid },
+      });
+      return response;
     } catch (err) {
       throw err;
     }

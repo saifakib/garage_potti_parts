@@ -9,9 +9,7 @@ export class VehicleTypesService {
 
   async findOne(payload: any) {
     const response = await this.vehicleTypesRepository.findOne({
-      where: {
-        uuid: payload.uuid,
-      },
+      where: { uuid: payload.uuid },
       include: {
         parts: true,
       },
@@ -56,9 +54,7 @@ export class VehicleTypesService {
   async update(uuid: string, payload: UpdateVehicleTypeDto) {
     try {
       return await this.vehicleTypesRepository.update({
-        where: {
-          uuid: uuid,
-        },
+        where: { uuid },
         args: {
           name: payload.name ?? payload.name,
           image: payload.image ?? payload.image,
@@ -73,9 +69,7 @@ export class VehicleTypesService {
   async delete(payload: any) {
     try {
       const vType = await this.vehicleTypesRepository.findOne({
-        where: {
-          uuid: payload.uuid,
-        },
+        where: { uuid: payload.uuid },
         include: {
           parts: true,
         },

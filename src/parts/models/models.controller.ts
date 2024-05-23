@@ -62,7 +62,7 @@ export class ModelsController {
     const response: any = await this.modelsService.findOne({ uuid });
     return this.res.successResponse({
       data: response,
-      status: HttpStatus.FOUND,
+      status: HttpStatus.OK,
       message: 'Model found',
     });
   }

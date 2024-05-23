@@ -61,7 +61,7 @@ export class BrandsController {
     const response: any = await this.brandsService.findOne({ uuid });
     return this.res.successResponse({
       data: response,
-      status: HttpStatus.FOUND,
+      status: HttpStatus.OK,
       message: 'Brand found',
     });
   }

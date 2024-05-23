@@ -46,7 +46,7 @@ export class UsersController {
       const response: any = await this.usersService.findOne(req.user);
       return this.res.successResponse({
         data: response,
-        status: HttpStatus.FOUND,
+        status: HttpStatus.OK,
         message: 'User Profile found',
       });
     } catch (error: any) {
