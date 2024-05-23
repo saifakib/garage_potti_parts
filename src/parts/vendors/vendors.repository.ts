@@ -67,12 +67,8 @@ export class VendorsRepository {
   async delete(uuid?: string) {
     try {
       const create = await this.database.vendors.update({
-        where: {
-          uuid: uuid,
-        },
-        data: {
-          soft_delete: true,
-        },
+        where: { uuid },
+        data: { soft_delete: true },
       });
       return create;
     } catch (err) {

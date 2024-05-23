@@ -9,9 +9,7 @@ export class EnginesService {
 
   async findOne(payload: any) {
     const response = await this.enginesRepository.findOne({
-      where: {
-        uuid: payload.uuid,
-      },
+      where: { uuid: payload.uuid },
       include: {
         parts: true,
       },
@@ -56,9 +54,7 @@ export class EnginesService {
   async update(uuid: string, payload: UpdateEngineDto) {
     try {
       return await this.enginesRepository.update({
-        where: {
-          uuid: uuid,
-        },
+        where: { uuid },
         args: {
           name: payload.name,
           image: payload.image,
@@ -73,9 +69,7 @@ export class EnginesService {
   async delete(payload: any) {
     try {
       const engine = await this.enginesRepository.findOne({
-        where: {
-          uuid: payload.uuid,
-        },
+        where: { uuid: payload.uuid },
         include: {
           parts: true,
         },

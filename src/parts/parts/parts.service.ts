@@ -11,9 +11,7 @@ export class PartsService {
   async findAll(payload: FindAllDto) {
     try {
       return await this.partsRepository.findAll({
-        where: {
-          soft_delete: false,
-        },
+        where: { soft_delete: false },
         orderBy: {
           id: payload.sort,
         },

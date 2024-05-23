@@ -61,7 +61,7 @@ export class YearsController {
     const response: any = await this.yearsService.findOne({ uuid });
     return this.res.successResponse({
       data: response,
-      status: HttpStatus.FOUND,
+      status: HttpStatus.OK,
       message: 'Year found',
     });
   }

@@ -6,6 +6,7 @@ import {
   CreateCategoryOptionDto,
   CreateCategoryOptionEntityDto,
   UpdateCategoryDto,
+  UpdateCategoryOptionDto,
 } from '@/validationSchema/parts/category';
 
 @Injectable()
@@ -14,9 +15,7 @@ export class CategoryService {
 
   async findOne(payload: any) {
     const response = await this.categoryRepository.findOne({
-      where: {
-        uuid: payload.uuid,
-      },
+      where: { uuid: payload.uuid },
       include: {
         partsCategoryOptions: {
           include: {
@@ -67,16 +66,15 @@ export class CategoryService {
     }
   }
 
-  async update(uuid: string, payload: UpdateCategoryDto) {
+  async update(categoryUuid: string, payload: UpdateCategoryDto) {
     try {
+      const dataToUpdate = {
+        name: payload.name,
+        image: payload.image,
+      };
       return await this.categoryRepository.update({
-        where: {
-          uuid: uuid,
-        },
-        data: {
-          name: payload.name,
-          image: payload.image,
-        },
+        where: { uuid: categoryUuid },
+        data: dataToUpdate,
       });
     } catch (err) {
       throw err;
@@ -86,9 +84,7 @@ export class CategoryService {
   async delete(payload: any) {
     try {
       const category = await this.categoryRepository.findOne({
-        where: {
-          uuid: payload.uuid,
-        },
+        where: { uuid: payload.uuid },
         include: {
           partsCategoryOptions: true,
           parts: true,
@@ -115,6 +111,46 @@ export class CategoryService {
     }
   }
 
+  async findOneOption(payload: any) {
+    const response = await this.categoryRepository.findOneOption({
+      where: { uuid: payload.uuid },
+      include: {
+        partsCategoryOptionsEntity: true,
+      },
+    });
+    if (!response) {
+      throw new NotFoundException('Category option not found!!');
+    }
+    return response;
+  }
+
+  async updateOption(optionUuid: string, updateData: UpdateCategoryOptionDto) {
+    try {
+      return await this.categoryRepository.updateOption({
+        where: { uuid: optionUuid },
+        data: { name: updateData.name },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteOption(payload: any) {
+    try {
+      const option = await this.categoryRepository.findOneOption({
+        where: { uuid: payload.uuid },
+        include: {
+          partsCategoryOptionsEntity: true,
+        },
+      });
+      if (!option) throw new NotFoundException('Not found!!');
+      if (option.partsCategoryOptionsEntity.length > 0) throw new NotAcceptableException('Cannot delete this option!!');
+      await this.categoryRepository.deleteOption(payload.uuid);
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async createOptionEntity(payload: CreateCategoryOptionEntityDto) {
     try {
       const createData = {
@@ -122,6 +158,46 @@ export class CategoryService {
         partsCategoryOptionsUuid: payload.categoryOptionUuid,
       };
       return await this.categoryRepository.createOptionEntity(createData);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async findOneOptionEntity(payload: any) {
+    const response = await this.categoryRepository.findOneOptionEntity({
+      where: { uuid: payload.uuid },
+      include: {
+        parts: true,
+      },
+    });
+    if (!response) {
+      throw new NotFoundException('Category option entity not found!!');
+    }
+    return response;
+  }
+
+  async updateOptionEntity(optionEntityUuid: string, updateData: UpdateCategoryOptionDto) {
+    try {
+      return await this.categoryRepository.updateOptionEntity({
+        where: { uuid: optionEntityUuid },
+        data: { name: updateData.name },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteOptionEntity(payload: any) {
+    try {
+      const optionEntity = await this.categoryRepository.findOneOptionEntity({
+        where: { uuid: payload.uuid },
+        include: {
+          parts: true,
+        },
+      });
+      if (!optionEntity) throw new NotFoundException('Not found!!');
+      if (optionEntity.parts.length > 0) throw new NotAcceptableException('Cannot delete this option entityss!!');
+      await this.categoryRepository.deleteOptionEntity(payload.uuid);
     } catch (err) {
       throw err;
     }

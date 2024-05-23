@@ -66,7 +66,7 @@ export class VehicleTypesController {
     const response: any = await this.vehicleTypesService.findOne({ uuid });
     return this.res.successResponse({
       data: response,
-      status: HttpStatus.FOUND,
+      status: HttpStatus.OK,
       message: 'Vehicle type found',
     });
   }

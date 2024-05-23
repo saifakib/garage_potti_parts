@@ -66,7 +66,7 @@ export class VendorsController {
     const response: any = await this.vendorsService.findOne({ uuid });
     return this.res.successResponse({
       data: response,
-      status: HttpStatus.FOUND,
+      status: HttpStatus.OK,
       message: 'Vendor found',
     });
   }

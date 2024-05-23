@@ -9,9 +9,7 @@ export class VendorsService {
 
   async findOne(payload: any) {
     const response = await this.vendorsRepository.findOne({
-      where: {
-        uuid: payload.uuid,
-      },
+      where: { uuid: payload.uuid },
       include: {
         partsEntries: true,
       },
@@ -59,9 +57,7 @@ export class VendorsService {
   async update(uuid: string, payload: UpdateVendorDto) {
     try {
       return await this.vendorsRepository.update({
-        where: {
-          uuid: uuid,
-        },
+        where: { uuid },
         args: {
           name: payload.name,
           address: payload.address,
@@ -79,9 +75,7 @@ export class VendorsService {
   async delete(payload: any) {
     try {
       const brand = await this.vendorsRepository.findOne({
-        where: {
-          uuid: payload.uuid,
-        },
+        where: { uuid: payload.uuid },
         include: {
           partsEntries: true,
         },
