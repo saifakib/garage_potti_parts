@@ -71,4 +71,24 @@ export class PartsRepository {
       data: { softDelete: true },
     });
   }
+
+  async partsEntriesCreate(args?: Prisma.PartsEntriesCreateInput) {
+    try {
+      return await this.database.partsEntries.create({
+        data: args,
+      });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async partsEntryListCreate(args?: Prisma.PartsEntryListsCreateInput) {
+    try {
+      return await this.database.partsEntryLists.create({
+        data: args,
+      });
+    } catch (err) {
+      throw err;
+    }
+  }
 }

@@ -5,7 +5,14 @@ import ResponseHelper from '@/utils/response.helper';
 import errorHandler from '@/utils/error.helper';
 import { FindAllDto, findAllSchema } from '@/validationSchema/common/findAll.schema';
 import { PartsService } from './parts.service';
-import { CreatePartsDto, createPartsSchema, UpdatePartsDto, updatePartsSchema } from '@/validationSchema/parts/parts';
+import {
+  CreatePartsDto,
+  createPartsSchema,
+  PartsEntriesDto,
+  partsEntriesSchema,
+  UpdatePartsDto,
+  updatePartsSchema,
+} from '@/validationSchema/parts/parts';
 import { uuidSchema } from '@/validationSchema/common/uuid.schema';
 import { UUID } from 'crypto';
 
@@ -99,6 +106,21 @@ export class PartsController {
         data: response,
         status: HttpStatus.ACCEPTED,
         message: 'Delete parts successfully',
+      });
+    } catch (error: any) {
+      throw errorHandler(error);
+    }
+  }
+
+  @ApiBearerAuth('JWT')
+  @Post('entries')
+  async partsEntries(@Body(new ZodPipe(partsEntriesSchema)) payload: PartsEntriesDto) {
+    try {
+      const response: any = await this.partsService.createPartsEntries(payload);
+      return this.res.successResponse({
+        data: response,
+        status: HttpStatus.CREATED,
+        message: 'Parts entries successfully',
       });
     } catch (error: any) {
       throw errorHandler(error);

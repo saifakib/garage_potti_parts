@@ -262,7 +262,7 @@ model Vendors {
 model PartsEntries {
     id              Int               @id @unique @default(autoincrement())
     uuid            String            @unique @default(uuid()) @db.Uuid
-    cashMamoNo      String?           @db.VarChar()
+    cashMemoNo      String?           @db.VarChar()
     amount          Float?            @db.DoublePrecision
     supplyDate      DateTime?         @db.Timestamptz(6)
     documents       String?           @db.VarChar()
@@ -272,7 +272,7 @@ model PartsEntries {
     createdBy       String?           @db.Uuid
     updatedAt       DateTime?         @updatedAt @db.Timestamptz(6)
     updatedBy       String?           @db.Uuid
-    Vendors         Vendors?          @relation(fields: [vendorUuid], references: [uuid])
+    vendors         Vendors?          @relation(fields: [vendorUuid], references: [uuid])
     vendorUuid      String?           @db.Uuid
     partsEntryLists PartsEntryLists[]
 }
