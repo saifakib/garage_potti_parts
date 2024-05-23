@@ -91,4 +91,22 @@ export class PartsRepository {
       throw err;
     }
   }
+
+  async findOnePartsEntries({
+    where,
+    include,
+  }: {
+    where?: Prisma.PartsEntriesWhereInput;
+    include?: Prisma.PartsEntriesInclude;
+  }) {
+    try {
+      const find = await this.database.partsEntries.findFirst({
+        where: where,
+        include: include,
+      });
+      return find;
+    } catch (err) {
+      throw err;
+    }
+  }
 }

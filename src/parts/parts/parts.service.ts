@@ -189,6 +189,36 @@ export class PartsService {
     }
   }
 
+  async findOnePartsEntries(payload: { uuid: string }) {
+    try {
+      const parts = await this.partsRepository.findOnePartsEntries({
+        where: { uuid: payload.uuid },
+        include: {
+          partsEntryLists: {
+            select: {
+              qty: true,
+              indPrice: true,
+              amount: true,
+            },
+            include: {
+              parts: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      });
+      if (!parts) {
+        throw new NotFoundException('Not found');
+      }
+      return parts;
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async delete(payload: { uuid: string }) {
     const parts = await this.partsRepository.findOne({ where: { uuid: payload.uuid } });
     if (!parts) {

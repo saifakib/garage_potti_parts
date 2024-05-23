@@ -114,7 +114,7 @@ export class PartsController {
 
   @ApiBearerAuth('JWT')
   @Post('entries')
-  async partsEntries(@Body(new ZodPipe(partsEntriesSchema)) payload: PartsEntriesDto) {
+  async createPartsEntries(@Body(new ZodPipe(partsEntriesSchema)) payload: PartsEntriesDto) {
     try {
       const response: any = await this.partsService.createPartsEntries(payload);
       return this.res.successResponse({
@@ -125,5 +125,21 @@ export class PartsController {
     } catch (error: any) {
       throw errorHandler(error);
     }
+  }
+
+  @ApiBearerAuth('JWT')
+  @Get('entries/:uuid')
+  @ApiParam({
+    name: 'uuid',
+    description: 'uuid format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
+    type: 'string',
+  })
+  async findOnePartsEntries(@Param('uuid', new ZodPipe(uuidSchema)) uuid: UUID) {
+    const response: any = await this.partsService.findOnePartsEntries({ uuid });
+    return this.res.successResponse({
+      data: response,
+      status: HttpStatus.OK,
+      message: 'Parts Entries found',
+    });
   }
 }
