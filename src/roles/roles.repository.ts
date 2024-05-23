@@ -84,7 +84,7 @@ export class RolesRepository {
           uuid: uuid,
         },
         data: {
-          soft_delete: true,
+          softDelete: true,
         },
       });
       return find;

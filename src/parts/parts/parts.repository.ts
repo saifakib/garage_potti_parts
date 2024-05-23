@@ -68,7 +68,7 @@ export class PartsRepository {
   async delete(uuid: string) {
     return this.database.parts.update({
       where: { uuid },
-      data: { soft_delete: true },
+      data: { softDelete: true },
     });
   }
 }

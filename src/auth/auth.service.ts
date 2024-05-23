@@ -28,9 +28,9 @@ export class AuthService {
       let createUser: any;
       if (signUpMethod == 'GUEST') {
         createUser = await this.userRepository.create({
-          user_id: this._generateUserUniqueId(),
+          userId: this._generateUserUniqueId(),
           password: hashSync(randomCode(6), 10),
-          user_type: userType,
+          userType: userType,
           badge: Badge.FLYING,
           profile: { create: {} },
           role: {
@@ -49,13 +49,13 @@ export class AuthService {
 
         // Create user with appropriate properties
         createUser = await this.userRepository.create({
-          user_id: this._generateUserUniqueId(),
+          userId: this._generateUserUniqueId(),
           ...(email && { email }),
           ...(mobile && { mobile }),
           password: hashSync(password, 10),
-          user_type: userType,
+          userType: userType,
           badge: Badge.REGISTERED,
-          signup_method: signUpMethod === 'EMAIL' ? SIGNUP_METHOD.EMAIL : SIGNUP_METHOD.MOBILE,
+          signupMethod: signUpMethod === 'EMAIL' ? SIGNUP_METHOD.EMAIL : SIGNUP_METHOD.MOBILE,
           profile: { create: {} },
           role: {
             connect: {
@@ -82,7 +82,7 @@ export class AuthService {
   async login(data: LoginDto) {
     const { email, mobile, userId, password } = data;
     try {
-      const searchCriteria = email ? { email } : mobile ? { mobile } : { user_id: userId };
+      const searchCriteria = email ? { email } : mobile ? { mobile } : { userId: userId };
       const user = await this.userRepository.findOne(searchCriteria);
       if (!user) {
         throw new HttpException('Invalid Credentials!!', HttpStatus.BAD_REQUEST);

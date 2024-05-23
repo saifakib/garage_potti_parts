@@ -5,13 +5,13 @@ export async function rootUser(prisma: PrismaClient) {
   const rootAdmin = await prisma.users.createMany({
     data: [
       {
-        user_type: UserType.ROOT_ADMIN,
+        userType: UserType.ROOT_ADMIN,
         email: 'rootadmin1@gmail.com',
         mobile: '+8801842317359',
         password: hashSync('rootAdmin1', 10),
       },
       {
-        user_type: UserType.ROOT_ADMIN,
+        userType: UserType.ROOT_ADMIN,
         email: 'rootadmin2@gmail.com',
         password: hashSync('rootAdmin2', 10),
       },
@@ -22,12 +22,12 @@ export async function rootUser(prisma: PrismaClient) {
   const superAdmin = await prisma.users.createMany({
     data: [
       {
-        user_type: UserType.SUPER_ADMIN,
+        userType: UserType.SUPER_ADMIN,
         email: 'superadmin1@gmail.com',
         password: hashSync('superAdmin1', 10),
       },
       {
-        user_type: UserType.SUPER_ADMIN,
+        userType: UserType.SUPER_ADMIN,
         email: 'superadmin2@gmail.com',
         password: hashSync('superAdmin2', 10),
       },
@@ -54,7 +54,7 @@ const assignRoleToUser = async (prisma: PrismaClient, userType: UserType, roleSl
   if (role && role.uuid) {
     await prisma.users.updateMany({
       where: {
-        user_type: userType,
+        userType: userType,
       },
       data: {
         roleUuid: role.uuid,

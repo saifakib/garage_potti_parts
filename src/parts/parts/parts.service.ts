@@ -11,7 +11,7 @@ export class PartsService {
   async findAll(payload: FindAllDto) {
     try {
       return await this.partsRepository.findAll({
-        where: { soft_delete: false },
+        where: { softDelete: false },
         orderBy: {
           id: payload.sort,
         },
@@ -29,7 +29,7 @@ export class PartsService {
       price: payload.price,
       qty: 0,
       status: PARTS_STATUS.INACTIVE,
-      alert_qty: payload.alert_qty,
+      alertQty: payload.alertQty,
       category: payload.categoryUuid ? { connect: { uuid: payload.categoryUuid } } : undefined,
       partsCategoryOptionsEntities:
         payload.partsCategoryOptionsEntities.length > 0
@@ -82,7 +82,7 @@ export class PartsService {
     //   name: payload.name ?? parts.name,
     //   price: payload.price ?? parts.price,
     //   status: payload.status ?? parts.status,
-    //   alert_qty: payload.alert_qty ?? parts.alert_qty,
+    //   alertQty: payload.alertQty ?? parts.alertQty,
     //   category: payload.categoryUuid ? { connect: { uuid: payload.categoryUuid } } : parts.category,
     //   partsCategoryOptionsEntities:
     //     payload.partsCategoryOptionsEntities.length > 0
@@ -101,7 +101,7 @@ export class PartsService {
       name: payload.name ?? parts.name,
       price: payload.price ?? parts.price,
       status: payload.status ?? parts.status,
-      alert_qty: payload.alert_qty ?? parts.alert_qty,
+      alertQty: payload.alertQty ?? parts.alertQty,
       category: payload.categoryUuid ? { connect: { uuid: payload.categoryUuid } } : undefined,
       partsCategoryOptionsEntities: payload.partsCategoryOptionsEntities
         ? payload.partsCategoryOptionsEntities.length > 0
