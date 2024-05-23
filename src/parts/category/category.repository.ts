@@ -136,9 +136,8 @@ export class CategoryRepository {
 
   async deleteOption(uuid?: string) {
     try {
-      const response = await this.database.partsCategoryOptions.update({
+      const response = await this.database.partsCategoryOptions.delete({
         where: { uuid: uuid },
-        data: { soft_delete: true },
       });
       return response;
     } catch (err) {
@@ -177,9 +176,8 @@ export class CategoryRepository {
 
   async deleteOptionEntity(uuid?: string) {
     try {
-      const response = await this.database.partsCategoryOptionsEntity.update({
+      const response = await this.database.partsCategoryOptionsEntity.delete({
         where: { uuid: uuid },
-        data: { soft_delete: true },
       });
       return response;
     } catch (err) {

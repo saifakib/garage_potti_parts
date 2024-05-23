@@ -130,6 +130,24 @@ export class CategoryService {
     return response;
   }
 
+  async deleteOption(payload: any) {
+    try {
+      const option = await this.categoryRepository.findOneOption({
+        where: {
+          uuid: payload.uuid,
+        },
+        include: {
+          partsCategoryOptionsEntity: true,
+        },
+      });
+      if (!option) throw new NotFoundException('Not found!!');
+      if (option.partsCategoryOptionsEntity.length > 0) throw new NotAcceptableException('Cannot delete this option!!');
+      await this.categoryRepository.deleteOption(payload.uuid);
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async createOptionEntity(payload: CreateCategoryOptionEntityDto) {
     try {
       const createData = {
@@ -155,5 +173,23 @@ export class CategoryService {
       throw new NotFoundException('Category option entity not found!!');
     }
     return response;
+  }
+
+  async deleteOptionEntity(payload: any) {
+    try {
+      const optionEntity = await this.categoryRepository.findOneOptionEntity({
+        where: {
+          uuid: payload.uuid,
+        },
+        include: {
+          parts: true,
+        },
+      });
+      if (!optionEntity) throw new NotFoundException('Not found!!');
+      if (optionEntity.parts.length > 0) throw new NotAcceptableException('Cannot delete this option entityss!!');
+      await this.categoryRepository.deleteOptionEntity(payload.uuid);
+    } catch (err) {
+      throw err;
+    }
   }
 }

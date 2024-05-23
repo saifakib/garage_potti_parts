@@ -161,6 +161,27 @@ export class CategoryController {
 
   @ApiBearerAuth('JWT')
   @UseGuards(AuthGuard)
+  @Delete('/options/:uuid')
+  @ApiParam({
+    name: 'uuid',
+    description: 'uuid format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
+    type: 'string',
+  })
+  async deleteOption(@Param('uuid', new ZodPipe(uuidSchema)) uuid: UUID) {
+    try {
+      const response: any = await this.categoryService.deleteOption({ uuid });
+      return this.res.successResponse({
+        data: response,
+        status: HttpStatus.ACCEPTED,
+        message: 'Delete category option successfully',
+      });
+    } catch (error: any) {
+      throw errorHandler(error);
+    }
+  }
+
+  @ApiBearerAuth('JWT')
+  @UseGuards(AuthGuard)
   @Post('/options/entities')
   async createOptionEntity(
     @Body(new ZodPipe(createCategoryOptionEntitySchema)) payload: CreateCategoryOptionEntityDto,
@@ -192,5 +213,26 @@ export class CategoryController {
       status: HttpStatus.OK,
       message: 'Parts option entity found',
     });
+  }
+
+  @ApiBearerAuth('JWT')
+  @UseGuards(AuthGuard)
+  @Delete('/options/entities/:uuid')
+  @ApiParam({
+    name: 'uuid',
+    description: 'uuid format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
+    type: 'string',
+  })
+  async deleteOptionEntity(@Param('uuid', new ZodPipe(uuidSchema)) uuid: UUID) {
+    try {
+      const response: any = await this.categoryService.deleteOptionEntity({ uuid });
+      return this.res.successResponse({
+        data: response,
+        status: HttpStatus.ACCEPTED,
+        message: 'Delete category option entity successfully',
+      });
+    } catch (error: any) {
+      throw errorHandler(error);
+    }
   }
 }
