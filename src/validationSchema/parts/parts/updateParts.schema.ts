@@ -6,7 +6,7 @@ export const updatePartsSchema = extendApi(
   z.object({
     name: z.string().optional(),
     price: z.number().optional(),
-    alert_qty: z.number().optional(),
+    alertQty: z.number().optional(),
     status: z.enum(['ACTIVE', 'INACTIVE']).optional(),
     description: z.string().optional(),
     categoryUuid: z.string().uuid().optional(),

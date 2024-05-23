@@ -55,7 +55,7 @@ export class RolesService {
         uuid: payload.uuid,
       });
       if (!role) throw new NotFoundException('Role not found!!');
-      if (role.system_role === true) throw new NotAcceptableException('Can not delete this role!!');
+      if (role.systemRole === true) throw new NotAcceptableException('Can not delete this role!!');
       // also check role has permissions, if yes dont delete the role
       await this.rolesRepository.delete(payload.uuid);
     } catch (err) {

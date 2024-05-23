@@ -5,7 +5,14 @@ import ResponseHelper from '@/utils/response.helper';
 import errorHandler from '@/utils/error.helper';
 import { FindAllDto, findAllSchema } from '@/validationSchema/common/findAll.schema';
 import { PartsService } from './parts.service';
-import { CreatePartsDto, createPartsSchema, UpdatePartsDto, updatePartsSchema } from '@/validationSchema/parts/parts';
+import {
+  CreatePartsDto,
+  createPartsSchema,
+  PartsEntriesDto,
+  partsEntriesSchema,
+  UpdatePartsDto,
+  updatePartsSchema,
+} from '@/validationSchema/parts/parts';
 import { uuidSchema } from '@/validationSchema/common/uuid.schema';
 import { UUID } from 'crypto';
 
@@ -103,5 +110,36 @@ export class PartsController {
     } catch (error: any) {
       throw errorHandler(error);
     }
+  }
+
+  @ApiBearerAuth('JWT')
+  @Post('entries')
+  async createPartsEntries(@Body(new ZodPipe(partsEntriesSchema)) payload: PartsEntriesDto) {
+    try {
+      const response: any = await this.partsService.createPartsEntries(payload);
+      return this.res.successResponse({
+        data: response,
+        status: HttpStatus.CREATED,
+        message: 'Parts entries successfully',
+      });
+    } catch (error: any) {
+      throw errorHandler(error);
+    }
+  }
+
+  @ApiBearerAuth('JWT')
+  @Get('entries/:uuid')
+  @ApiParam({
+    name: 'uuid',
+    description: 'uuid format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
+    type: 'string',
+  })
+  async findOnePartsEntries(@Param('uuid', new ZodPipe(uuidSchema)) uuid: UUID) {
+    const response: any = await this.partsService.findOnePartsEntries({ uuid });
+    return this.res.successResponse({
+      data: response,
+      status: HttpStatus.OK,
+      message: 'Parts Entries found',
+    });
   }
 }

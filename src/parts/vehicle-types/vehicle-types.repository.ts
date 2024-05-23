@@ -75,7 +75,7 @@ export class VehicleTypesRepository {
     try {
       const response = await this.database.vehicleTypes.update({
         where: { uuid },
-        data: { soft_delete: true },
+        data: { softDelete: true },
       });
       return response;
     } catch (err) {

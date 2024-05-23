@@ -69,7 +69,7 @@ export class EnginesRepository {
     try {
       const response = await this.database.engines.update({
         where: { uuid: uuid },
-        data: { soft_delete: true },
+        data: { softDelete: true },
       });
       return response;
     } catch (err) {

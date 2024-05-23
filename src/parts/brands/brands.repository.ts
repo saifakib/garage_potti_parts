@@ -72,7 +72,7 @@ export class BrandsRepository {
           uuid: uuid,
         },
         data: {
-          soft_delete: true,
+          softDelete: true,
         },
       });
       return create;

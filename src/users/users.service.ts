@@ -37,8 +37,8 @@ export class UsersService {
       const { firstName, lastName, address, gender, dob } = userProfile;
 
       const data: any = {};
-      if (firstName) data.first_name = firstName;
-      if (lastName) data.last_name = lastName;
+      if (firstName) data.firstName = firstName;
+      if (lastName) data.lastName = lastName;
       if (address) data.address = address;
       if (gender) data.gender = gender;
       if (dob) data.dob = dob;
