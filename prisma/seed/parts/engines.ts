@@ -1,0 +1,61 @@
+import { PrismaClient } from '@prisma/client';
+
+export async function seedEngines(prisma: PrismaClient) {
+  const engines = [
+    'B20',
+    'B22',
+    'B23',
+    'B24',
+    'B25',
+    'B27',
+    'B30',
+    'B32',
+    'B33',
+    'B34',
+    'B35',
+    'B37',
+    'B40',
+    'B42',
+    'B43',
+    'B44',
+    'B45',
+    'B47',
+    'B50',
+    'B52',
+    'B53',
+    'B54',
+    'B55',
+    'B57',
+    'B60',
+    'B62',
+    'B63',
+    'B64',
+    'B65',
+    'B67',
+    'B70',
+    'B72',
+    'B73',
+    'B74',
+    'B75',
+    'B77',
+    'B80',
+    'B82',
+    'B83',
+    'B84',
+    'B85',
+    'B87',
+    'B90',
+    'B92',
+    'B93',
+    'B94',
+    'B95',
+    'B97',
+  ].map((name) => ({ name }));
+
+  const createdEngines = await prisma.engines.createMany({
+    data: engines,
+    skipDuplicates: true,
+  });
+
+  console.log(`${createdEngines.count} engines created`);
+}
