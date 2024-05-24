@@ -237,8 +237,8 @@ model Parts {
     years                        Years[]
     vehicleTypes                 VehicleTypes[]
     partsEntryLists              PartsEntryLists[]
-    partsInvoiceProducts         PartsInvoiceProducts[]
     partsCategoryOptionsEntities PartsCategoryOptionsEntity[]
+    PartsInvoiceLists            PartsInvoiceLists[]
 }
 
 model Vendors {
@@ -290,26 +290,27 @@ model PartsEntryLists {
 }
 
 model PartsInvoices {
-    id                   Int                    @id @unique @default(autoincrement())
-    uuid                 String                 @unique @default(uuid()) @db.Uuid
-    invoice_no           String                 @unique @default(uuid()) @db.Uuid // #IVSL5498534
-    userName             String                 @db.VarChar()
-    userMobile           String                 @db.VarChar()
-    userEmail            String?                @db.VarChar()
-    address              String?                @db.VarChar()
-    amount               Float                  @db.DoublePrecision
-    softDelete           Boolean                @default(false)
-    createdAt            DateTime               @default(now()) @db.Timestamptz(6)
-    createdBy            String?                @db.Uuid
-    partsInvoiceProducts PartsInvoiceProducts[]
+    id                Int                 @id @unique @default(autoincrement())
+    uuid              String              @unique @default(uuid()) @db.Uuid
+    invoiceNo         String              @unique @default(uuid()) @db.Uuid // #IVSL5498534
+    userName          String              @db.VarChar()
+    userMobile        String              @db.VarChar()
+    userEmail         String?             @db.VarChar()
+    address           String?             @db.VarChar()
+    amount            Float               @db.DoublePrecision
+    remarks           String?             @db.VarChar()
+    softDelete        Boolean             @default(false)
+    createdAt         DateTime            @default(now()) @db.Timestamptz(6)
+    createdBy         String?             @db.Uuid
+    partsInvoiceLists PartsInvoiceLists[]
 }
 
-model PartsInvoiceProducts {
+model PartsInvoiceLists {
     id               Int            @id @unique @default(autoincrement())
     uuid             String         @unique @default(uuid()) @db.Uuid
     qty              Int            @db.Integer
-    unit_price       Float          @db.DoublePrecision
-    price            Float          @db.DoublePrecision
+    indPrice         Float          @db.DoublePrecision
+    amount           Float          @db.DoublePrecision
     partsUuid        String         @db.Uuid
     parts            Parts?         @relation(fields: [partsUuid], references: [uuid])
     partsInvoices    PartsInvoices? @relation(fields: [partsInvoiceUuid], references: [uuid])
