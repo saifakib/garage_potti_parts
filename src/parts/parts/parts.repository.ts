@@ -68,7 +68,45 @@ export class PartsRepository {
   async delete(uuid: string) {
     return this.database.parts.update({
       where: { uuid },
-      data: { soft_delete: true },
+      data: { softDelete: true },
     });
+  }
+
+  async partsEntriesCreate(args?: Prisma.PartsEntriesCreateInput) {
+    try {
+      return await this.database.partsEntries.create({
+        data: args,
+      });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async partsEntryListCreate(args?: Prisma.PartsEntryListsCreateInput) {
+    try {
+      return await this.database.partsEntryLists.create({
+        data: args,
+      });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async findOnePartsEntries({
+    where,
+    include,
+  }: {
+    where?: Prisma.PartsEntriesWhereInput;
+    include?: Prisma.PartsEntriesInclude;
+  }) {
+    try {
+      const find = await this.database.partsEntries.findFirst({
+        where: where,
+        include: include,
+      });
+      return find;
+    } catch (err) {
+      throw err;
+    }
   }
 }

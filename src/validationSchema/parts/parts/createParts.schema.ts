@@ -4,7 +4,7 @@ import { nameSchema } from '../../common/name.schema';
 
 export const createPartsSchema = nameSchema.extend({
   price: z.number(),
-  alert_qty: z.number(),
+  alertQty: z.number(),
   description: z.string().optional(),
   categoryUuid: z.string().uuid(),
   partsCategoryOptionsEntities: z.array(z.string().uuid()).optional(),

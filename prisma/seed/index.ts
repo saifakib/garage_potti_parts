@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import { roles } from './roles';
 import { rootUser } from './users';
 import { permissions } from './permissions';
+import { parts } from './parts';
 
 const prisma = new PrismaClient();
 
@@ -15,6 +16,9 @@ async function main() {
     });
     await rootUser(prisma).catch((e: any) => {
       console.error('Error seeding Users:', e);
+    });
+    await parts(prisma).catch((e: any) => {
+      console.error('Error seeding Parts:', e);
     });
   } catch (error) {
     console.error('Error seeding:', error);

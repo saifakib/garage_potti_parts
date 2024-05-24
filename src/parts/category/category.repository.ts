@@ -97,7 +97,7 @@ export class CategoryRepository {
     try {
       const response = await this.database.partsCategory.update({
         where: { uuid: uuid },
-        data: { soft_delete: true },
+        data: { softDelete: true },
       });
       return response;
     } catch (err) {

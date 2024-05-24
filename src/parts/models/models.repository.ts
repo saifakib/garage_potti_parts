@@ -69,7 +69,7 @@ export class ModelsRepository {
     try {
       const response = await this.database.models.update({
         where: { uuid },
-        data: { soft_delete: true },
+        data: { softDelete: true },
       });
       return response;
     } catch (err) {

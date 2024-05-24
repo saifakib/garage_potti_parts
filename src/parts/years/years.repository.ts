@@ -69,7 +69,7 @@ export class YearsRepository {
     try {
       const response = await this.database.years.update({
         where: { uuid },
-        data: { soft_delete: true },
+        data: { softDelete: true },
       });
       return response;
     } catch (err) {

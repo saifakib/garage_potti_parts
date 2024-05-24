@@ -68,7 +68,7 @@ export class VendorsRepository {
     try {
       const create = await this.database.vendors.update({
         where: { uuid },
-        data: { soft_delete: true },
+        data: { softDelete: true },
       });
       return create;
     } catch (err) {
