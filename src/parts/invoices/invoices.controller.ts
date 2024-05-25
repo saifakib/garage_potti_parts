@@ -4,10 +4,10 @@ import { ZodPipe } from '@/zod-validation/zod-validation.pipe';
 import ResponseHelper from '@/utils/response.helper';
 import errorHandler from '@/utils/error.helper';
 import { FindAllDto, findAllSchema } from '@/validationSchema/common/findAll.schema';
-import { PartsEntriesDto, partsEntriesSchema } from '@/validationSchema/parts/parts';
 import { uuidSchema } from '@/validationSchema/common/uuid.schema';
 import { UUID } from 'crypto';
 import { InvoicesService } from './invoices.services';
+import { CreateInvoicesDto, createInvoicesSchema } from '@/validationSchema/parts/invoices';
 
 @ApiTags('Parts Invoices')
 @Controller('parts/invoices')
@@ -49,7 +49,7 @@ export class InvoicesController {
 
   @ApiBearerAuth('JWT')
   @Post('entries')
-  async createPartsEntries(@Body(new ZodPipe(partsEntriesSchema)) payload: PartsEntriesDto) {
+  async createPartsEntries(@Body(new ZodPipe(createInvoicesSchema)) payload: CreateInvoicesDto) {
     try {
       const response: any = await this.invoicesService.create(payload);
       return this.res.successResponse({

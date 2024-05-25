@@ -205,10 +205,9 @@ export class PartsService {
               qty: true,
               indPrice: true,
               amount: true,
-            },
-            include: {
               parts: {
                 select: {
+                  uuid: true,
                   name: true,
                 },
               },

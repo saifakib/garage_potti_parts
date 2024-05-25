@@ -27,8 +27,6 @@ export class InvoicesService {
               qty: true,
               indPrice: true,
               amount: true,
-            },
-            include: {
               parts: {
                 select: {
                   uuid: true,
@@ -54,8 +52,6 @@ export class InvoicesService {
               qty: true,
               indPrice: true,
               amount: true,
-            },
-            include: {
               parts: {
                 select: {
                   uuid: true,
@@ -86,10 +82,10 @@ export class InvoicesService {
         invoiceNo: invoiceNumber,
         userName: payload.userName,
         userMobile: payload.userMobile,
-        userEmail: payload.userEmail ?? '',
-        address: payload.address ?? '',
+        userEmail: payload.userEmail ?? undefined,
+        address: payload.address ?? undefined,
         amount: payload.totalAmount,
-        remarks: payload.remarks ?? '',
+        remarks: payload.remarks ?? undefined,
       };
 
       const invoice = await this.invoicesRepository.partsInvoicesCreate(createInvoiceInput);
