@@ -23,7 +23,7 @@ export class ModelsService {
   async findAll(payload: FindAllDto) {
     try {
       return await this.modelsRepository.findAll({
-        where: {},
+        where: { softDelete: false },
         orderBy: {
           id: payload.sort,
         },

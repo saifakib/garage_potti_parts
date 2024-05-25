@@ -292,7 +292,7 @@ model PartsEntryLists {
 model PartsInvoices {
     id                Int                 @id @unique @default(autoincrement())
     uuid              String              @unique @default(uuid()) @db.Uuid
-    invoiceNo         String              @unique @default(uuid()) @db.Uuid // #IVSL5498534
+    invoiceNo         String              @unique // #IVSL5498534
     userName          String              @db.VarChar()
     userMobile        String              @db.VarChar()
     userEmail         String?             @db.VarChar()

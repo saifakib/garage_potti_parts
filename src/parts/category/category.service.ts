@@ -34,7 +34,9 @@ export class CategoryService {
   async findAll(payload: FindAllDto) {
     try {
       return await this.categoryRepository.findAll({
-        where: {},
+        where: {
+          softDelete: false,
+        },
         orderBy: {
           id: payload.sort,
         },
@@ -196,7 +198,7 @@ export class CategoryService {
         },
       });
       if (!optionEntity) throw new NotFoundException('Not found!!');
-      if (optionEntity.parts.length > 0) throw new NotAcceptableException('Cannot delete this option entityss!!');
+      if (optionEntity.parts.length > 0) throw new NotAcceptableException('Cannot delete this option entities!!');
       await this.categoryRepository.deleteOptionEntity(payload.uuid);
     } catch (err) {
       throw err;

@@ -2,6 +2,7 @@ import { ERROR_CODES } from '@/config/prismaError.code';
 import { HttpException, RequestTimeoutException } from '@nestjs/common';
 
 export default function errorHandler(error: any) {
+  console.log(error);
   switch (error.name) {
     case 'NotFoundException':
     case 'UnauthorizedException':
