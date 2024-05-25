@@ -36,7 +36,7 @@ export class VendorsRepository {
     try {
       const args = {};
       Object.assign(args, { include });
-      return paginate(this.database.years, { where, orderBy, ...args }, { page, perPage });
+      return paginate(this.database.vendors, { where, orderBy, ...args }, { page, perPage });
     } catch (error) {
       throw error;
     }

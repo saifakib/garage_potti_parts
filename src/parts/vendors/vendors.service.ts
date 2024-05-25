@@ -23,7 +23,7 @@ export class VendorsService {
   async findAll(payload: FindAllDto) {
     try {
       return await this.vendorsRepository.findAll({
-        where: {},
+        where: { softDelete: false },
         orderBy: {
           id: payload.sort,
         },

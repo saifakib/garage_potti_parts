@@ -23,7 +23,7 @@ export class VehicleTypesService {
   async findAll(payload: FindAllDto) {
     try {
       return await this.vehicleTypesRepository.findAll({
-        where: {},
+        where: { softDelete: false },
         orderBy: {
           id: payload.sort,
         },

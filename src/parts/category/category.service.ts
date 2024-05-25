@@ -34,7 +34,9 @@ export class CategoryService {
   async findAll(payload: FindAllDto) {
     try {
       return await this.categoryRepository.findAll({
-        where: {},
+        where: {
+          softDelete: false,
+        },
         orderBy: {
           id: payload.sort,
         },

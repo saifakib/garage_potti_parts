@@ -23,7 +23,7 @@ export class YearsService {
   async findAll(payload: FindAllDto) {
     try {
       return await this.yearsRepository.findAll({
-        where: {},
+        where: { softDelete: false },
         orderBy: {
           id: payload.sort,
         },

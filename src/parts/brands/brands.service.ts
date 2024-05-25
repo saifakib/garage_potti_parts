@@ -25,7 +25,9 @@ export class BrandsService {
   async findAll(payload: FindAllDto) {
     try {
       return await this.brandsRepository.findAll({
-        where: {},
+        where: {
+          softDelete: false,
+        },
         orderBy: {
           id: payload.sort,
         },
