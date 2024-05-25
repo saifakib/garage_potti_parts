@@ -11,7 +11,11 @@ export class VendorsService {
     const response = await this.vendorsRepository.findOne({
       where: { uuid: payload.uuid },
       include: {
-        partsEntries: true,
+        partsEntries: {
+          include: {
+            partsEntryLists: true,
+          },
+        },
       },
     });
     if (!response) {
@@ -23,14 +27,18 @@ export class VendorsService {
   async findAll(payload: FindAllDto) {
     try {
       return await this.vendorsRepository.findAll({
-        where: {},
+        where: { softDelete: false },
         orderBy: {
           id: payload.sort,
         },
         page: Number(payload.page) || 1,
         perPage: Number(payload.limit),
         include: {
-          partsEntries: true,
+          partsEntries: {
+            include: {
+              partsEntryLists: true,
+            },
+          },
         },
       });
     } catch (err) {
