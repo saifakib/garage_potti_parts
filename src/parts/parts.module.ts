@@ -13,7 +13,7 @@ import { YearsService } from '@/parts/years/years.service';
 import { YearsRepository } from '@/parts/years/years.repository';
 import { EnginesController } from '@/parts/engines/engines.controller';
 import { EnginesService } from '@/parts/engines/engines.service';
-import { EnginesRepository } from '@/parts/engines/Engines.repository';
+import { EnginesRepository } from '@/parts/engines/engines.repository';
 import { VehicleTypesController } from '@/parts/vehicle-types/vehicle-types.controller';
 import { VehicleTypesService } from '@/parts/vehicle-types/vehicle-types.service';
 import { VehicleTypesRepository } from '@/parts/vehicle-types/vehicle-types.repository';

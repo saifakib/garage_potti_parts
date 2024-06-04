@@ -9,6 +9,7 @@ import { Config } from './config/env.config';
 import { RolesModule } from './roles/roles.module';
 import { PermissionsModule } from './permissions/permissions.module';
 import { PartsModule } from './parts/parts.module';
+import { OutletsModule } from './outlets/outlets.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { PartsModule } from './parts/parts.module';
     AuthModule,
     RolesModule,
     PermissionsModule,
+    OutletsModule,
     PartsModule,
   ],
   controllers: [AppController],
