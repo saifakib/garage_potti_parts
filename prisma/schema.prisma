@@ -107,6 +107,18 @@ model Permissions {
     roles       Roles[]
 }
 
+model Outlets {
+    id         Int       @id @unique @default(autoincrement())
+    uuid       String    @unique @default(uuid()) @db.Uuid
+    name       String    @unique @db.VarChar(256)
+    image      String?   @db.VarChar()
+    softDelete Boolean   @default(false)
+    createdAt  DateTime  @default(now()) @db.Timestamptz(6)
+    createdBy  String?   @db.Uuid
+    updatedAt  DateTime? @updatedAt @db.Timestamptz(6)
+    updatedBy  String?   @db.Uuid
+}
+
 model PartsCategory {
     id                   Int                    @id @unique @default(autoincrement())
     uuid                 String                 @unique @default(uuid()) @db.Uuid
