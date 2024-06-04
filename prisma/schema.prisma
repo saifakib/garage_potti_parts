@@ -62,6 +62,8 @@ model Users {
     profile        Profile?
     role           Roles?         @relation(fields: [roleUuid], references: [uuid])
     roleUuid       String?        @db.Uuid
+    Outlets        Outlets?       @relation(fields: [outletsId], references: [id])
+    outletsId      Int?
 }
 
 model Profile {
@@ -117,6 +119,7 @@ model Outlets {
     createdBy  String?   @db.Uuid
     updatedAt  DateTime? @updatedAt @db.Timestamptz(6)
     updatedBy  String?   @db.Uuid
+    users      Users[]
 }
 
 model PartsCategory {
